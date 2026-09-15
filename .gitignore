@@ -1,7 +1,0 @@
-__pycache__/
-*.pyc
-model_validation/data/
-model_validation/*.keras
-model_validation/*.tflite
-model_validation/*.h
-model_validation/*_summary.json
