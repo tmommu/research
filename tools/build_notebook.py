@@ -24,7 +24,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(ROOT, "eto_na_tlga_guys_final_na.py")
 # Every module the notebook needs on the runtime, written out before first use.
-MODULES = ["quantization.py", "data_paths.py", "thresholds.py", "trials.py", "sweep.py", "balance.py"]
+MODULES = ["quantization.py", "data_paths.py", "thresholds.py", "trials.py", "sweep.py", "balance.py", "report.py"]
 NOTEBOOK = os.path.join(ROOT, "TIBOK_Quantization_and_Testing.ipynb")
 
 # The module-writing cells are injected immediately before the section whose markdown

@@ -74,6 +74,30 @@ shortcut to Drive**.
   unexpected number of `.hea` files, which usually means a second database, a duplicate
   copy, or a nested extraction is sharing the folder.
 
+## Results CSV (`report.py`)
+
+`build_results_table` + `write_results_csv` write `<run_tag>_results_summary.csv` with the
+fixed column layout:
+
+```
+Model,Threshold Type,Threshold Value,Accuracy,Sensitivity,Specificity,Precision,F1,ROC-AUC,PR-AUC
+```
+
+8 candidates x {FP32, INT8} x 4 operating points = 64 rows, plus 16 mean/SD rows.
+
+**Every candidate appears, not just the winner.** On one observed run the eight candidates
+scored 0.8865 / 0.7418 / 0.7516 / 0.7305 / 0.7352 / 0.6813 / 0.6938 / 0.7420 on validation
+PR-AUC — the winner sat **six SD** above the other seven, which cluster at 0.725 +/- 0.027.
+A table showing only the winner presents a lucky draw as the model's performance.
+
+All rows share the **same** thresholds, chosen on validation from the selected model.
+Per-candidate thresholds would make each row internally optimal but mutually incomparable.
+
+Selection stays on validation. These are test metrics for every candidate, shown for
+transparency, which is only honest while the deployed model remains the validation winner —
+marked `[Selected]` in the Model column. Choosing a different row because it scores better
+on test turns the test set into a second validation set.
+
 ## The focal-loss / class-weight bug
 
 `focal_loss` ended with `tf.reduce_mean(tf.reduce_sum(..., axis=-1))`, collapsing the batch

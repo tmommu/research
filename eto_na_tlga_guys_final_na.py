@@ -771,6 +771,59 @@ else:
     trial_summary = None
     print("RUN_TRIALS is False -- skipping the replication study.")
 
+"""## Results CSV — every candidate, FP32 and INT8, plus mean/SD
+
+Writes `<RUN_TAG>_results_summary.csv` with the fixed column layout:
+
+    Model,Threshold Type,Threshold Value,Accuracy,Sensitivity,Specificity,Precision,F1,ROC-AUC,PR-AUC
+
+**All candidates appear, not just the selected one.** On one observed run the eight
+candidates scored 0.8865 / 0.7418 / 0.7516 / 0.7305 / 0.7352 / 0.6813 / 0.6938 / 0.7420 on
+validation PR-AUC: the winner sat six standard deviations above the other seven, which
+cluster at 0.725 +/- 0.027. A table showing only the winner presents a lucky draw as the
+model's performance. With all eight plus mean and SD rows, a reader can see how much of the
+headline is selection.
+
+Every row uses the **same** thresholds — the ones chosen on validation from the selected
+model. Per-candidate thresholds would make each row internally optimal but mutually
+incomparable, which defeats the purpose of one table.
+
+**Selection remains on validation.** These are test metrics for every candidate, shown for
+transparency, and that is only honest while the deployed model stays the validation winner
+— marked `[Selected]` in the Model column. Choosing a different row because it scores
+better on test turns the test set into a second validation set and the headline number
+stops estimating held-out performance.
+"""
+
+from tibok.report import build_results_table, write_results_csv
+
+WRITE_RESULTS_CSV = True
+CSV_QUANTIZE_EVERY_CANDIDATE = True   # False = FP32 rows only (skips 8 INT8 conversions)
+
+if WRITE_RESULTS_CSV:
+    selected_index = int(np.argmax(candidate_val_pr_aucs))
+    print(f"Selected candidate: C{selected_index + 1} "
+          f"(val PR-AUC {candidate_val_pr_aucs[selected_index]:.4f})")
+    print(f"Candidate val PR-AUCs: {[round(float(v), 4) for v in candidate_val_pr_aucs]}")
+
+    results_rows = build_results_table(
+        all_candidates, candidate_val_pr_aucs, selected_index, THRESHOLDS,
+        X_test, RR_test_n, y_test, X_val, RR_val_n, WINDOW_SIZE,
+        quantize=CSV_QUANTIZE_EVERY_CANDIDATE, n_calib=800, batch_one=False,
+    )
+    write_results_csv(f"{RUN_TAG}_results_summary.csv", results_rows)
+
+    # Echo the summary block so the numbers are visible without opening the file.
+    print()
+    print(f"{'Model':<22}{'Threshold Type':<18}{'Sens':>8}{'Spec':>8}{'Prec':>8}{'F1':>8}")
+    for r in results_rows:
+        if "mean" in str(r["Model"]) or "sd" in str(r["Model"]):
+            print(f"{r['Model']:<22}{r['Threshold Type']:<18}"
+                  f"{r['Sensitivity']:>8}{r['Specificity']:>8}"
+                  f"{r['Precision']:>8}{r['F1']:>8}")
+else:
+    print("WRITE_RESULTS_CSV is False -- skipping the results CSV.")
+
 """## Save + download everything
 
 `quantize_and_test` has already written `<RUN_TAG>_model_int8.tflite`, `<RUN_TAG>_model_int8.h`
@@ -795,6 +848,7 @@ with open(f'{RUN_TAG}_summary.json', 'w') as f:
 
 from google.colab import files
 for fname in [f'{RUN_TAG}_model_int8.h', f'{RUN_TAG}_model_int8.tflite',
-              f'{RUN_TAG}_quantization_report.json', f'{RUN_TAG}_summary.json']:
+              f'{RUN_TAG}_quantization_report.json', f'{RUN_TAG}_summary.json',
+              f'{RUN_TAG}_results_summary.csv']:
     if os.path.exists(fname):
         files.download(fname)
