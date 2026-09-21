@@ -279,12 +279,36 @@ RR_train_n = (RR_train - rr_mean) / rr_std
 RR_val_n = (RR_val - rr_mean) / rr_std
 RR_test_n = (RR_test - rr_mean) / rr_std
 
-"""## Minority-class augmentation
+"""## Minority-class augmentation — balanced BY SYMBOL, not just positive-vs-negative
 
-Same recipe as the baseline notebook (time shift, baseline wander, powerline hum, Gaussian
-noise, amplitude scaling), applied 2x to arrhythmia-class windows only. RR features are
-carried over unchanged for augmented copies since the augmentation only perturbs the signal,
-not beat timing.
+Same signal recipe as before (time shift, baseline wander, powerline hum, Gaussian noise,
+amplitude scaling), with RR features carried over unchanged for copies since the
+augmentation perturbs the waveform and not beat timing.
+
+**What changed: the balancing is now symbol-aware.** Copying every positive beat 2x boosts
+V and F by the same factor, so it preserves the imbalance *inside* the positive class
+exactly. That class is ~97% V beats, so "balanced" training was in practice training a
+V-beat detector, and the pooled sensitivity was a V-beat number wearing an "arrhythmia"
+label. One observed test split:
+
+    V  6030 beats -> 0.974 sensitivity
+    A   163 beats -> 0.859
+    F    23 beats -> 0.087
+    S     1 beat  -> 0.000
+
+Sensitivity tracks sample count monotonically. No threshold, loss or quantization setting
+fixes that — the model was never shown enough F beats, and the RR features actively mislead
+there, since a fusion beat is a sinus and an ectopic beat arriving together and so is not
+especially premature.
+
+`BALANCE_STRATEGY` controls it: `"sqrt"` (default) targets counts proportional to sqrt(n),
+`"equal"` levels every symbol to the largest, `"none"` reproduces the old uniform 2x
+behaviour. `BALANCE_CAP` bounds the multiplier.
+
+**Oversampling cannot create information that is not in the data.** 23 F beats copied 30
+times are still 23 F beats, and the model may simply memorise them. If F sensitivity has to
+hold up in the write-up, the honest fix is more F beats — or reporting F separately and
+saying the study is underpowered for it.
 """
 
 def augment_segment(segment, rng, shift_max=40, noise_std=0.03, scale_range=(0.9, 1.1),
@@ -317,12 +341,33 @@ def augment_dataset(X, rr, y, rng, n_aug_positive=2):
     return np.concatenate(X_list), np.concatenate(rr_list), np.concatenate(y_list)
 
 
+from tibok.balance import augment_by_symbol, symbol_counts, symbol_sample_weights
+
+BALANCE_STRATEGY = "sqrt"   # "sqrt" | "equal" | "none" (none == the old uniform 2x)
+BALANCE_CAP = 10            # ceiling on extra copies per beat
+
 aug_rng = np.random.default_rng(42)
-X_train_aug, RR_train_aug, y_train_aug = augment_dataset(X_train, RR_train_n, y_train, aug_rng)
+train_symbols_arr = np.array(train_symbols)
+
+print("Positive-class composition BEFORE balancing:", symbol_counts(train_symbols_arr, y_train))
+X_train_aug, RR_train_aug, y_train_aug, sym_train_aug = augment_by_symbol(
+    X_train, RR_train_n, y_train, train_symbols_arr,
+    augment_segment, aug_rng, strategy=BALANCE_STRATEGY, cap=BALANCE_CAP,
+)
+print("Positive-class composition AFTER  balancing:", symbol_counts(sym_train_aug, y_train_aug))
+
 shuffle_idx = np.random.RandomState(42).permutation(len(y_train_aug))
-X_train_aug = X_train_aug[shuffle_idx]; RR_train_aug = RR_train_aug[shuffle_idx]; y_train_aug = y_train_aug[shuffle_idx]
-print(f"After augmentation: X_train {X_train_aug.shape}, class balance:",
+X_train_aug = X_train_aug[shuffle_idx]; RR_train_aug = RR_train_aug[shuffle_idx]
+y_train_aug = y_train_aug[shuffle_idx]; sym_train_aug = sym_train_aug[shuffle_idx]
+print(f"After augmentation: X_train {X_train_aug.shape}, binary balance:",
       pd.Series(y_train_aug).value_counts(normalize=True).to_dict())
+
+# Alternative/complementary lever: reweight the loss per beat instead of duplicating data.
+# This only works now that focal_loss returns one value per sample -- with the old
+# scalar-reducing version, sample_weight was as inert as class_weight was.
+USE_SYMBOL_SAMPLE_WEIGHTS = False
+sample_weights = (symbol_sample_weights(sym_train_aug, y_train_aug, strategy=BALANCE_STRATEGY)
+                  if USE_SYMBOL_SAMPLE_WEIGHTS else None)
 
 """## Model: CNN branch (morphology) + RR branch (rhythm timing), fused before the classifier head
 
@@ -332,13 +377,25 @@ should cost more than a false positive.
 """
 
 def focal_loss(gamma=3.0, alpha=0.3):
+    """Focal loss, returning ONE VALUE PER SAMPLE.
+
+    The previous version ended with `tf.reduce_mean(tf.reduce_sum(..., axis=-1))`, which
+    collapses the batch axis and hands Keras a scalar. `class_weight` works by scaling each
+    sample's loss, so with nothing per-sample left to scale it was almost entirely inert:
+    on a 15%-positive problem, a 10x positive weight moved the mean prediction by +0.0036
+    with the scalar form against +0.0639 with this one. Every class-weight setting in this
+    notebook -- the balanced weights and the 1.3x recall boost on top of them -- was
+    therefore doing close to nothing.
+
+    Keeping the batch axis and letting Keras reduce is the fix; the maths is unchanged.
+    """
     def focal_loss_fixed(y_true, y_pred):
         y_true = tf.cast(y_true, tf.float32)
         epsilon = tf.keras.backend.epsilon()
         y_pred = tf.clip_by_value(y_pred, epsilon, 1.0 - epsilon)
         pos_term = -alpha * y_true * tf.pow(1.0 - y_pred, gamma) * tf.math.log(y_pred)
         neg_term = -(1.0 - alpha) * (1.0 - y_true) * tf.pow(y_pred, gamma) * tf.math.log(1.0 - y_pred)
-        return tf.reduce_mean(tf.reduce_sum(pos_term + neg_term, axis=-1))
+        return tf.reduce_sum(pos_term + neg_term, axis=-1)
     return focal_loss_fixed
 
 
@@ -407,7 +464,7 @@ for i in range(N_CANDIDATES):
         validation_data=([X_val, RR_val_n], y_val),
         epochs=EPOCHS, batch_size=BATCH_SIZE,
         callbacks=[early_stop, reduce_lr],
-        class_weight=class_weight_dict, verbose=2,
+        class_weight=class_weight_dict, sample_weight=sample_weights, verbose=2,
     )
     val_probs = candidate.predict([X_val, RR_val_n], batch_size=256, verbose=0).flatten()
     val_pr_auc = average_precision_score(y_val, val_probs)
@@ -569,6 +626,7 @@ quant_report = quantize_and_test(
     model=model,
     X_val=X_val, RR_val_n=RR_val_n,
     X_test=X_test, RR_test_n=RR_test_n, y_test=y_test,
+    y_val=y_val,   # enables STEP 4b: thresholds recalibrated on INT8 validation scores
     thresholds=THRESHOLDS,
     window_size=WINDOW_SIZE,
     run_tag=RUN_TAG,
@@ -580,6 +638,138 @@ quant_report = quantize_and_test(
     batch_one=True,   # mirrors how the firmware invokes the model, one window at a time
     out_dir=".",
 )
+
+"""## Optional: precision/sensitivity sweep over the loss and class-weight knobs
+
+The model is over on sensitivity (0.965 against a 0.95 target) and under on precision
+(0.852 against 0.90), so the settings biasing it toward recall are being paid for in the
+wrong currency. This sweeps them.
+
+Two knobs:
+
+- `alpha` — the focal-loss weight on the positive term. Lower favours precision, higher
+  favours recall. Currently 0.3.
+- `pos_boost` — the manual multiplier on top of balanced class weights. Currently 1.3.
+  **Setting it to 1.0 removes the recall bias entirely**, which is the cleanest precision
+  lever available.
+
+`pos_boost` only started doing anything once `focal_loss` was fixed to return one value per
+sample — see its docstring. Before that fix every class-weight setting here was inert, so
+any earlier tuning of these numbers told you nothing.
+
+**The sweep never touches the test set.** Validation is split in two: one half chooses the
+operating point, the other scores the configuration. Ranking on the same beats used to pick
+the threshold would flatter every configuration and flatter the overfitted ones most.
+Only `finalize_on_test` reads test data, once, after the winner is settled. If you re-run
+the sweep after seeing test numbers, the test set has become a second validation set and
+the write-up should say so.
+
+Cost is one training run per (config, seed): the default 6-config grid at one seed is about
+six runs. Seed noise here is large, so `n_seeds=2` ranks more reliably at double the cost.
+Results checkpoint after every run; `resume=True` continues an interrupted session.
+"""
+
+RUN_SWEEP = False   # flip to True to run the sweep
+SWEEP_SEEDS = 1
+
+if RUN_SWEEP:
+    from tibok.sweep import make_grid, run_sweep, summarize_sweep, print_sweep
+
+    def sweep_train_one(cfg, seed):
+        tf.keras.utils.set_random_seed(seed)
+        m = build_model(WINDOW_SIZE)
+        m.compile(
+            optimizer=Adam(learning_rate=3e-4),
+            loss=focal_loss(gamma=cfg["gamma"], alpha=cfg["alpha"]),
+            metrics=['accuracy', tf.keras.metrics.Precision(name='precision'),
+                     tf.keras.metrics.Recall(name='recall')],
+        )
+        cw = compute_class_weight(class_weight='balanced',
+                                  classes=np.unique(y_train_aug), y=y_train_aug)
+        d = {i: w for i, w in enumerate(cw)}
+        d[1] *= cfg["pos_boost"]
+        m.fit([X_train_aug, RR_train_aug], y_train_aug,
+              validation_data=([X_val, RR_val_n], y_val),
+              epochs=EPOCHS, batch_size=BATCH_SIZE,
+              callbacks=[tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=6,
+                                                          restore_best_weights=True),
+                         tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
+                                                              patience=3, min_lr=1e-6)],
+              class_weight=d, verbose=0)
+        return m
+
+    sweep_grid = make_grid(pos_boosts=(1.0, 1.3), alphas=(0.15, 0.30, 0.45))
+    sweep_rows = run_sweep(sweep_train_one, sweep_grid, X_val, RR_val_n, y_val,
+                           window_size=WINDOW_SIZE, n_seeds=SWEEP_SEEDS,
+                           out_dir=".", run_tag=RUN_TAG, resume=True)
+    sweep_summary = summarize_sweep(sweep_rows)
+    print_sweep(sweep_summary)
+else:
+    sweep_summary = None
+    print("RUN_SWEEP is False -- skipping the loss/class-weight sweep.")
+
+"""## Optional: R independent trials, for a variance-aware answer to RQ2.1/RQ2.3
+
+Everything above is **one** model, so it supports "quantization cost F1 0.040 *in this
+run*" and nothing stronger. This section repeats the whole train -> quantize -> evaluate
+experiment `N_TRIALS` times with different seeds and reports mean +/- SD, so the claim
+becomes "F1 0.040 +/- <sd> across N runs".
+
+**This is not the same as raising `N_CANDIDATES`.** That is a best-of-N *search*: it trains
+N models, keeps the best on validation PR-AUC, and discards the rest. Raising it gives one
+model chosen from a bigger pool, and makes the winner's validation PR-AUC *more*
+optimistically biased, since you report the maximum of N noisy draws from the same set you
+selected on. It adds no evidence about reproducibility. A trial is an independent
+replication and does.
+
+The patient split is held fixed across trials on purpose -- it is the split the methodology
+commits to, and re-drawing it per trial would change the study population. So what is
+measured here is **training variance** (initialization, augmentation draws, shuffling), not
+variance across patient populations. State which one you are reporting.
+
+Cost: roughly one training run per trial. At ~8 min/run, `N_TRIALS = 10` is about 80
+minutes. Results are checkpointed to `<RUN_TAG>_trials.json` after every trial and
+`resume=True` picks up where a disconnected runtime stopped, so this survives Colab
+dropping the session partway.
+"""
+
+RUN_TRIALS = False   # flip to True to run the replication study
+N_TRIALS = 10
+CANDIDATES_PER_TRIAL = 1  # >1 keeps best-of-N inside each trial; cost multiplies
+
+if RUN_TRIALS:
+    from tibok.trials import run_trials, summarize_trials, print_trial_summary
+
+    def trial_build(seed):
+        tf.keras.utils.set_random_seed(seed)
+        return build_model(WINDOW_SIZE)
+
+    def trial_fit(model, seed):
+        model.fit(
+            [X_train_aug, RR_train_aug], y_train_aug,
+            validation_data=([X_val, RR_val_n], y_val),
+            epochs=EPOCHS, batch_size=BATCH_SIZE,
+            callbacks=[tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=6,
+                                                        restore_best_weights=True),
+                       tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
+                                                            patience=3, min_lr=1e-6)],
+            class_weight=class_weight_dict, verbose=0,
+        )
+
+    trial_rows = run_trials(
+        trial_build, trial_fit,
+        X_train_aug, RR_train_aug, y_train_aug,
+        X_val, RR_val_n, y_val,
+        X_test, RR_test_n, y_test,
+        window_size=WINDOW_SIZE, n_trials=N_TRIALS,
+        candidates_per_trial=CANDIDATES_PER_TRIAL,
+        out_dir=".", run_tag=RUN_TAG, resume=True,
+    )
+    trial_summary = summarize_trials(trial_rows)
+    print_trial_summary(trial_summary)
+else:
+    trial_summary = None
+    print("RUN_TRIALS is False -- skipping the replication study.")
 
 """## Save + download everything
 
@@ -597,6 +787,8 @@ summary = {
     "symbol_breakdown": symbol_breakdown,
     "rr_feature_norm": {"mean": rr_mean.tolist(), "std": rr_std.tolist()},
     "quantization": quant_report,
+    "trials": trial_summary,
+    "sweep": sweep_summary,
 }
 with open(f'{RUN_TAG}_summary.json', 'w') as f:
     json.dump(summary, f, indent=2)

@@ -74,6 +74,65 @@ shortcut to Drive**.
   unexpected number of `.hea` files, which usually means a second database, a duplicate
   copy, or a nested extraction is sharing the folder.
 
+## The focal-loss / class-weight bug
+
+`focal_loss` ended with `tf.reduce_mean(tf.reduce_sum(..., axis=-1))`, collapsing the batch
+axis into a scalar. `class_weight` works by scaling each sample's loss, so with no
+per-sample axis left it was almost entirely inert. Measured on a 15%-positive problem, a
+10x positive class weight moved the mean prediction by:
+
+| focal loss returns | Δ mean prediction with `class_weight={0:1, 1:10}` |
+|---|---|
+| scalar (previous) | **+0.0036** |
+| per-sample (fixed) | **+0.0639** |
+
+An 18x difference. Every class-weight setting in the study — the balanced weights and the
+`*= 1.3` recall boost on top of them — was doing close to nothing, so any earlier tuning of
+those numbers carries no information. The fix keeps the batch axis and lets Keras reduce;
+the maths is unchanged.
+
+## Precision/sensitivity sweep (`sweep.py`)
+
+`make_grid` / `run_sweep` sweep `alpha` (focal weight on the positive term — lower favours
+precision) and `pos_boost` (the manual multiplier over balanced class weights; 1.0 removes
+the recall bias entirely).
+
+**Nothing in the sweep reads test data.** Validation is split: one half chooses the
+threshold, the other scores the configuration. Ranking on the same beats used to pick the
+threshold flatters every config, and flatters overfitted ones most. `finalize_on_test`
+reads test once, after the winner is settled — a report, not a decision. Re-running the
+sweep after seeing test numbers turns the test set into a second validation set; say so in
+the write-up if that happens.
+
+Configs are ranked by total shortfall against all targets at once, so a config missing one
+target narrowly outranks one missing two badly. Checkpointed per run; `resume=True`
+continues.
+
+## Replication trials (`trials.py`)
+
+One training run supports "quantization cost F1 0.040 *in this run*" and nothing stronger.
+`run_trials` repeats the whole train → quantize → evaluate experiment R times with
+different seeds so the claim becomes "F1 0.040 ± sd across R runs", with CIs and a Wilcoxon
+signed-rank test over the per-trial deltas.
+
+**A trial is not a candidate.** `N_CANDIDATES` is a best-of-N *search* — it trains N models,
+keeps the best on validation PR-AUC, discards the rest. Raising it yields one model picked
+from a larger pool and makes the winner's validation PR-AUC *more* optimistically biased
+(you report the maximum of N noisy draws from the set you selected on). It adds no evidence
+about reproducibility. A trial is an independent replication and does. The two compose via
+`candidates_per_trial`, at multiplied cost.
+
+The patient split is fixed across trials by design, so what is measured is **training
+variance** (init, augmentation, shuffling) — not variance across patient populations. Say
+which one you report.
+
+Deltas are paired within a trial, so the summary runs Wilcoxon over the R per-trial deltas.
+Do not pool every beat from every trial into one McNemar table: beats repeat and models are
+correlated, which inflates n and understates p.
+
+Results checkpoint to `<run_tag>_trials.json` after each trial; `resume=True` continues
+where a disconnected runtime stopped.
+
 ## The conversion failure, and what it actually was
 
 The previous notebook cell carried this note:

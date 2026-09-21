@@ -41,7 +41,7 @@ from sklearn.metrics import (
 )
 
 __all__ = [
-    "QuantizationResult", "quantize_int8", "evaluate_at_threshold",
+    "QuantizationResult", "quantize_int8", "evaluate_at_threshold", "recalibrate_int8",
     "compare_fp32_int8", "estimate_tflm_arena", "run_tflite",
     "benchmark_latency", "export_c_header", "quantize_and_test",
 ]
@@ -463,6 +463,34 @@ def print_comparison(cmp):
         print(f"  {name:<18} {d['observed']:+.4f}  95% CI [{d['ci_lo']:+.4f}, {d['ci_hi']:+.4f}]")
 
 
+def recalibrate_int8(qr, model, X_val, RR_val_n, y_val, window_size, batch_one=False,
+                     precision_floor=0.90, target_sensitivity=0.90):
+    """Re-select operating points on the INT8 model's OWN validation probabilities.
+
+    The pipeline otherwise chooses thresholds from FP32 validation probabilities and then
+    applies those same numbers to INT8 test scores. For answering "did quantization change
+    the predictions" that is exactly right -- holding the threshold fixed is what makes it
+    a controlled comparison.
+
+    For deciding what to ship it is wrong, and pessimistically so. INT8 shifts the score
+    distribution (here: systematically more positive), so an FP32-derived cutoff sits in
+    the wrong place on the INT8 curve and throws away precision that the model has not
+    actually lost. The giveaway is ROC-AUC: if it barely moves under quantization while F1
+    drops sharply, the ranking survived and only the calibration moved -- and calibration
+    is free to fix, because on-device you would tune the threshold against the INT8 model
+    anyway.
+
+    Returns thresholds chosen on INT8 validation scores, to be applied to INT8 test scores.
+    Report both: the fixed-threshold comparison answers the research question, the
+    recalibrated one describes the deployed device.
+    """
+    from .thresholds import select_thresholds
+    val_probs_int8, _ = run_tflite(qr, X_val, RR_val_n, window_size, batch_one=batch_one)
+    return select_thresholds(y_val, val_probs_int8,
+                             precision_floor=precision_floor,
+                             target_sensitivity=target_sensitivity)
+
+
 # ---------------------------------------------------------------------------
 # Memory footprint
 # ---------------------------------------------------------------------------
@@ -645,7 +673,7 @@ def export_c_header(tflite_bytes, header_path, array_name="tibok_model"):
 # ---------------------------------------------------------------------------
 
 def quantize_and_test(model, X_val, RR_val_n, X_test, RR_test_n, y_test,
-                      thresholds, window_size, run_tag="tibok",
+                      thresholds, window_size, run_tag="tibok", y_val=None,
                       test_symbols=None, deploy_threshold_name="precision_floor_90",
                       rr_mean=None, rr_std=None, n_calib=800, n_boot=2000,
                       batch_one=True, out_dir=".", allow_dynamic_range_fallback=False):
@@ -693,12 +721,40 @@ def quantize_and_test(model, X_val, RR_val_n, X_test, RR_test_n, y_test,
     print("\n" + "=" * 72)
     print("STEP 4 -- paired FP32 vs INT8 comparison  (RQ2.1 / RQ2.3)")
     print("=" * 72)
+    print("  Thresholds held fixed at their FP32 validation values -- the controlled")
+    print("  comparison that answers the research question.")
     comparisons = {}
     for name, thr in thresholds.items():
         cmp = compare_fp32_int8(y_test, probs_fp32, probs_int8, thr, label=name, n_boot=n_boot)
         print_comparison(cmp)
         comparisons[name] = cmp
     report["comparisons"] = comparisons
+
+    # --- Step 4b: what the device would actually do -------------------------------
+    # Thresholds re-chosen on the INT8 model's own validation scores. See
+    # `recalibrate_int8` for why the fixed-threshold numbers understate the shipped model.
+    if y_val is not None:
+        print("\n" + "=" * 72)
+        print("STEP 4b -- INT8 with thresholds recalibrated on INT8 validation scores")
+        print("=" * 72)
+        int8_thr = recalibrate_int8(qr, model, X_val, RR_val_n, y_val, window_size,
+                                    batch_one=batch_one)
+        recal = {}
+        print(f"{'operating point':<22}{'thr(FP32)':>11}{'thr(INT8)':>11}"
+              f"{'F1':>9}{'prec':>9}{'sens':>9}{'spec':>9}")
+        for name, thr in int8_thr.items():
+            m = evaluate_at_threshold(y_test, probs_int8, thr, verbose=False)
+            fixed = comparisons[name]["int8"]
+            recal[name] = {"threshold_fp32": float(thresholds[name]),
+                           "threshold_int8": float(thr), "metrics": m,
+                           "delta_f1_vs_fixed": m["f1_score"] - fixed["f1_score"]}
+            print(f"{name:<22}{thresholds[name]:>11.4f}{thr:>11.4f}"
+                  f"{m['f1_score']:>9.4f}{m['precision']:>9.4f}"
+                  f"{m['sensitivity']:>9.4f}{m['specificity']:>9.4f}")
+        print("\n  recovery vs the fixed-threshold INT8 numbers above:")
+        for name, d in recal.items():
+            print(f"    {name:<22} F1 {d['delta_f1_vs_fixed']:+.4f}")
+        report["int8_recalibrated"] = recal
 
     if test_symbols is not None:
         print("\n" + "=" * 72)
