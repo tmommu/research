@@ -1,0 +1,138 @@
+# TIBOK — INT8 quantization & deployment verification
+
+`quantization.py` takes the trained RR-fused 1D-CNN from
+`eto_na_tlga_guys_final_na.py` and produces the artifact that actually ships on the
+nRF52840, plus the evidence needed to defend it.
+
+```python
+from tibok.quantization import quantize_and_test
+
+report = quantize_and_test(
+    model=model, X_val=X_val, RR_val_n=RR_val_n,
+    X_test=X_test, RR_test_n=RR_test_n, y_test=y_test,
+    thresholds={"precision_floor_90": 0.61, ...},
+    window_size=1250, run_tag="tibok_combined_rr_cnn",
+    test_symbols=y_test_symbols, rr_mean=rr_mean, rr_std=rr_std,
+)
+```
+
+Outputs `<run_tag>_model_int8.tflite`, `<run_tag>_model_int8.h` and
+`<run_tag>_quantization_report.json`.
+
+## The conversion failure, and what it actually was
+
+The previous notebook cell carried this note:
+
+> on one local TF 2.20 pip build (macOS/arm64), full-integer calibration of this exact
+> two-input graph fails inside the TFLite calibrator once the model has *trained*
+> weights (`input->dims->size != 4 (3 != 4)` — a freshly-initialized model of the
+> identical architecture converts fine, so this is not an architecture problem).
+
+Both halves of that are wrong, and the difference matters because the stated diagnosis
+("environment-specific, weight-dependent") is what justified the silent fallback.
+
+Reproduced on TF 2.21.0 / Keras 3.15.1 with a trained model of this exact architecture:
+
+| model | calibration fed in | result |
+|---|---|---|
+| untrained | Keras order `[ecg, rr]` | **FAILS** `3 != 4` at CONV_2D node 1 |
+| untrained | probed order `[rr, ecg]` | succeeds, 31.6 KB |
+| trained   | Keras order `[ecg, rr]` | **FAILS** `3 != 4` at CONV_2D node 1 |
+| trained   | probed order `[rr, ecg]` | succeeds, 34.4 KB |
+
+So it is not weight-dependent — an untrained model fails identically. (The earlier
+"converts fine" observation was most likely a conversion without
+`representative_dataset` set, which skips calibration entirely and so never reaches the
+crash.) And it is not really environment-specific either; it is deterministic given the
+converter's ordering behaviour.
+
+**Root cause.** `TFLiteConverter` does not preserve `model.inputs` ordering for a
+multi-input model. Here Keras reports:
+
+```
+position 0: 'ecg_window'   (None, 1250, 1)
+position 1: 'rr_features'  (None, 4)
+```
+
+while the converted graph reports:
+
+```
+position 0: 'serving_default_rr_features:0'  [1, 4]
+position 1: 'serving_default_ecg_window:0'   [1, 1250, 1]
+```
+
+The old `representative_dataset` yielded `[X_val[i:i+1], RR_val_n[i:i+1]]`
+positionally. The calibrator therefore pushed the 4-element RR vector into the Conv1D
+branch. Conv1D lowers to CONV_2D with an implicit ExpandDims, so the kernel wants rank
+4 and got rank 3 — `input->dims->size != 4 (3 != 4)`.
+
+**Fix.** Run one throwaway float conversion, read the resulting input order, and feed
+calibration samples in *that* order. Inputs are then identified by name (falling back to
+rank/shape) rather than the old `shape[-1] != 4` guess. Two further strategies
+(SavedModel with a pinned signature, explicit batch-1 concrete function) are tried if the
+direct path still fails.
+
+## No more silent dynamic-range fallback
+
+The old cell caught the conversion failure and fell back to dynamic-range (weight-only)
+INT8, describing it as something that "still shrinks the model ~4x and runs correctly on
+the nRF52840's Cortex-M4 FPU."
+
+It does not. TFLite-Micro ships no dynamic-range kernels for this graph's
+Conv1D/FullyConnected ops, so a dynamic-range `.tflite` loads fine under the desktop
+interpreter and then fails at `AllocateTensors()` on device. That fallback turns a
+conversion bug into a firmware bug discovered much later. `quantize_int8` now raises by
+default; `allow_dynamic_range_fallback=True` is available for desktop experiments only,
+and the artifact is tagged `dynamic_range_NOT_DEPLOYABLE`.
+
+## RAM estimate
+
+The old cell summed every tensor in the model and called that RAM. That overstates the
+requirement twice: it counts weight tensors, which TFLite-Micro reads directly from the
+flash image and never copies into the arena, and it ignores lifetime reuse — an
+activation is dead once its last consumer runs, and the arena planner reuses that space.
+
+`estimate_tflm_arena` walks the operator schedule and reports the peak simultaneously
+live activation set. On the verification fixture that is **13.6 KB** against the old
+method's **50.6 KB** — a ~3.7x overestimate. It remains an estimate: the real planner
+adds per-tensor bookkeeping, 16-byte alignment padding and kernel scratch buffers, so
+keep headroom and confirm against what `AllocateTensors()` reports on hardware.
+
+## Paired FP32-vs-INT8 testing (RQ2.1 / RQ2.3)
+
+Both models score the identical test beats, so the comparison is paired and the report
+uses paired statistics:
+
+- **McNemar's exact test** on the discordant pairs — the correct test for two classifiers
+  on the same samples. Comparing two independent-sample CIs here would be needlessly
+  conservative.
+- **Bootstrap 95% CIs** on ΔF1, Δspecificity and Δsensitivity (2000 paired resamples).
+- Label agreement rate and mean/max |Δprobability|.
+- Per-AAMI-symbol sensitivity, FP32 vs INT8, so a regression concentrated in rare F or J
+  beats is not hidden by the V-beat-dominated pooled figure.
+
+Inference runs at **batch 1** by default, matching how the firmware invokes the model.
+
+## INT8 threshold snapping
+
+The sigmoid output is INT8, so probabilities land on ~256 discrete levels
+(`output_scale` ≈ 1/256). Firmware comparing a dequantized float against a float
+threshold does the same comparison as an integer cutoff, only slower and with rounding
+risk. `int8_threshold_grid` reports the integer cutoff code and the *effective* float
+threshold it corresponds to — quote that effective value in the write-up, and bake the
+integer rule into firmware:
+
+```
+classify as ARRHYTHMIA when raw int8 output >= <int8_cutoff_code>
+```
+
+## Verification status
+
+The module was exercised end-to-end on a trained fixture of this exact architecture
+(synthetic ECG-like data, since MIT-BIH/INCART are not available in this environment):
+full-integer conversion succeeded, the arena walk ran over the 18-op schedule, the paired
+statistics ran, and the emitted C header compiles under `gcc -std=c11` with the TFL3
+flatbuffer magic intact and `tibok_model_len` matching the `.tflite` byte count exactly.
+
+The numbers in that run are from synthetic data and are **not** results — they only show
+the pipeline works. Re-run it on the real trained model to get reportable figures.

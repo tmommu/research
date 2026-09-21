@@ -508,150 +508,79 @@ for sym, d in symbol_breakdown.items():
 """## INT8 post-training quantization — the model that actually ships on the nRF52840
 
 Calibrates on the validation set (never the test set), converts both inputs to INT8, and
-re-evaluates on the same held-out DS2 test set to answer RQ2.1/RQ2.3 (does quantization
-change F1 / specificity?).
+re-evaluates on the same held-out test set to answer RQ2.1/RQ2.3 (does quantization change
+F1 / specificity?).
 
-**Known environment-specific issue**: on one local TF 2.20 pip build (macOS/arm64), full-integer
-calibration of this exact two-input (ECG window + RR features) graph fails inside the TFLite
-calibrator once the model has *trained* weights (`input->dims->size != 4 (3 != 4)` — a
-freshly-initialized model of the identical architecture converts fine, so this is not an
-architecture problem). It converted without issue in other environments; if it fails here too,
-the cell below automatically falls back to dynamic-range (weight-only INT8) quantization, which
-still shrinks the model ~4x and runs correctly on the nRF52840's Cortex-M4 FPU.
+**The `input->dims->size != 4 (3 != 4)` failure is fixed, and it was not what the earlier note
+in this notebook said it was.** It is neither environment-specific nor weight-dependent — a
+freshly-initialized model fails identically once you actually run the calibration pass. The
+cause is that `TFLiteConverter` does not preserve `model.inputs` ordering for a multi-input
+model: on TF 2.21 it emits the graph inputs as `[rr_features, ecg_window]` while Keras lists
+them as `[ecg_window, rr_features]`. The old `representative_dataset` yielded
+`[X_val_sample, RR_val_sample]` positionally, so the 4-element RR vector was fed into the
+Conv1D branch — rank 3 where the kernel wants rank 4 — hence `3 != 4` at CONV_2D node 1.
+
+`tibok/quantization.py` fixes this by probing the converter's actual input order first (one
+throwaway float conversion) and then feeding calibration samples in *that* order. It also no
+longer silently falls back to dynamic-range quantization: TFLite-Micro has no dynamic-range
+kernels for this graph, so that fallback produced a model that loads on desktop but fails at
+`AllocateTensors()` on the nRF52840 — a conversion bug quietly converted into a firmware bug.
 """
 
-def representative_dataset():
-    rng = np.random.default_rng(42)
-    n = min(800, len(X_val))
-    idx = rng.choice(len(X_val), n, replace=False)
-    for i in idx:
-        yield [X_val[i:i+1].astype(np.float32), RR_val_n[i:i+1].astype(np.float32)]
+import sys
 
-
-FULL_INT8_OK = True
 try:
-    converter = tf.lite.TFLiteConverter.from_keras_model(model)
-    converter.optimizations = [tf.lite.Optimize.DEFAULT]
-    converter.representative_dataset = representative_dataset
-    converter.target_spec.supported_ops = [tf.lite.OpsSet.TFLITE_BUILTINS_INT8]
-    converter.inference_input_type = tf.int8
-    converter.inference_output_type = tf.int8
-    tflite_model = converter.convert()
-    print("Full-integer (INT8 activations + I/O) quantization succeeded.")
-except Exception as e:
-    print(f"Full-integer quantization failed in this environment ({e!r}); falling back to dynamic-range INT8.")
-    FULL_INT8_OK = False
-    converter = tf.lite.TFLiteConverter.from_keras_model(model)
-    converter.optimizations = [tf.lite.Optimize.DEFAULT]
-    tflite_model = converter.convert()
+    from tibok.quantization import quantize_and_test
+except ImportError:
+    !git clone -q https://github.com/tmommu/research.git /content/tibok_repo
+    sys.path.insert(0, '/content/tibok_repo')
+    from tibok.quantization import quantize_and_test
 
-with open(f'{RUN_TAG}_model.tflite', 'wb') as f:
-    f.write(tflite_model)
-print(f"Quantized model size: {len(tflite_model) / 1024:.2f} KB  (full_int8={FULL_INT8_OK})")
+THRESHOLDS = {
+    "f1_optimal": float(f1_optimal_threshold),
+    "youden": float(youden_threshold),
+    "high_sensitivity": float(high_sens_threshold),
+    "precision_floor_90": float(precision_floor_90_threshold),
+}
 
-interpreter = tf.lite.Interpreter(model_content=tflite_model)
-interpreter.allocate_tensors()
-in_details = interpreter.get_input_details()
-out_details = interpreter.get_output_details()
+quant_report = quantize_and_test(
+    model=model,
+    X_val=X_val, RR_val_n=RR_val_n,
+    X_test=X_test, RR_test_n=RR_test_n, y_test=y_test,
+    thresholds=THRESHOLDS,
+    window_size=WINDOW_SIZE,
+    run_tag=RUN_TAG,
+    test_symbols=y_test_symbols,
+    deploy_threshold_name="precision_floor_90",
+    rr_mean=rr_mean, rr_std=rr_std,
+    n_calib=800,
+    n_boot=2000,
+    batch_one=True,   # mirrors how the firmware invokes the model, one window at a time
+    out_dir=".",
+)
 
-tensor_details = interpreter.get_tensor_details()
-def dtype_size(dt):
-    return {np.int8: 1, np.uint8: 1, np.int16: 2, np.uint16: 2, np.int32: 4, np.uint32: 4, np.float32: 4}.get(dt, 0)
-total_ram_bytes = sum((np.prod(t['shape']) if t['shape'].size > 0 else 1) * dtype_size(t['dtype']) for t in tensor_details)
+"""## Save + download everything
 
-nrf52840_flash_kb, nrf52840_ram_kb = 1024, 256
-print(f"Estimated tensor RAM: {total_ram_bytes/1024:.2f} KB")
-print(f"Flash headroom: {nrf52840_flash_kb - len(tflite_model)/1024:.2f} KB")
-print(f"RAM headroom:   {nrf52840_ram_kb - total_ram_bytes/1024:.2f} KB")
-
-ecg_idx = 0 if in_details[0]['shape'][-1] != 4 else 1
-rr_idx = 1 - ecg_idx
-
-if FULL_INT8_OK:
-    ecg_scale, ecg_zp = in_details[ecg_idx]['quantization']
-    rr_scale, rr_zp = in_details[rr_idx]['quantization']
-    out_scale, out_zp = out_details[0]['quantization']
-    X_test_q = np.clip(np.round(X_test / ecg_scale + ecg_zp), -128, 127).astype(np.int8)
-    RR_test_q = np.clip(np.round(RR_test_n / rr_scale + rr_zp), -128, 127).astype(np.int8)
-    interpreter.resize_tensor_input(in_details[ecg_idx]['index'], [len(X_test_q), WINDOW_SIZE, 1])
-    interpreter.resize_tensor_input(in_details[rr_idx]['index'], [len(RR_test_q), 4])
-    interpreter.allocate_tensors()
-    interpreter.set_tensor(in_details[ecg_idx]['index'], X_test_q)
-    interpreter.set_tensor(in_details[rr_idx]['index'], RR_test_q)
-    interpreter.invoke()
-    out = interpreter.get_tensor(out_details[0]['index'])
-    y_test_probs_int8 = ((out.astype(np.float32) - out_zp) * out_scale).flatten()
-else:
-    interpreter.resize_tensor_input(in_details[ecg_idx]['index'], [len(X_test), WINDOW_SIZE, 1])
-    interpreter.resize_tensor_input(in_details[rr_idx]['index'], [len(RR_test_n), 4])
-    interpreter.allocate_tensors()
-    interpreter.set_tensor(in_details[ecg_idx]['index'], X_test.astype(np.float32))
-    interpreter.set_tensor(in_details[rr_idx]['index'], RR_test_n.astype(np.float32))
-    interpreter.invoke()
-    y_test_probs_int8 = interpreter.get_tensor(out_details[0]['index']).flatten()
-
-print(f"\nFP32 test ROC-AUC: {roc_auc_score(y_test, y_test_probs):.4f}")
-print(f"INT8 test ROC-AUC: {roc_auc_score(y_test, y_test_probs_int8):.4f}")
-
-for name, thr in [("f1_optimal", f1_optimal_threshold), ("youden", youden_threshold),
-                   ("high_sensitivity", high_sens_threshold), ("precision_floor_90", precision_floor_90_threshold)]:
-    evaluate(y_test, y_test_probs_int8, thr, f"INT8 TEST — {name}")
-
-"""## C header export for TensorFlow Lite Micro"""
-
-def convert_to_c_array(tflite_path, header_path, array_name="tibok_model"):
-    with open(tflite_path, 'rb') as f:
-        data = f.read()
-    with open(header_path, 'w') as f:
-        f.write(f"#ifndef {array_name.upper()}_H\n#define {array_name.upper()}_H\n\n")
-        f.write("#include <stddef.h>\n#ifndef __cplusplus\n#include <stdalign.h>\n#endif\n\n")
-        f.write("#ifdef __cplusplus\nextern \"C\" {\n#endif\n\n")
-        f.write(f"alignas(16) const unsigned char {array_name}[] = {{\n")
-        for i, byte in enumerate(data):
-            f.write(f"0x{byte:02x}, ")
-            if (i + 1) % 12 == 0:
-                f.write("\n")
-        f.write(f"\n}};\n\nconst size_t {array_name}_len = {len(data)};\n\n")
-        f.write("#ifdef __cplusplus\n}\n#endif\n\n#endif\n")
-    print(f"Header written: {header_path} ({len(data)/1024:.2f} KB)")
-
-
-convert_to_c_array(f'{RUN_TAG}_model.tflite', f'{RUN_TAG}_model.h', 'tibok_model')
-print(f"\nFirmware constants:")
-
-if FULL_INT8_OK:
-    print(f"ECG_SCALE={ecg_scale}, ECG_ZERO_POINT={ecg_zp}")
-    print(f"RR_SCALE={rr_scale}, RR_ZERO_POINT={rr_zp}")
-    print(f"OUTPUT_SCALE={out_scale}, OUTPUT_ZERO_POINT={out_zp}")
-else:
-    print("Full-integer quantization fell back to dynamic-range (weight-only INT8) in this")
-    print("environment — the .tflite model takes FLOAT32 input/output directly, not int8,")
-    print("so there is no ECG_SCALE/RR_SCALE/OUTPUT_SCALE to bake into firmware here.")
-    print("Feed the model raw float32 ECG samples and RR features (normalized exactly as")
-    print("below), not quantized int8 codes.")
-
-print(f"RR_FEATURE_MEAN={rr_mean.tolist()}")
-print(f"RR_FEATURE_STD={rr_std.tolist()}")
-print(f"DEPLOY_THRESHOLD (precision-floor, recommended) = {precision_floor_90_threshold:.4f}")
-
-"""## Save + download everything"""
+`quantize_and_test` has already written `<RUN_TAG>_model_int8.tflite`, `<RUN_TAG>_model_int8.h`
+and `<RUN_TAG>_quantization_report.json`. The training summary below is merged with the
+quantization report so one JSON carries the whole run.
+"""
 
 summary = {
     "candidate_val_pr_aucs": [float(v) for v in candidate_val_pr_aucs],
     "best_val_pr_auc": float(best_val_pr_auc),
-    "thresholds": {"f1_optimal": float(f1_optimal_threshold), "youden": float(youden_threshold),
-                    "high_sensitivity": float(high_sens_threshold),
-                    "precision_floor_90": float(precision_floor_90_threshold)},
+    "thresholds": THRESHOLDS,
     "deploy_threshold_recommended": "precision_floor_90",
     "test_results": results,
     "symbol_breakdown": symbol_breakdown,
     "rr_feature_norm": {"mean": rr_mean.tolist(), "std": rr_std.tolist()},
+    "quantization": quant_report,
 }
 with open(f'{RUN_TAG}_summary.json', 'w') as f:
     json.dump(summary, f, indent=2)
 
 from google.colab import files
-for fname in [f'{RUN_TAG}_model.h', f'{RUN_TAG}_model.tflite', f'{RUN_TAG}_summary.json']:
+for fname in [f'{RUN_TAG}_model_int8.h', f'{RUN_TAG}_model_int8.tflite',
+              f'{RUN_TAG}_quantization_report.json', f'{RUN_TAG}_summary.json']:
     if os.path.exists(fname):
         files.download(fname)
-print("Downloaded model + summary files.")
