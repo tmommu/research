@@ -279,12 +279,36 @@ RR_train_n = (RR_train - rr_mean) / rr_std
 RR_val_n = (RR_val - rr_mean) / rr_std
 RR_test_n = (RR_test - rr_mean) / rr_std
 
-"""## Minority-class augmentation
+"""## Minority-class augmentation — balanced BY SYMBOL, not just positive-vs-negative
 
-Same recipe as the baseline notebook (time shift, baseline wander, powerline hum, Gaussian
-noise, amplitude scaling), applied 2x to arrhythmia-class windows only. RR features are
-carried over unchanged for augmented copies since the augmentation only perturbs the signal,
-not beat timing.
+Same signal recipe as before (time shift, baseline wander, powerline hum, Gaussian noise,
+amplitude scaling), with RR features carried over unchanged for copies since the
+augmentation perturbs the waveform and not beat timing.
+
+**What changed: the balancing is now symbol-aware.** Copying every positive beat 2x boosts
+V and F by the same factor, so it preserves the imbalance *inside* the positive class
+exactly. That class is ~97% V beats, so "balanced" training was in practice training a
+V-beat detector, and the pooled sensitivity was a V-beat number wearing an "arrhythmia"
+label. One observed test split:
+
+    V  6030 beats -> 0.974 sensitivity
+    A   163 beats -> 0.859
+    F    23 beats -> 0.087
+    S     1 beat  -> 0.000
+
+Sensitivity tracks sample count monotonically. No threshold, loss or quantization setting
+fixes that — the model was never shown enough F beats, and the RR features actively mislead
+there, since a fusion beat is a sinus and an ectopic beat arriving together and so is not
+especially premature.
+
+`BALANCE_STRATEGY` controls it: `"sqrt"` (default) targets counts proportional to sqrt(n),
+`"equal"` levels every symbol to the largest, `"none"` reproduces the old uniform 2x
+behaviour. `BALANCE_CAP` bounds the multiplier.
+
+**Oversampling cannot create information that is not in the data.** 23 F beats copied 30
+times are still 23 F beats, and the model may simply memorise them. If F sensitivity has to
+hold up in the write-up, the honest fix is more F beats — or reporting F separately and
+saying the study is underpowered for it.
 """
 
 def augment_segment(segment, rng, shift_max=40, noise_std=0.03, scale_range=(0.9, 1.1),
@@ -317,12 +341,33 @@ def augment_dataset(X, rr, y, rng, n_aug_positive=2):
     return np.concatenate(X_list), np.concatenate(rr_list), np.concatenate(y_list)
 
 
+from tibok.balance import augment_by_symbol, symbol_counts, symbol_sample_weights
+
+BALANCE_STRATEGY = "sqrt"   # "sqrt" | "equal" | "none" (none == the old uniform 2x)
+BALANCE_CAP = 10            # ceiling on extra copies per beat
+
 aug_rng = np.random.default_rng(42)
-X_train_aug, RR_train_aug, y_train_aug = augment_dataset(X_train, RR_train_n, y_train, aug_rng)
+train_symbols_arr = np.array(train_symbols)
+
+print("Positive-class composition BEFORE balancing:", symbol_counts(train_symbols_arr, y_train))
+X_train_aug, RR_train_aug, y_train_aug, sym_train_aug = augment_by_symbol(
+    X_train, RR_train_n, y_train, train_symbols_arr,
+    augment_segment, aug_rng, strategy=BALANCE_STRATEGY, cap=BALANCE_CAP,
+)
+print("Positive-class composition AFTER  balancing:", symbol_counts(sym_train_aug, y_train_aug))
+
 shuffle_idx = np.random.RandomState(42).permutation(len(y_train_aug))
-X_train_aug = X_train_aug[shuffle_idx]; RR_train_aug = RR_train_aug[shuffle_idx]; y_train_aug = y_train_aug[shuffle_idx]
-print(f"After augmentation: X_train {X_train_aug.shape}, class balance:",
+X_train_aug = X_train_aug[shuffle_idx]; RR_train_aug = RR_train_aug[shuffle_idx]
+y_train_aug = y_train_aug[shuffle_idx]; sym_train_aug = sym_train_aug[shuffle_idx]
+print(f"After augmentation: X_train {X_train_aug.shape}, binary balance:",
       pd.Series(y_train_aug).value_counts(normalize=True).to_dict())
+
+# Alternative/complementary lever: reweight the loss per beat instead of duplicating data.
+# This only works now that focal_loss returns one value per sample -- with the old
+# scalar-reducing version, sample_weight was as inert as class_weight was.
+USE_SYMBOL_SAMPLE_WEIGHTS = False
+sample_weights = (symbol_sample_weights(sym_train_aug, y_train_aug, strategy=BALANCE_STRATEGY)
+                  if USE_SYMBOL_SAMPLE_WEIGHTS else None)
 
 """## Model: CNN branch (morphology) + RR branch (rhythm timing), fused before the classifier head
 
@@ -419,7 +464,7 @@ for i in range(N_CANDIDATES):
         validation_data=([X_val, RR_val_n], y_val),
         epochs=EPOCHS, batch_size=BATCH_SIZE,
         callbacks=[early_stop, reduce_lr],
-        class_weight=class_weight_dict, verbose=2,
+        class_weight=class_weight_dict, sample_weight=sample_weights, verbose=2,
     )
     val_probs = candidate.predict([X_val, RR_val_n], batch_size=256, verbose=0).flatten()
     val_pr_auc = average_precision_score(y_val, val_probs)
