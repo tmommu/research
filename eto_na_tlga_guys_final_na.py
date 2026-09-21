@@ -115,32 +115,43 @@ print("Data split integrity OK.")
 
 """## Local Drive cache for MIT-BIH + INCART
 
-Both databases are read directly from Google Drive — no download/streaming step. Update
-`INCART_PATH` below to match whatever your INCART folder is actually named in Drive.
+Both databases are read directly from Google Drive — no download/streaming step.
+
+**Set these to filesystem paths, not sharing links.** Drive is *mounted* at
+`/content/drive`, so a folder's path always looks like `/content/drive/MyDrive/<folder>`.
+A `https://drive.google.com/drive/folders/...` URL is a browser link and is never a valid
+path — and `os.walk()` on one does not raise, it just yields nothing, so the index comes
+back empty and the failure surfaces much later and far from its cause.
+
+If a folder was *shared with you* rather than owned by you, it does not appear under
+`MyDrive` at all until you add a shortcut: in Drive, right-click the folder → Organise →
+**Add shortcut to Drive**. Then use that shortcut's path here.
+
+`resolve_db_path` enforces this: it rejects URLs, searches the mount for the records when
+the configured path is wrong, and tells you where it actually found them. `preflight`
+then verifies every required record is present *before* loading starts, so a missing
+database fails immediately instead of dying deep inside the loading loop.
 """
 
+from tibok.data_paths import resolve_db_path, index_records, preflight
+
 MITDB_PATH = "/content/drive/MyDrive/mit-bih-arrhythmia-database-1.0.0"
-INCART_PATH = "/content/drive/MyDrive/incart-arrhythmia-database-1.0.0"  # <-- update to match your actual folder name
+INCART_PATH = "/content/drive/MyDrive/incart-arrhythmia-database-1.0.0"  # <-- a PATH, not a sharing URL
 
-# Recursively index every .hea file under each path, so it doesn't matter whether
-# your files sit directly in the folder or inside a nested subfolder (e.g. from
-# extracting a downloaded ZIP without flattening it) — this looks wherever they
-# actually landed instead of assuming one fixed layout.
-def _index_records(base_path):
-    index = {}
-    for root, dirs, files in os.walk(base_path):
-        for f in files:
-            if f.endswith('.hea'):
-                index[f[:-4]] = os.path.join(root, f[:-4])
-    return index
+# Resolve first: rejects URLs, and auto-locates the folder anywhere under the mount if the
+# configured path is wrong (records commonly land in a nested subfolder after a ZIP is
+# extracted without flattening, under a name that doesn't match PhysioNet's).
+MITDB_PATH = resolve_db_path(MITDB_PATH, ["100", "234"], "MIT-BIH")
+INCART_PATH = resolve_db_path(INCART_PATH, ["I01", "I75"], "INCART")
 
-MITDB_INDEX = _index_records(MITDB_PATH)
-INCART_INDEX = _index_records(INCART_PATH)
-print(f"MIT-BIH: found {len(MITDB_INDEX)} records under {MITDB_PATH}")
-print(f"INCART:  found {len(INCART_INDEX)} records under {INCART_PATH}  (expect 75)")
-missing_incart = [f"I{i:02d}" for i in range(1, 76) if f"I{i:02d}" not in INCART_INDEX]
-if missing_incart:
-    print(f"WARNING: {len(missing_incart)} INCART records not found anywhere under {INCART_PATH}: {missing_incart}")
+MITDB_INDEX = index_records(MITDB_PATH)
+INCART_INDEX = index_records(INCART_PATH)
+
+# Then verify every record the split actually needs is present, before any loading starts.
+# MIT-BIH ships 48 records; we use the 44 non-paced ones. INCART ships 75 and we use all
+# of them. A count that differs from those is surfaced as a note, not swallowed.
+preflight(MITDB_INDEX, MITDB_RECORDS, "MIT-BIH", expected_total=48)
+preflight(INCART_INDEX, INCART_RECORDS, "INCART", expected_total=75)
 
 """## Loading + RR-interval feature extraction (both databases, read from Drive)
 

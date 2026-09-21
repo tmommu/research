@@ -38,6 +38,28 @@ report = quantize_and_test(
 Outputs `<run_tag>_model_int8.tflite`, `<run_tag>_model_int8.h` and
 `<run_tag>_quantization_report.json`.
 
+## Database paths (`data_paths.py`)
+
+`MITDB_PATH` / `INCART_PATH` must be **filesystem paths**, not Drive sharing links. Drive
+is mounted at `/content/drive`, so a folder's path is always
+`/content/drive/MyDrive/<folder>`. A `https://drive.google.com/drive/folders/...` URL is a
+browser link, and `os.walk()` on one does not raise — it yields nothing, so the index comes
+back empty and the run dies much later, far from the real mistake.
+
+If a folder was *shared with you* rather than owned by you, it will not appear under
+`MyDrive` until you add a shortcut: in Drive, right-click the folder → Organise → **Add
+shortcut to Drive**.
+
+- `resolve_db_path(configured, probe_records, label)` rejects URLs, and when the configured
+  path is wrong it searches the mount for the probe records and reports where it found
+  them. Records commonly land in a nested subfolder after a ZIP is extracted without
+  flattening, under a name that doesn't match PhysioNet's.
+- `preflight(index, required, label, expected_total=)` verifies every required record is
+  present *before* loading starts, and raises listing what is missing. The old code printed
+  a warning and carried on. It also notes — without failing — when the folder holds an
+  unexpected number of `.hea` files, which usually means a second database, a duplicate
+  copy, or a nested extraction is sharing the folder.
+
 ## The conversion failure, and what it actually was
 
 The previous notebook cell carried this note:

@@ -23,12 +23,16 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(ROOT, "eto_na_tlga_guys_final_na.py")
-MODULE = os.path.join(ROOT, "tibok", "quantization.py")
+# Every module the notebook needs on the runtime, written out before first use.
+MODULES = ["quantization.py", "data_paths.py"]
 NOTEBOOK = os.path.join(ROOT, "TIBOK_Quantization_and_Testing.ipynb")
 
-# The module-writing cell is injected immediately before the section whose markdown
-# starts with this heading.
-ANCHOR_HEADING = "## INT8 post-training quantization"
+# The module-writing cells are injected immediately before the section whose markdown
+# starts with this heading. It must sit ahead of the FIRST consumer of any embedded
+# module -- `tibok.data_paths` is imported back in the data-loading section, long before
+# quantization -- so this anchors near the top of the notebook rather than at the
+# quantization step.
+ANCHOR_HEADING = "## Data split"
 
 
 def split_cells(source):
@@ -73,7 +77,7 @@ def nb_cell(kind, text):
 
 def build():
     source = open(SCRIPT).read()
-    module_src = open(MODULE).read()
+    module_srcs = {m: open(os.path.join(ROOT, "tibok", m)).read() for m in MODULES}
 
     raw = split_cells(source)
     cells = []
@@ -91,19 +95,27 @@ def build():
 
         if kind == "markdown" and text.lstrip().startswith(ANCHOR_HEADING):
             cells.append(nb_cell("markdown",
-                "## Write the `tibok.quantization` module onto the runtime\n\n"
+                "## Write the `tibok` modules onto the runtime\n\n"
                 "This notebook is self-contained on purpose. The repository is private, so a\n"
                 "`git clone` from a Colab runtime would prompt for credentials and fail, and\n"
-                "`files.upload()` would mean re-uploading the module every time the runtime is\n"
-                "recycled. The cell below writes the module straight to disk instead.\n\n"
-                "**Do not edit the module here.** It is generated from `tibok/quantization.py`\n"
-                "in the repo by `tools/build_notebook.py`; edits made in this cell are lost the\n"
-                "next time the notebook is rebuilt. Change the repo file and re-run the builder."))
+                "`files.upload()` would mean re-uploading the modules every time the runtime is\n"
+                "recycled. The cells below write them straight to disk instead.\n\n"
+                "- `data_paths.py` — resolves the MIT-BIH / INCART folders and fails loudly on a\n"
+                "  bad path. Used by the data-loading section immediately below.\n"
+                "- `quantization.py` — INT8 conversion and FP32-vs-INT8 verification, used at the\n"
+                "  end of the notebook.\n\n"
+                "**Do not edit the modules here.** They are generated from `tibok/` in the repo by\n"
+                "`tools/build_notebook.py`; edits made in these cells are lost the next time the\n"
+                "notebook is rebuilt. Change the repo file and re-run the builder."))
             cells.append(nb_cell("code",
-                "import os\nos.makedirs('tibok', exist_ok=True)\n"
-                "open('tibok/__init__.py', 'w').close()"))
-            cells.append(nb_cell("code",
-                "%%writefile tibok/quantization.py\n" + module_src.rstrip("\n")))
+                "import os, sys\n"
+                "os.makedirs('tibok', exist_ok=True)\n"
+                "# Lazy __init__: importing tibok.data_paths must not drag in TensorFlow.\n"
+                "open('tibok/__init__.py', 'w').close()\n"
+                "if '.' not in sys.path:\n    sys.path.insert(0, '.')"))
+            for mod in MODULES:
+                cells.append(nb_cell("code",
+                    f"%%writefile tibok/{mod}\n" + module_srcs[mod].rstrip("\n")))
             injected = True
 
         cells.append(nb_cell(kind, text))
