@@ -332,13 +332,25 @@ should cost more than a false positive.
 """
 
 def focal_loss(gamma=3.0, alpha=0.3):
+    """Focal loss, returning ONE VALUE PER SAMPLE.
+
+    The previous version ended with `tf.reduce_mean(tf.reduce_sum(..., axis=-1))`, which
+    collapses the batch axis and hands Keras a scalar. `class_weight` works by scaling each
+    sample's loss, so with nothing per-sample left to scale it was almost entirely inert:
+    on a 15%-positive problem, a 10x positive weight moved the mean prediction by +0.0036
+    with the scalar form against +0.0639 with this one. Every class-weight setting in this
+    notebook -- the balanced weights and the 1.3x recall boost on top of them -- was
+    therefore doing close to nothing.
+
+    Keeping the batch axis and letting Keras reduce is the fix; the maths is unchanged.
+    """
     def focal_loss_fixed(y_true, y_pred):
         y_true = tf.cast(y_true, tf.float32)
         epsilon = tf.keras.backend.epsilon()
         y_pred = tf.clip_by_value(y_pred, epsilon, 1.0 - epsilon)
         pos_term = -alpha * y_true * tf.pow(1.0 - y_pred, gamma) * tf.math.log(y_pred)
         neg_term = -(1.0 - alpha) * (1.0 - y_true) * tf.pow(y_pred, gamma) * tf.math.log(1.0 - y_pred)
-        return tf.reduce_mean(tf.reduce_sum(pos_term + neg_term, axis=-1))
+        return tf.reduce_sum(pos_term + neg_term, axis=-1)
     return focal_loss_fixed
 
 
@@ -582,6 +594,75 @@ quant_report = quantize_and_test(
     out_dir=".",
 )
 
+"""## Optional: precision/sensitivity sweep over the loss and class-weight knobs
+
+The model is over on sensitivity (0.965 against a 0.95 target) and under on precision
+(0.852 against 0.90), so the settings biasing it toward recall are being paid for in the
+wrong currency. This sweeps them.
+
+Two knobs:
+
+- `alpha` — the focal-loss weight on the positive term. Lower favours precision, higher
+  favours recall. Currently 0.3.
+- `pos_boost` — the manual multiplier on top of balanced class weights. Currently 1.3.
+  **Setting it to 1.0 removes the recall bias entirely**, which is the cleanest precision
+  lever available.
+
+`pos_boost` only started doing anything once `focal_loss` was fixed to return one value per
+sample — see its docstring. Before that fix every class-weight setting here was inert, so
+any earlier tuning of these numbers told you nothing.
+
+**The sweep never touches the test set.** Validation is split in two: one half chooses the
+operating point, the other scores the configuration. Ranking on the same beats used to pick
+the threshold would flatter every configuration and flatter the overfitted ones most.
+Only `finalize_on_test` reads test data, once, after the winner is settled. If you re-run
+the sweep after seeing test numbers, the test set has become a second validation set and
+the write-up should say so.
+
+Cost is one training run per (config, seed): the default 6-config grid at one seed is about
+six runs. Seed noise here is large, so `n_seeds=2` ranks more reliably at double the cost.
+Results checkpoint after every run; `resume=True` continues an interrupted session.
+"""
+
+RUN_SWEEP = False   # flip to True to run the sweep
+SWEEP_SEEDS = 1
+
+if RUN_SWEEP:
+    from tibok.sweep import make_grid, run_sweep, summarize_sweep, print_sweep
+
+    def sweep_train_one(cfg, seed):
+        tf.keras.utils.set_random_seed(seed)
+        m = build_model(WINDOW_SIZE)
+        m.compile(
+            optimizer=Adam(learning_rate=3e-4),
+            loss=focal_loss(gamma=cfg["gamma"], alpha=cfg["alpha"]),
+            metrics=['accuracy', tf.keras.metrics.Precision(name='precision'),
+                     tf.keras.metrics.Recall(name='recall')],
+        )
+        cw = compute_class_weight(class_weight='balanced',
+                                  classes=np.unique(y_train_aug), y=y_train_aug)
+        d = {i: w for i, w in enumerate(cw)}
+        d[1] *= cfg["pos_boost"]
+        m.fit([X_train_aug, RR_train_aug], y_train_aug,
+              validation_data=([X_val, RR_val_n], y_val),
+              epochs=EPOCHS, batch_size=BATCH_SIZE,
+              callbacks=[tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=6,
+                                                          restore_best_weights=True),
+                         tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
+                                                              patience=3, min_lr=1e-6)],
+              class_weight=d, verbose=0)
+        return m
+
+    sweep_grid = make_grid(pos_boosts=(1.0, 1.3), alphas=(0.15, 0.30, 0.45))
+    sweep_rows = run_sweep(sweep_train_one, sweep_grid, X_val, RR_val_n, y_val,
+                           window_size=WINDOW_SIZE, n_seeds=SWEEP_SEEDS,
+                           out_dir=".", run_tag=RUN_TAG, resume=True)
+    sweep_summary = summarize_sweep(sweep_rows)
+    print_sweep(sweep_summary)
+else:
+    sweep_summary = None
+    print("RUN_SWEEP is False -- skipping the loss/class-weight sweep.")
+
 """## Optional: R independent trials, for a variance-aware answer to RQ2.1/RQ2.3
 
 Everything above is **one** model, so it supports "quantization cost F1 0.040 *in this
@@ -662,6 +743,7 @@ summary = {
     "rr_feature_norm": {"mean": rr_mean.tolist(), "std": rr_std.tolist()},
     "quantization": quant_report,
     "trials": trial_summary,
+    "sweep": sweep_summary,
 }
 with open(f'{RUN_TAG}_summary.json', 'w') as f:
     json.dump(summary, f, indent=2)
