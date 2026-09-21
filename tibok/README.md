@@ -54,6 +54,20 @@ shortcut to Drive**.
   path is wrong it searches the mount for the probe records and reports where it found
   them. Records commonly land in a nested subfolder after a ZIP is extracted without
   flattening, under a name that doesn't match PhysioNet's.
+- `resolve_db_source(...)` wraps that and adds a **PhysioNet fallback**: when the Drive
+  folder is missing or incomplete it streams records over HTTPS via `wfdb`'s `pn_dir`
+  instead. Pass `prefer="physionet"` to skip Drive entirely. Both databases are
+  open-access and `wfdb` fetches one record at a time, so there is no bulk download.
+
+  This matters for a *shared* folder. View-only access is enough to read files, and "Add
+  shortcut to Drive" works at view-only — but if the owner ticked **"Viewers cannot
+  download, print, or copy"**, the mount cannot read the bytes at all, and Drive enforces
+  per-file download quotas on widely-shared files that a 75-record run can trip partway
+  through. PhysioNet depends on none of that.
+- `pick_lead(record, preferred)` selects the input channel **by name**. MIT-BIH is mostly
+  ordered `[MLII, V5]`, but record 114 is `[V5, MLII]` — so the previous
+  `p_signal[:, 0]` fed V5 into the model for that record while every other record
+  contributed MLII. It raises rather than guessing when no preferred lead is present.
 - `preflight(index, required, label, expected_total=)` verifies every required record is
   present *before* loading starts, and raises listing what is missing. The old code printed
   a warning and carried on. It also notes — without failing — when the folder holds an

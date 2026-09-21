@@ -127,31 +127,44 @@ If a folder was *shared with you* rather than owned by you, it does not appear u
 `MyDrive` at all until you add a shortcut: in Drive, right-click the folder → Organise →
 **Add shortcut to Drive**. Then use that shortcut's path here.
 
-`resolve_db_path` enforces this: it rejects URLs, searches the mount for the records when
-the configured path is wrong, and tells you where it actually found them. `preflight`
-then verifies every required record is present *before* loading starts, so a missing
-database fails immediately instead of dying deep inside the loading loop.
+`resolve_db_source` enforces this: it rejects URLs, searches the mount for the records
+when the configured path is wrong, and verifies every required record is present *before*
+loading starts.
+
+**If Drive is not usable, it streams from PhysioNet instead** — set `INCART_PREFER` /
+`MITDB_PREFER` to `"physionet"` to force that, or leave them `"local"` and the fallback
+happens automatically when the folder is missing or incomplete. Both databases are
+open-access on PhysioNet and `wfdb` fetches one record at a time, so there is no bulk
+download step.
+
+That fallback matters for a *shared* folder. View-only access is enough to read files, and
+"Add shortcut to Drive" works at view-only too — but if the owner ticked **"Viewers cannot
+download, print, or copy"**, the mount cannot read the bytes at all, and Drive also enforces
+per-file download quotas on widely-shared files that a 75-record run can trip partway
+through. PhysioNet depends on none of that.
 """
 
-from tibok.data_paths import resolve_db_path, index_records, preflight
+from tibok.data_paths import resolve_db_source, pick_lead
 
 MITDB_PATH = "/content/drive/MyDrive/mit-bih-arrhythmia-database-1.0.0"
 INCART_PATH = "/content/drive/MyDrive/incart-arrhythmia-database-1.0.0"  # <-- a PATH, not a sharing URL
 
-# Resolve first: rejects URLs, and auto-locates the folder anywhere under the mount if the
-# configured path is wrong (records commonly land in a nested subfolder after a ZIP is
-# extracted without flattening, under a name that doesn't match PhysioNet's).
-MITDB_PATH = resolve_db_path(MITDB_PATH, ["100", "234"], "MIT-BIH")
-INCART_PATH = resolve_db_path(INCART_PATH, ["I01", "I75"], "INCART")
+# Set either of these to "physionet" to skip Drive entirely for that database and stream
+# the records over HTTPS instead. That is the reproducible option: it depends on nothing
+# anyone's sharing settings control, and wfdb fetches one record at a time rather than
+# mirroring the whole database. Left as "local", a Drive folder is used when it is present
+# and complete, and PhysioNet is used automatically when it is not.
+MITDB_PREFER = "local"
+INCART_PREFER = "local"
 
-MITDB_INDEX = index_records(MITDB_PATH)
-INCART_INDEX = index_records(INCART_PATH)
-
-# Then verify every record the split actually needs is present, before any loading starts.
-# MIT-BIH ships 48 records; we use the 44 non-paced ones. INCART ships 75 and we use all
-# of them. A count that differs from those is surfaced as a note, not swallowed.
-preflight(MITDB_INDEX, MITDB_RECORDS, "MIT-BIH", expected_total=48)
-preflight(INCART_INDEX, INCART_RECORDS, "INCART", expected_total=75)
+DB = {
+    "mitdb": resolve_db_source(MITDB_PATH, ["100", "234"], "MIT-BIH", pn_dir="mitdb",
+                               required=MITDB_RECORDS, expected_total=48, prefer=MITDB_PREFER),
+    "incartdb": resolve_db_source(INCART_PATH, ["I01", "I75"], "INCART", pn_dir="incartdb",
+                                  required=INCART_RECORDS, expected_total=75, prefer=INCART_PREFER),
+}
+for key, src in DB.items():
+    print(f"  {key}: {src}")
 
 """## Loading + RR-interval feature extraction (both databases, read from Drive)
 
@@ -165,24 +178,18 @@ MLII-equivalent channel, per the document's stated data-collection plan.
 
 import scipy.signal
 
+# Which lead to pull per database. Selecting by NAME matters: MIT-BIH is mostly ordered
+# [MLII, V5], but record 114 is [V5, MLII], so the old `p_signal[:, 0]` fed V5 into the
+# model for that one record while every other record contributed MLII. `pick_lead` raises
+# rather than guessing when no preferred lead is present.
+LEAD_PREFERENCE = {'mitdb': ('MLII', 'II'), 'incartdb': ('II',)}
+
+
 def load_and_segment(source, record_id, window_size):
-    if source == 'mitdb':
-        if record_id not in MITDB_INDEX:
-            raise FileNotFoundError(f"{record_id}.hea not found anywhere under {MITDB_PATH}")
-        path = MITDB_INDEX[record_id]
-        record = wfdb.rdrecord(path)
-        annotation = wfdb.rdann(path, 'atr')
-        signal = record.p_signal[:, 0]  # MLII
-        native_fs = record.fs
-    else:  # incartdb
-        if record_id not in INCART_INDEX:
-            raise FileNotFoundError(f"{record_id}.hea not found anywhere under {INCART_PATH}")
-        path = INCART_INDEX[record_id]
-        record = wfdb.rdrecord(path)
-        annotation = wfdb.rdann(path, 'atr')
-        lead_idx = record.sig_name.index('II')
-        signal = record.p_signal[:, lead_idx]
-        native_fs = record.fs  # 257 Hz
+    record, annotation = DB[source].read(record_id)
+    lead_idx = pick_lead(record, LEAD_PREFERENCE[source], label=source, record_id=record_id)
+    signal = record.p_signal[:, lead_idx]
+    native_fs = record.fs  # MIT-BIH 360 Hz, INCART 257 Hz
 
     beat_mask = np.array([s in BEAT_SYMBOLS for s in annotation.symbol])
     beat_samples_native = annotation.sample[beat_mask]
