@@ -74,6 +74,31 @@ shortcut to Drive**.
   unexpected number of `.hea` files, which usually means a second database, a duplicate
   copy, or a nested extraction is sharing the folder.
 
+## Replication trials (`trials.py`)
+
+One training run supports "quantization cost F1 0.040 *in this run*" and nothing stronger.
+`run_trials` repeats the whole train → quantize → evaluate experiment R times with
+different seeds so the claim becomes "F1 0.040 ± sd across R runs", with CIs and a Wilcoxon
+signed-rank test over the per-trial deltas.
+
+**A trial is not a candidate.** `N_CANDIDATES` is a best-of-N *search* — it trains N models,
+keeps the best on validation PR-AUC, discards the rest. Raising it yields one model picked
+from a larger pool and makes the winner's validation PR-AUC *more* optimistically biased
+(you report the maximum of N noisy draws from the set you selected on). It adds no evidence
+about reproducibility. A trial is an independent replication and does. The two compose via
+`candidates_per_trial`, at multiplied cost.
+
+The patient split is fixed across trials by design, so what is measured is **training
+variance** (init, augmentation, shuffling) — not variance across patient populations. Say
+which one you report.
+
+Deltas are paired within a trial, so the summary runs Wilcoxon over the R per-trial deltas.
+Do not pool every beat from every trial into one McNemar table: beats repeat and models are
+correlated, which inflates n and understates p.
+
+Results checkpoint to `<run_tag>_trials.json` after each trial; `resume=True` continues
+where a disconnected runtime stopped.
+
 ## The conversion failure, and what it actually was
 
 The previous notebook cell carried this note:

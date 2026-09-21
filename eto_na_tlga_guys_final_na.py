@@ -581,6 +581,69 @@ quant_report = quantize_and_test(
     out_dir=".",
 )
 
+"""## Optional: R independent trials, for a variance-aware answer to RQ2.1/RQ2.3
+
+Everything above is **one** model, so it supports "quantization cost F1 0.040 *in this
+run*" and nothing stronger. This section repeats the whole train -> quantize -> evaluate
+experiment `N_TRIALS` times with different seeds and reports mean +/- SD, so the claim
+becomes "F1 0.040 +/- <sd> across N runs".
+
+**This is not the same as raising `N_CANDIDATES`.** That is a best-of-N *search*: it trains
+N models, keeps the best on validation PR-AUC, and discards the rest. Raising it gives one
+model chosen from a bigger pool, and makes the winner's validation PR-AUC *more*
+optimistically biased, since you report the maximum of N noisy draws from the same set you
+selected on. It adds no evidence about reproducibility. A trial is an independent
+replication and does.
+
+The patient split is held fixed across trials on purpose -- it is the split the methodology
+commits to, and re-drawing it per trial would change the study population. So what is
+measured here is **training variance** (initialization, augmentation draws, shuffling), not
+variance across patient populations. State which one you are reporting.
+
+Cost: roughly one training run per trial. At ~8 min/run, `N_TRIALS = 10` is about 80
+minutes. Results are checkpointed to `<RUN_TAG>_trials.json` after every trial and
+`resume=True` picks up where a disconnected runtime stopped, so this survives Colab
+dropping the session partway.
+"""
+
+RUN_TRIALS = False   # flip to True to run the replication study
+N_TRIALS = 10
+CANDIDATES_PER_TRIAL = 1  # >1 keeps best-of-N inside each trial; cost multiplies
+
+if RUN_TRIALS:
+    from tibok.trials import run_trials, summarize_trials, print_trial_summary
+
+    def trial_build(seed):
+        tf.keras.utils.set_random_seed(seed)
+        return build_model(WINDOW_SIZE)
+
+    def trial_fit(model, seed):
+        model.fit(
+            [X_train_aug, RR_train_aug], y_train_aug,
+            validation_data=([X_val, RR_val_n], y_val),
+            epochs=EPOCHS, batch_size=BATCH_SIZE,
+            callbacks=[tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=6,
+                                                        restore_best_weights=True),
+                       tf.keras.callbacks.ReduceLROnPlateau(monitor='val_loss', factor=0.5,
+                                                            patience=3, min_lr=1e-6)],
+            class_weight=class_weight_dict, verbose=0,
+        )
+
+    trial_rows = run_trials(
+        trial_build, trial_fit,
+        X_train_aug, RR_train_aug, y_train_aug,
+        X_val, RR_val_n, y_val,
+        X_test, RR_test_n, y_test,
+        window_size=WINDOW_SIZE, n_trials=N_TRIALS,
+        candidates_per_trial=CANDIDATES_PER_TRIAL,
+        out_dir=".", run_tag=RUN_TAG, resume=True,
+    )
+    trial_summary = summarize_trials(trial_rows)
+    print_trial_summary(trial_summary)
+else:
+    trial_summary = None
+    print("RUN_TRIALS is False -- skipping the replication study.")
+
 """## Save + download everything
 
 `quantize_and_test` has already written `<RUN_TAG>_model_int8.tflite`, `<RUN_TAG>_model_int8.h`
@@ -597,6 +660,7 @@ summary = {
     "symbol_breakdown": symbol_breakdown,
     "rr_feature_norm": {"mean": rr_mean.tolist(), "std": rr_std.tolist()},
     "quantization": quant_report,
+    "trials": trial_summary,
 }
 with open(f'{RUN_TAG}_summary.json', 'w') as f:
     json.dump(summary, f, indent=2)

@@ -24,7 +24,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SCRIPT = os.path.join(ROOT, "eto_na_tlga_guys_final_na.py")
 # Every module the notebook needs on the runtime, written out before first use.
-MODULES = ["quantization.py", "data_paths.py"]
+MODULES = ["quantization.py", "data_paths.py", "thresholds.py", "trials.py"]
 NOTEBOOK = os.path.join(ROOT, "TIBOK_Quantization_and_Testing.ipynb")
 
 # The module-writing cells are injected immediately before the section whose markdown
@@ -103,7 +103,9 @@ def build():
                 "- `data_paths.py` — resolves the MIT-BIH / INCART folders and fails loudly on a\n"
                 "  bad path. Used by the data-loading section immediately below.\n"
                 "- `quantization.py` — INT8 conversion and FP32-vs-INT8 verification, used at the\n"
-                "  end of the notebook.\n\n"
+                "  end of the notebook.\n"
+                "- `thresholds.py` / `trials.py` — operating-point selection and the optional\n"
+                "  multi-trial replication study.\n\n"
                 "**Do not edit the modules here.** They are generated from `tibok/` in the repo by\n"
                 "`tools/build_notebook.py`; edits made in these cells are lost the next time the\n"
                 "notebook is rebuilt. Change the repo file and re-run the builder."))
