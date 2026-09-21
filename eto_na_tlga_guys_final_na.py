@@ -520,7 +520,7 @@ them as `[ecg_window, rr_features]`. The old `representative_dataset` yielded
 `[X_val_sample, RR_val_sample]` positionally, so the 4-element RR vector was fed into the
 Conv1D branch — rank 3 where the kernel wants rank 4 — hence `3 != 4` at CONV_2D node 1.
 
-`tibok/quantization.py` fixes this by probing the converter's actual input order first (one
+The `tibok.quantization` module (written to disk by the cell above) fixes this by probing the converter's actual input order first (one
 throwaway float conversion) and then feeding calibration samples in *that* order. It also no
 longer silently falls back to dynamic-range quantization: TFLite-Micro has no dynamic-range
 kernels for this graph, so that fallback produced a model that loads on desktop but fails at
@@ -529,12 +529,16 @@ kernels for this graph, so that fallback produced a model that loads on desktop 
 
 import sys
 
-try:
-    from tibok.quantization import quantize_and_test
-except ImportError:
-    !git clone -q https://github.com/tmommu/research.git /content/tibok_repo
-    sys.path.insert(0, '/content/tibok_repo')
-    from tibok.quantization import quantize_and_test
+# In the generated Colab notebook the cell above this one is a `%%writefile` cell that
+# drops `tibok/quantization.py` straight onto the runtime's disk, so the notebook is
+# self-contained: no clone, no upload, no GitHub auth. That matters because this repo is
+# private -- `git clone` from a Colab runtime would prompt for credentials and fail.
+#
+# Running this file as a plain script instead (outside Colab) just imports the module
+# from the repo checkout it already sits in.
+if "." not in sys.path:
+    sys.path.insert(0, ".")
+from tibok.quantization import quantize_and_test
 
 THRESHOLDS = {
     "f1_optimal": float(f1_optimal_threshold),

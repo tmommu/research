@@ -4,6 +4,25 @@
 `eto_na_tlga_guys_final_na.py` and produces the artifact that actually ships on the
 nRF52840, plus the evidence needed to defend it.
 
+## Running it in Colab
+
+Open **`TIBOK_Quantization_and_Testing.ipynb`** — that is the deliverable, and it is
+self-contained. A `%%writefile` cell drops this module onto the runtime's disk before it
+is imported, so there is no clone, no upload and no GitHub auth. That is deliberate: the
+repo is private, so `git clone` from a Colab runtime prompts for credentials and fails,
+and `files.upload()` would mean re-uploading the module every time the runtime recycles.
+
+The notebook is **generated**, not hand-maintained:
+
+```
+python3 tools/build_notebook.py           # regenerate after editing the sources
+python3 tools/build_notebook.py --check   # non-zero exit if the notebook is stale
+```
+
+Sources of truth are `eto_na_tlga_guys_final_na.py` (the Colab .py export) and
+`tibok/quantization.py`. **Never hand-edit the module inside the .ipynb** — the next
+rebuild overwrites it. Edit the repo file and re-run the builder.
+
 ```python
 from tibok.quantization import quantize_and_test
 
@@ -93,10 +112,12 @@ flash image and never copies into the arena, and it ignores lifetime reuse — a
 activation is dead once its last consumer runs, and the arena planner reuses that space.
 
 `estimate_tflm_arena` walks the operator schedule and reports the peak simultaneously
-live activation set. On the verification fixture that is **13.6 KB** against the old
-method's **50.6 KB** — a ~3.7x overestimate. It remains an estimate: the real planner
-adds per-tensor bookkeeping, 16-byte alignment padding and kernel scratch buffers, so
-keep headroom and confirm against what `AllocateTensors()` reports on hardware.
+live activation set. On the synthetic verification fixture that is **~13.6 KB estimated**
+against the old method's **~50.6 KB** — a ~3.7x overestimate. Both figures are estimates
+from a fixture, not measurements, and neither is a result: the real planner adds
+per-tensor bookkeeping, 16-byte alignment padding and kernel scratch buffers. Keep
+headroom and confirm against what `AllocateTensors()` actually reports on hardware
+before sizing `kTensorArenaSize` off either number.
 
 ## Paired FP32-vs-INT8 testing (RQ2.1 / RQ2.3)
 
