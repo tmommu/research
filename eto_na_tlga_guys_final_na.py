@@ -817,7 +817,7 @@ if WRITE_RESULTS_CSV:
     print()
     print(f"{'Model':<22}{'Threshold Type':<18}{'Sens':>8}{'Spec':>8}{'Prec':>8}{'F1':>8}")
     for r in results_rows:
-        if "mean" in str(r["Model"]) or "sd" in str(r["Model"]):
+        if "mean" in str(r["Model"]) or "SD" in str(r["Model"]):
             print(f"{r['Model']:<22}{r['Threshold Type']:<18}"
                   f"{r['Sensitivity']:>8}{r['Specificity']:>8}"
                   f"{r['Precision']:>8}{r['F1']:>8}")

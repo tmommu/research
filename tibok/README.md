@@ -85,6 +85,12 @@ Model,Threshold Type,Threshold Value,Accuracy,Sensitivity,Specificity,Precision,
 
 8 candidates x {FP32, INT8} x 4 operating points = 64 rows, plus 16 mean/SD rows.
 
+Format matches the reference file exactly: identical header, **LF** line endings (not
+`csv.writer`'s RFC-4180 default of CRLF), no quoting, 10 columns per row, values rounded to
+4 decimals. Model labels stay in the reference style — bare `FP32` / `INT8` for a single
+model, with a trailing index (`FP32 1` … `FP32 8`) only when several need telling apart,
+and `FP32 mean` / `FP32 SD` for the summary rows.
+
 **Every candidate appears, not just the winner.** On one observed run the eight candidates
 scored 0.8865 / 0.7418 / 0.7516 / 0.7305 / 0.7352 / 0.6813 / 0.6938 / 0.7420 on validation
 PR-AUC — the winner sat **six SD** above the other seven, which cluster at 0.725 +/- 0.027.
