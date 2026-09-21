@@ -569,6 +569,7 @@ quant_report = quantize_and_test(
     model=model,
     X_val=X_val, RR_val_n=RR_val_n,
     X_test=X_test, RR_test_n=RR_test_n, y_test=y_test,
+    y_val=y_val,   # enables STEP 4b: thresholds recalibrated on INT8 validation scores
     thresholds=THRESHOLDS,
     window_size=WINDOW_SIZE,
     run_tag=RUN_TAG,
