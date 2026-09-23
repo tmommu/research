@@ -109,10 +109,13 @@ static const float DEPLOY_THRESHOLD = 0.50f;
 //   XIAO A4/D4 = P0.04 = AIN2    XIAO A5/D5 = P0.05 = AIN3   (A4/A5 are also I2C)
 #define ECG_SAADC_PSELP  SAADC_CH_PSELP_PSELP_AnalogInput0   // A0
 
-#define PIN_LO_PLUS   D1    // AD8232 LO+  (HIGH = electrode off). -1 if not wired
-#define PIN_LO_MINUS  D2    // AD8232 LO-  (HIGH = electrode off). -1 if not wired
-#define PIN_BUZZER    D3    // MLT buzzer driver transistor base.  -1 if not wired
-#define PIN_BUTTON    D8    // event-marker button to GND.         -1 if not wired
+// Matches schematic "WEARABLE ECG DS" (2026-09-23): AD8232 OUTPUT -> A0, LO- -> D1,
+// LO+ -> D2, B3U-1000P button S1 -> D7 to GND. That schematic has no buzzer; if you add
+// one (through an NPN transistor), D3 is the free pin to use.
+#define PIN_LO_PLUS   D2    // AD8232 LO+  (HIGH = electrode off). -1 if not wired
+#define PIN_LO_MINUS  D1    // AD8232 LO-  (HIGH = electrode off). -1 if not wired
+#define PIN_BUZZER    -1    // buzzer driver transistor base, e.g. D3. -1 if not wired
+#define PIN_BUTTON    D7    // event-marker button to GND.         -1 if not wired
 
 #define BUZZER_FREQ_HZ   2700
 #define BUZZER_MS        150
