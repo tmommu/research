@@ -12,13 +12,13 @@ Facts marked **[VERIFY]** are from memory of public sources and must be checked 
 
 ## Entry title
 
-**SALOK: A Solar-Powered Estero Trash Trap with an On-Device AI Counter that Removes Plastic and Produces the Brand-Level Data Barangays Need to Enforce the Extended Producer Responsibility Law**
+**SALOK: A Solar-Powered Estero Guardian that Traps Plastic, Warns Barangays Before Clogged Waterways Flood, and Builds the First Open, Brand-Level Plastic Data Commons the Philippines Needs to Hold Producers Accountable**
 
 *(Salok = "to scoop" in Filipino. Rename if the team prefers.)*
 
 ## Project description (three sentences, for official write-ups)
 
-SALOK is a low-cost, solar-powered floating trap that catches plastic in a local estero while a small camera and an on-device AI model count and classify every item that enters it, by plastic type and, where legible, by brand. Barangay officials get a weekly report of what was removed, how much, and who made it, without internet and without recording faces. Built from local and upcycled materials and validated against hand counts at a real estero, it aims to be copyable by any barangay for the cost of one trap.
+SALOK is a low-cost, solar-powered estero guardian: a floating trap catches plastic while an on-device AI model counts and classifies every item by type and, where legible, by brand, and a water-level sensor warns the barangay when debris and rising water threaten to block the channel. Barangay officials get a weekly report of what was removed and who made it, plus a flood-risk alert, without internet and without recording faces. Every barangay's anonymized results join an open dataset, so one trap protects one creek and many traps build the evidence to hold producers accountable.
 
 ## 1. What problem are you trying to solve?
 
@@ -29,7 +29,11 @@ Two gaps keep the problem going:
 1. **Removal is manual and invisible.** Cleanups happen on schedule and the trash is weighed in bulk. Nobody records what was in it, so the same items return.
 2. **There is no brand-level data.** The Extended Producer Responsibility Act of 2022 (RA 11898) makes large companies responsible for recovering plastic packaging **[VERIFY: scope and thresholds]**, but enforcement needs evidence of *which* packaging actually ends up in waterways. Barangays and LGUs have no cheap way to produce it.
 
-**The problem is therefore two-part: catching the plastic, and proving what it is.**
+3. **Clogged waterways flood neighbourhoods.** Plastic and other debris choke drainage and esteros, worsening flooding in low-lying communities **[VERIFY: MMDA/DPWH drainage-clearing reports and flood studies]**, and standing, trash-filled water also breeds mosquitoes. Barangays learn a channel is blocked only when it floods.
+
+**The problem is therefore three-part: catching the plastic, proving what it is, and seeing the blockage before it floods people's homes.** One device addresses a pollution problem, an accountability problem and a safety problem at once, which is why a single barangay-owned unit matters more than a cleanup day.
+
+**Scale of the opportunity.** The Philippines has tens of thousands of barangays **[VERIFY: PSA count, about 42,000]**, and esteros run through a large share of urban ones. Each is a data point nobody is collecting. A design that costs about one barangay's cleanup budget for a month, and shares its data openly, can add up to the first nationwide picture of what plastic is in our waterways.
 
 ## 2. What do you want to achieve?
 
@@ -41,7 +45,9 @@ Two gaps keep the problem going:
 2. **Classify.** By Nov 20, 2026 (proposal stage: a prototype dataset), train an on-device model to detect [5] classes (PET bottle, sachet/foil pouch, plastic bag, foam container, cup/other) with at least [0.85] precision and recall on photos from locations *not used in training*.
 3. **Count accurately.** In the pilot, the device's item counts should be within ±15% of a hand count of the same trap contents each week.
 4. **Report.** Produce a one-page weekly barangay report (items, types, estimated weight, top legible brands) with no internet.
-5. **Replicate.** By March 2027, publish a free English/Filipino build guide and help [1–2] other barangays or schools build one for no more than PHP [X].
+5. **Warn.** Add an ultrasonic water-level sensor on the same post. During the pilot, log water level against rainfall and trap fullness, and set a "channel nearly blocked" alert; success is the alert firing at least [N] minutes before the nearest known flood point is reached in at least [N] observed events (report whatever we measure).
+6. **Open data.** Publish anonymized weekly counts (type, brand tallies, estimated kg, level readings, no images of people) as an open CSV with a data dictionary, so any school or LGU can use or extend it.
+7. **Replicate.** By March 2027, publish a free English/Filipino build guide and help [1–2] other barangays or schools build one for no more than PHP [X], each contributing to the same open dataset.
 
 ## 3. Who will benefit?
 
@@ -116,7 +122,12 @@ SALOK **traps, sees, counts and reports.**
 
 **Sustainability.** The barangay runs it with local parts, solar power and a one-page checklist; no subscription, server or internet is needed; the dataset and model are open so other barangays can retrain on their own waste.
 
-**Long-term vision.** A network of low-cost SALOK units along connected esteros, sharing open data that maps where plastic enters the waterway, which products dominate, and whether EPR commitments are changing what the water carries.
+**Long-term vision.** A student-built, barangay-owned network of low-cost SALOK units along connected esteros, feeding an open dataset that shows:
+- where plastic enters the waterway and which products dominate;
+- which channels clog first, so drainage clearing can be targeted before floods;
+- whether EPR commitments are actually changing what the water carries, measured by the communities who live beside it.
+
+Each added barangay makes every other unit's data more valuable, so impact grows faster than cost. A Science High School team could become the founding node of a national citizen-science network.
 
 **Key takeaway.** Catching plastic is not enough; proving what it is makes producers accountable. SALOK does both, for the cost of one trap.
 
@@ -134,7 +145,7 @@ Republic Act 11898, Extended Producer Responsibility Act of 2022.
 
 | Criterion (weight) | How SALOK earns it |
 |---|---|
-| Design Innovation (20%) | Trap + on-device AI + brand-level audit in one low-cost unit; links physical cleanup to policy evidence. |
+| Design Innovation (20%) | Trap + on-device AI + brand-level audit + flood early warning in one low-cost unit; links physical cleanup to policy evidence and to disaster prevention; open data commons. |
 | Relevance to the Community (20%) | A real estero, a named barangay partner, a current law, and a problem the community sees daily. |
 | Feasibility (20%) | Common parts, solar, one-page upkeep, a barangay focal person, a safety plan, and a realistic pilot. |
 | STEM Integration (15%) | Explicit STEM map; physics, statistics, computer science, engineering and environmental science all used. |
