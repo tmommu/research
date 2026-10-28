@@ -18,7 +18,7 @@ Facts marked **[VERIFY]** are from memory of public sources and must be checked 
 
 ## Project description (three sentences, for official write-ups)
 
-SALOK is a low-cost, solar-powered estero guardian: a floating trap catches plastic while an on-device AI model counts and classifies every item by type and, where legible, by brand, and a water-level sensor warns the barangay when debris and rising water threaten to block the channel. Barangay officials get a weekly report of what was removed and who made it, plus a flood-risk alert, without internet and without recording faces. Every barangay's anonymized results join an open dataset, so one trap protects one creek and many traps build the evidence to hold producers accountable.
+SALOK is a low-cost, solar-powered estero guardian: a floating boom guides surface debris to a bank-side conveyor that lifts it out of the water into a bin, while an on-device AI model counts and classifies every item by type and, where legible, by brand, and a water-level sensor warns the barangay when debris and rising water threaten to block the channel. Barangay officials get a weekly report of what was removed and who made it, plus a flood-risk alert, without internet and without recording faces. Every barangay's anonymized results join an open dataset, so one trap protects one creek and many traps build the evidence to hold producers accountable.
 
 ## 1. What problem are you trying to solve?
 
@@ -41,7 +41,7 @@ Two gaps keep the problem going:
 
 **Objectives (SMART)**
 
-1. **Capture.** In an [8]-week pilot at [ESTERO SITE], keep a floating trap in place through [N] rain events and remove at least [TARGET] kg of plastic, logged by weekly weigh-in.
+1. **Clean.** In an [8]-week pilot at [ESTERO SITE], keep the boom and conveyor operating through [N] rain events and lift at least [TARGET] kg of floating debris out of the water, logged by weekly weigh-in, with a measured **capture rate** of at least [X]% of the floating debris reaching the boom (checked with downstream hand-net sampling), and a conveyor that runs on solar power alone, with fewer than [N] jam stops a week.
 2. **Classify.** By Nov 20, 2026 (proposal stage: a prototype dataset), train an on-device model to detect [5] classes (PET bottle, sachet/foil pouch, plastic bag, foam container, cup/other) with at least [0.85] precision and recall on photos from locations *not used in training*.
 3. **Count accurately.** In the pilot, the device's item counts should be within ±15% of a hand count of the same trap contents each week.
 4. **Report.** Produce a one-page weekly barangay report (items, types, estimated weight, top legible brands) with no internet.
@@ -67,7 +67,11 @@ We reviewed existing approaches and found two camps. Passive trash booms and tra
 
 SALOK **traps, sees, counts and reports.**
 
-**Trap (Physics, Engineering).** A V-shaped floating boom of reused PET bottles or bamboo floats guides surface debris into a mesh collection pocket at the estero's edge, anchored to the bank or a bridge post. Students never enter the water; emptying is done from the bank by trained, supervised adults. A simple flow check (float-and-time test) tells us if the boom angle suits the estero's current.
+**Trap and lift (Physics, Engineering).** A V-shaped floating boom of reused PET bottles or bamboo floats guides surface debris toward the estero's edge, anchored to the bank or a bridge post. At the apex, a **bank-mounted inclined mesh conveyor**, driven by a geared DC motor, scoops debris out of the water and drops it into a covered bin above the waterline. The flow of the estero does the herding, and the motor only lifts, so the energy cost stays small. A simple flow check (float-and-time test) tells us the right boom angle for the estero's current.
+
+**Smart, low-energy cleaning (Computer Science, Engineering).** The conveyor does not run all day. The camera model detects debris arriving at the intake and runs the belt in short bursts, then idles; a current sensor on the motor detects a jam and reverses the belt, and a bin-level sensor stops it and alerts the barangay when the bin is full. Running only when there is something to lift is what lets a small solar panel power active cleaning.
+
+**What it will and will not clean.** SALOK removes **floating and near-surface debris** that reaches the boom: bottles, sachets, bags, foam, cups. It does not remove sunken waste, sediment, oil or dissolved pollutants, and it cannot clean the whole estero, only the stretch upstream of the boom. We report the measured capture rate (kg removed vs. kg passing, estimated from downstream hand-net sampling) rather than claiming the estero is "clean". Students never enter the water; bin emptying is done from the bank by trained, supervised adults.
 
 **See (Computer Science).** A camera on a post above the pocket looks *down at the water surface only*, so no faces or houses are in frame. A compact object-detection model, **quantized to INT8** and running on a low-power microcontroller or single-board board with a camera, classifies each item that enters the pocket. Training photos come from our own collections of real trash on the estero bank, labelled by students and checked by the adviser.
 
@@ -75,9 +79,9 @@ SALOK **traps, sees, counts and reports.**
 
 **Report (Design).** A small screen and a phone-readable offline page (no cellular needed) show running counts. A script produces the one-page weekly barangay report and a CSV for the LGU. Legible brand names that a person can read from the stored photos are tallied by a student volunteer, giving the brand-level audit that automated detection alone cannot yet promise; the AI's job is to flag and crop likely labels.
 
-**Power (Feasibility).** Average load is small; a [10–20 W] solar panel, a charge controller and a rechargeable battery cover it, sized from bench measurements the team will report. A cloudy-week plan puts the camera on a duty cycle (e.g., wake on motion or every N seconds).
+**Power (Feasibility).** Two loads: the camera and sensors (under a few watts) and the conveyor motor, which draws far more but only in short bursts. A solar panel, charge controller and deep-cycle or LiFePO4 battery are sized from a bench-measured energy budget (motor watts × daily run minutes + electronics), with the panel size and battery to be reported, not assumed. On cloudy days the controller lengthens the idle interval and lowers belt speed rather than shutting down; if the battery is low, the boom keeps trapping passively and the camera keeps logging.
 
-**Safety.** Low-voltage wiring in a sealed enclosure with desiccant; the trap away from boat routes; barangay sign-off on the site; no cameras on people.
+**Safety.** Low-voltage (12 V) wiring in a sealed enclosure with desiccant; the conveyor fully guarded with a stop switch, a covered drive and a lockout during emptying so no hands reach a moving part; the boom away from boat routes; barangay sign-off on the site; no cameras on people.
 
 **Honest limits.** Detection will degrade in rain, glare and murky water; we report that rather than hide it. The device counts and classifies plastic; it does not clean the estero by itself, and it is not a substitute for waste segregation at the source.
 
@@ -87,7 +91,7 @@ SALOK **traps, sees, counts and reports.**
 
 ## 6. How will you implement this?
 
-**Materials and budget (estimates; confirm local prices):** camera microcontroller or SBC and enclosure [PHP], solar panel, charge controller and battery [PHP], reused bottles/bamboo, mesh and rope [PHP], post and mounting hardware [PHP], contingency 10%. **Pilot total: PHP [X]. Copyable unit target: PHP [Y].**
+**Materials and budget (estimates; confirm local prices):** camera microcontroller or SBC and enclosure [PHP], solar panel, charge controller and battery [PHP], geared 12 V DC motor, motor driver and current sensor [PHP], mesh belt, rollers and guarded frame (fabricated from steel or recycled materials) [PHP], bin and level sensor [PHP], reused bottles/bamboo, rope [PHP], post and mounting hardware [PHP], contingency 10%. **Pilot total: PHP [X]. Copyable unit target: PHP [Y].**
 
 **Timeline**
 | Dates | Milestone |
@@ -105,6 +109,8 @@ SALOK **traps, sees, counts and reports.**
 
 **Risks and mitigation**
 - *Flood or storm damages the trap:* secure mooring, a quick-release line, and a plan to retrieve electronics before a typhoon.
+- *Conveyor jams on large debris or water hyacinth:* a coarse bar screen ahead of the belt, motor-current jam detection with auto-reverse, and a manual clearing step in the checklist.
+- *Motor and panel underperform:* start with a passive boom and bin, add the conveyor once bench-tested, and report which part actually lifted the debris.
 - *Model fails in new light or water:* collect across times of day and weather, report held-out-location scores, keep a manual fallback count.
 - *Biofouling or theft:* lens cleaning schedule, discreet mounting, barangay tanod awareness.
 - *Safety:* no student enters the water; adult emptying with gloves; barangay and school approval first.
@@ -115,7 +121,7 @@ SALOK **traps, sees, counts and reports.**
 **Success means** plastic physically removed from a real estero **and** a weekly, trustworthy record of what it was, giving the barangay a tool it can use to push for producer accountability under RA 11898.
 
 **Measurable outcomes**
-1. [TARGET] kg removed over the pilot, with weekly weigh-ins.
+1. [TARGET] kg of floating debris lifted out of the water over the pilot, with weekly weigh-ins and a measured capture rate, and a conveyor powered by solar alone.
 2. Model precision and recall ≥ [0.85] on held-out locations; weekly count error within ±15% of hand counts.
 3. A published weekly barangay report series and a first brand-level audit of the estero.
 4. A build guide and at least [1–2] additional sites by March 2027, each at no more than PHP [Y].
