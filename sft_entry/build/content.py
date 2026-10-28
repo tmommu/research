@@ -17,13 +17,13 @@ DESC = ("Our device is a low-cost, solar-powered unit that lifts floating plasti
 S1 = [
     "Plastic reaches the sea through rivers, and the Philippines ranks near the top in every estimate. Global models placed it among the "
     "leading sources of mismanaged plastic waste (Jambeck et al., 2015) and of river emissions (Lebreton et al., 2017), and a later model "
-    "built on measurements from more than 1,000 rivers kept Philippine rivers at the top (Meijer et al., 2021) [VERIFY: figures]. Small urban "
-    "waterways such as Metro Manila's esteros feed these rivers. Monthly records from Greater Jakarta tie debris release to rainfall "
-    "(Cordova & Nurhati, 2019) [VERIFY], and water hyacinth mats can trap plastic and carry it downstream [VERIFY: Schreyers et al., 2021].",
+    "built on measurements from more than 1,000 rivers kept Philippine rivers at the top (Meijer et al., 2021). Small urban "
+    "waterways such as Metro Manila's esteros feed these rivers. Monitoring at the river outlets of Greater Jakarta found higher debris release in the rainy season "
+    "(Cordova & Nurhati, 2019), and in the Saigon River water hyacinth mats carried most of the floating plastic that observers counted (Schreyers et al., 2021).",
     "Two gaps keep the problem going. Removal is manual and unrecorded, so cleanups weigh bulk waste and learn nothing about its contents. "
     "Product-level evidence is also scarce. River plastic research still lacks long-term monitoring data (van Emmerik & Schwarz, 2020), and "
     "brand audits, though valuable, are periodic, labor-intensive and mostly land-based (Break Free From Plastic, 2019). The Extended Producer "
-    "Responsibility Act of 2022 (RA 11898) obliges large companies to recover plastic packaging [VERIFY: scope], yet enforcement needs proof of "
+    "Responsibility Act of 2022 (RA 11898) obliges large companies to recover a rising share of their plastic packaging, yet enforcement needs proof of "
     "which packaging reaches waterways. The government is expanding estero trash traps and has said recovery audits could check EPR compliance "
     "(Manila Bulletin, 2026).",
     "What is missing is a continuous, inexpensive record taken at the creek itself that one barangay can run. A secondary hazard shares the "
@@ -61,7 +61,7 @@ PRIOR = [
     ("Cameras with deep learning (van Lieshout et al., 2020)", "Count floating plastic from bridge-mounted cameras, tested in Jakarta", "Monitor only and remove nothing"),
     ("Low-cost robotic boats (HydroSentinel, 2026)", "Detect and collect plastic with a small onboard model", "Need radio, charging and an operator"),
     ("Estero trash traps (Manila Bulletin, 2026)", "Remove plastic at scale", "Record bulk weight only"),
-    ("River interceptors and booms (Schmaltz et al., 2020)", "Review technologies that prevent and collect river and marine plastic", "Few designs report item-level data [VERIFY]"),
+    ("River interceptors and booms (Schmaltz et al., 2020)", "Inventory 52 technologies that prevent or collect river and marine plastic", "Capacity is small and few designs report item-level data"),
     ("Brand audits (Break Free From Plastic, 2019)", "Name the brands behind plastic waste", "Periodic, manual, mostly land-based"),
 ]
 S4_GAP = ("None of these lifts plastic, counts it and shares open data in a unit a barangay can afford. Our search was limited and found no "
@@ -153,18 +153,18 @@ TAKEAWAY = ("The Philippines already knows who makes much of its plastic. SAGIP 
 
 REFS = [
     "Break Free From Plastic and GAIA (2019). Plastics Exposed: How Waste Assessments and Brand Audits Are Helping Philippine Cities Fight Plastic Pollution.",
-    "Conrad, C. C., & Hilchey, K. G. (2011). A review of citizen science and community-based environmental monitoring. Environmental Monitoring and Assessment, 176, 273-291. [VERIFY]",
-    "Cordova, M. R., & Nurhati, I. S. (2019). Major sources and monthly variations in the release of land-derived marine debris from the Greater Jakarta area, Indonesia. Scientific Reports, 9, 18730. [VERIFY]",
-    "David, R., et al. (2021). TensorFlow Lite Micro: Embedded machine learning for TinyML systems. Proceedings of Machine Learning and Systems, 3. [VERIFY]",
+    "Conrad, C. C., & Hilchey, K. G. (2011). A review of citizen science and community-based environmental monitoring. Environmental Monitoring and Assessment, 176, 273-291.",
+    "Cordova, M. R., & Nurhati, I. S. (2019). Major sources and monthly variations in the release of land-derived marine debris from the Greater Jakarta area, Indonesia. Scientific Reports, 9, 18730.",
+    "David, R., et al. (2021). TensorFlow Lite Micro: Embedded machine learning for TinyML systems. Proceedings of Machine Learning and Systems, 3.",
     "HydroSentinel (2026). An IoT-enabled autonomous surface vehicle for dual-scale riverine plastic detection and remediation. ScienceDirect. [add authors]",
-    "Jacob, B., et al. (2018). Quantization and training of neural networks for efficient integer-arithmetic-only inference. CVPR. [VERIFY]",
+    "Jacob, B., et al. (2018). Quantization and training of neural networks for efficient integer-arithmetic-only inference. CVPR.",
     "Jambeck, J. R., et al. (2015). Plastic waste inputs from land into the ocean. Science, 347, 768-771.",
     "Lebreton, L. C. M., et al. (2017). River plastic emissions to the world's oceans. Nature Communications, 8, 15611.",
     "Manila Bulletin (August 24, 2026). Report on government estero trash traps and EPR audits. [add headline and byline]",
-    "Meijer, L. J. J., et al. (2021). More than 1,000 rivers account for 80% of global riverine plastic emissions into the ocean. Science Advances. [VERIFY]",
-    "Republic Act No. 11898 (2022). Extended Producer Responsibility Act of 2022. [VERIFY]",
-    "Schmaltz, E., et al. (2020). Plastic pollution solutions: Emerging technologies to prevent and collect marine plastic pollution. Environment International, 144, 106067. [VERIFY]",
-    "Schreyers, L., et al. (2021). Water hyacinth and river plastic transport. [VERIFY: full citation]",
-    "van Emmerik, T., & Schwarz, A. (2020). Plastic debris in rivers. WIREs Water, 7, e1398. [VERIFY]",
+    "Meijer, L. J. J., et al. (2021). More than 1,000 rivers account for 80% of global riverine plastic emissions into the ocean. Science Advances, 7, eaaz5803.",
+    "Republic Act No. 11898 (2022). Extended Producer Responsibility Act of 2022.",
+    "Schmaltz, E., Melvin, E. C., Diana, Z., et al. (2020). Plastic pollution solutions: Emerging technologies to prevent and collect marine plastic pollution. Environment International, 144, 106067.",
+    "Schreyers, L., et al. (2021). Plastic plants: The role of water hyacinths in plastic transport in tropical rivers. Frontiers in Environmental Science, 9, 686334.",
+    "van Emmerik, T., & Schwarz, A. (2020). Plastic debris in rivers. WIREs Water, 7, e1398.",
     "van Lieshout, C., et al. (2020). Automated river plastic monitoring using deep learning and cameras. Earth and Space Science, 7, e2019EA000960.",
 ]
