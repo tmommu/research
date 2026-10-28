@@ -1,4 +1,4 @@
-# SFT 2026 — Proposal: SALOK (PHP 6,000 build)
+# SFT 2026 — Proposal: SALOK (PHP 10,000 build)
 
 **Theme:** Environmental Sustainability through Technology
 **Deadline:** Nov 2, 2026, 11:59 PM. Format: Word (≤3,000 words / 7 pages) or PPT (≤6 slides), exported as a PDF under 40 MB.
@@ -12,7 +12,7 @@
 
 ## Entry title
 
-**SALOK: A PHP 6,000 Solar-Powered Estero Guardian that Lifts Plastic Out of the Water and Counts Every Item as Evidence for Producer Accountability**
+**SALOK: A PHP 10,000 Solar-Powered Estero Guardian that Lifts Plastic Out of the Water and Counts Every Item as Evidence for Producer Accountability**
 
 *(Salok = "to scoop" in Filipino. Rename if the team prefers.)*
 
@@ -20,7 +20,7 @@
 
 ## Project description (three sentences, for official write-ups)
 
-SALOK is a low-cost, solar-powered unit in which a floating boom guides surface plastic to the bank, a small camera-triggered sweeper arm lifts it into a bin, and an ESP32 camera with an on-device AI model counts every item by plastic type and, where legible, by brand. Barangay officials get a weekly report of what was removed and who made it, with no internet and no images of people, and a secondary water-level alert warns when debris and rising water threaten to block the channel. Built for PHP 6,000 from local and upcycled parts, its anonymized results join an open dataset so that many barangays can build the evidence to hold producers accountable.
+SALOK is a low-cost, solar-powered unit in which a floating boom guides surface plastic to the bank, a camera-triggered cleated conveyor belt lifts it into a bin, and an ESP32 camera with an on-device AI model counts every item by plastic type and, where legible, by brand. Barangay officials get a weekly report of what was removed and who made it, with no internet and no images of people, and a secondary water-level alert warns when debris and rising water threaten to block the channel. Built for PHP 10,000 from local and upcycled parts, its anonymized results join an open dataset so that many barangays can build the evidence to hold producers accountable.
 
 ## 1. What problem are you trying to solve?
 
@@ -33,11 +33,11 @@ Two gaps keep the problem going:
 
 A secondary problem sits on the same creek: debris-choked channels flood neighbourhoods **[VERIFY: MMDA/DPWH reports]**, and barangays learn a channel is blocked only when it floods.
 
-Brand audits already exist, but they are periodic, manual and mostly land-based: volunteers sort household or dump waste by hand. The government is expanding estero trash traps and says plastic-recovery audits could be used to check EPR compliance (Manila Bulletin, 2026). **What is missing is a continuous, low-cost record from the waterway itself that a single barangay can run.** The Philippines has tens of thousands of barangays **[VERIFY: PSA count, about 42,000]**, and esteros run through many urban ones. A design that costs PHP 6,000 and shares its data openly lets many barangays contribute to one comparable picture of what plastic is in our waterways.
+Brand audits already exist, but they are periodic, manual and mostly land-based: volunteers sort household or dump waste by hand. The government is expanding estero trash traps and says plastic-recovery audits could be used to check EPR compliance (Manila Bulletin, 2026). **What is missing is a continuous, low-cost record from the waterway itself that a single barangay can run.** The Philippines has tens of thousands of barangays **[VERIFY: PSA count, about 42,000]**, and esteros run through many urban ones. A design that costs PHP 10,000 and shares its data openly lets many barangays contribute to one comparable picture of what plastic is in our waterways.
 
 ## 2. What do you want to achieve?
 
-**Goal:** lift floating plastic out of one estero in our community and generate continuous, student-collected, item-level waste data from the waterway that a barangay can hand to the LGU, with a design any barangay can copy for about PHP 6,000.
+**Goal:** lift floating plastic out of one estero in our community and generate continuous, student-collected, item-level waste data from the waterway that a barangay can hand to the LGU, with a design any barangay can copy for about PHP 10,000.
 
 **Core objectives (SMART)**
 
@@ -45,7 +45,7 @@ Brand audits already exist, but they are periodic, manual and mostly land-based:
 2. **Classify.** By Nov 20, 2026, train an on-device model for [5] classes (PET bottle, sachet/foil pouch, plastic bag, foam container, cup/other) with at least [0.85] precision and recall on photos from locations *not used in training*.
 3. **Count accurately.** Weekly device counts within ±15% of a hand count of the bin's contents.
 4. **Report and open data.** A one-page weekly barangay report (items, types, estimated weight, top legible brands) and an anonymized open CSV with a data dictionary.
-5. **Replicate.** By March 2027, publish a free English/Filipino build guide and help [1–2] other barangays or schools build one for no more than PHP 6,000.
+5. **Replicate.** By March 2027, publish a free English/Filipino build guide and help [1–2] other barangays or schools build a Core unit (boom, bin and camera, conveyor optional) for no more than about PHP 6,000.
 
 **Secondary objective**
 
@@ -74,13 +74,13 @@ We scored five community problems on significance, feasibility, STEM depth, repl
 
 ## 5. How will your tech solution work?
 
-> **STEM map:** *Physics* (buoyancy, flow, solar energy budget, ultrasonic ranging) · *Math/Statistics* (precision, recall, count error, sampling) · *Computer Science* (object detection, INT8 quantization) · *Engineering* (floating structure, lever arm, jam detection, weatherproofing) · *Environmental Science* (waterway pollution, EPR policy).
+> **STEM map:** *Physics* (buoyancy, flow, solar energy budget, ultrasonic ranging) · *Math/Statistics* (precision, recall, count error, sampling) · *Computer Science* (object detection, INT8 quantization) · *Engineering* (floating structure, belt drive, jam detection, weatherproofing) · *Environmental Science* (waterway pollution, EPR policy).
 
 SALOK **traps, lifts, counts and reports.**
 
-**Trap (Physics, Engineering).** A V-shaped boom of reused PET bottles and bamboo guides surface debris toward the bank, where it meets a bar screen at the foot of a sloped mesh ramp anchored to the bank or a bridge post. The estero's own current does the herding, so the boom needs no energy. A float-and-time test sets the boom angle for the estero's flow.
+**Trap (Physics, Engineering).** A V-shaped boom of reused PET bottles and bamboo guides surface debris toward the bank, where it meets a bar screen at the foot of an inclined conveyor anchored to the bank or a bridge post. The estero's own current does the herding, so the boom needs no energy. A float-and-time test sets the boom angle for the estero's flow.
 
-**Lift (Engineering).** A small geared DC motor turns a rake arm that sweeps debris up the ramp into a covered bin above the waterline. It runs only when the camera sees debris, for a few seconds at a time. The ESP32 reads the motor current, so a spike (a jam) makes the arm reverse and retry, and a full bin stops it and alerts the barangay. The arm is guarded, with a stop switch and a lockout during emptying; students never enter the water, and adults empty the bin weekly.
+**Lift (Engineering).** A 12 V geared DC motor drives an inclined belt with cleats that carries debris up out of the water into a covered bin above the waterline. It runs only when the camera sees debris, for a short burst at a time. The ESP32 reads the motor current, so a spike (a jam) makes the belt reverse and retry, and a full bin stops it and alerts the barangay. The belt and rollers are guarded, with a stop switch and a lockout during emptying; students never enter the water, and adults empty the bin weekly.
 
 **See and count (Computer Science, Math).** An ESP32-S3 camera on a post looks *down at the water surface only*, so no faces or houses are in frame. A compact object-detection model, **quantized to INT8** and run with TensorFlow Lite for Microcontrollers, classifies each item. Because the camera looks at a pocket one to two metres away, not a wide river, items are large in frame and a small model on an ESP32-S3 with PSRAM is realistic; our Stage 1 gate tests that it fits and runs fast enough before we build more. Training photos come from our own collections of real trash on the estero bank, labelled by students and checked by the adviser. Detections increment class counters stored on a microSD card. Each week students hand-count and weigh the bin's contents; a per-class average weight converts counts to kilograms, and the hand count is our accuracy test.
 
@@ -90,27 +90,27 @@ SALOK **traps, lifts, counts and reports.**
 
 **Power budget (Physics, Math).** *Planning arithmetic with stated assumptions, to be replaced by bench measurements:*
 - Electronics, duty-cycled: about 0.3 W average, about 7 Wh/day.
-- Arm: about 5 W for 10 s per lift, 20 lifts/day, about 0.3 Wh/day.
-- Solar: a 6 W panel at about 3 effective sun-hours and 60% system efficiency, about 11 Wh/day.
-- Storage: two 18650 cells, about 18 Wh.
+- Conveyor: about 25 W for 30 s per lift, 20 lifts/day, about 4 Wh/day.
+- Solar: a 15–20 W panel at about 3 effective sun-hours and 60% system efficiency, about 27–36 Wh/day.
+- Storage: a 12 V, 7–9 Ah sealed battery, about 40–50 Wh usable at 50% depth of discharge.
 
-This is a thin margin on cloudy days, so the device lengthens its capture interval when the battery is low; we report the measured numbers and size the panel to them.
+This leaves a margin of several days of cloud, but the device still lengthens its capture interval when the battery is low; we report the measured numbers and size the panel to them.
 
 **What it will and will not clean.** SALOK lifts **light floating and near-surface debris** that reaches the boom: bottles, sachets, bags, foam and cups, in small batches. It does not lift heavy or tangled items (the bar screen stops them and a person removes them), sunken waste, sediment, oil or dissolved pollution, and it cleans only the stretch upstream of the boom. We report the measured capture rate rather than claiming the estero is "clean".
 
-*Figure 1: boom, ramp and arm layout. Figure 2: block diagram (boom → ramp and arm → bin; camera → model → counts → report; level sensor → alert). Figure 3: sample detections.*
+*Figure 1: boom and conveyor layout. Figure 2: block diagram (boom → conveyor → bin; camera → model → counts → report; level sensor → alert). Figure 3: sample detections.*
 
 **How the tiny AI works, in plain words.** A model that has seen thousands of photos of bottles, sachets and bags learns what each looks like. Quantization stores its numbers as small whole numbers so it fits on a PHP 1,300 chip that runs on a fraction of a watt from the sun, with no internet and nothing leaving the estero.
 
 ## 6. How will you implement this?
 
 **Staged build with decision gates.** We never commit the whole budget before the previous stage works.
-1. **Stage 1 (about PHP 1,600): bench.** ESP32-S3 camera, microSD and enclosure; train and test the model on our photos; measure real power draw. *Gate: held-out precision and recall meet the target.*
-2. **Stage 2 (about PHP 2,500): passive trap.** Boom, bar screen, ramp, bin, post and solar power installed at the estero. *Gate: the boom holds through [N] rain events and weekly counts are within ±15% of hand counts.*
-3. **Stage 3 (about PHP 1,550): arm and sensor.** Motor, driver, jam sensing and the level sensor. *Gate: the arm lifts debris on solar power alone with the target jam rate.*
-4. Contingency PHP 350.
+1. **Stage 1 (about PHP 1,800): bench.** ESP32-S3 camera, microSD and enclosure; train and test the model on our photos; measure real power draw. *Gate: held-out precision and recall meet the target.*
+2. **Stage 2 (about PHP 4,150): passive trap.** Boom, bar screen, bin, post, wiring and solar power installed at the estero. *Gate: the boom holds through [N] rain events and weekly counts are within ±15% of hand counts.*
+3. **Stage 3 (about PHP 3,600): conveyor and sensor.** Motor, driver, belt, rollers, frame, jam sensing and the level sensor. *Gate: the conveyor lifts debris on solar power alone with the target jam rate.*
+4. Contingency PHP 450.
 
-**Budget: PHP 6,000 (estimates; confirm local prices).**
+**Budget: PHP 10,000 (estimates; confirm local prices).**
 
 | Item | PHP |
 |---|---|
@@ -118,19 +118,24 @@ This is a thin margin on cloudy days, so the device lengthens its capture interv
 | microSD card | 200 |
 | Sealed enclosure, glands, desiccant | 300 |
 | Waterproof ultrasonic level sensor | 350 |
-| Small solar panel (about 6–10 W) | 600 |
-| Charge controller, 2× 18650 cells, holder, boost converter | 700 |
-| Rope, net, zip ties (bottles and bamboo reused) | 450 |
-| Anchor, post, clamps, concrete | 350 |
-| Reused bin and painted staff gauge | 150 |
-| Wiring, fuse, switch, connectors | 250 |
-| Small geared DC motor (6–7.4 V) | 500 |
-| Motor driver | 200 |
+| Solar panel (about 15–20 W) | 1,000 |
+| 12 V sealed battery (7–9 Ah) | 900 |
+| Charge controller | 350 |
+| Buck converter for the ESP32 supply | 150 |
+| Rope, net, zip ties for the boom (bottles and bamboo reused) | 600 |
+| Anchor, post, clamps, concrete | 550 |
+| Bin and painted staff gauge | 250 |
+| Wiring, fuse, switch, connectors | 350 |
+| 12 V geared DC motor | 800 |
+| Motor driver | 300 |
 | Current sensing for jam detection | 150 |
-| Ramp, rake arm, shaft, bar screen (recycled plastic, bolts) | 150 |
-| **Subtotal** | **5,650** |
-| Contingency | 350 |
-| **Total** | **6,000** |
+| Cleated belt | 500 |
+| Rollers, shafts, bearings | 450 |
+| Conveyor frame and guard (angle bar, plywood or PVC) | 800 |
+| Bar screen and stop switch | 250 |
+| **Subtotal** | **9,550** |
+| Contingency | 450 |
+| **Total** | **10,000** |
 
 **Evidence we will show before Nov 2:** [N] labelled trash photos and a first detection screenshot; a photo of the bench prototype; one measured power figure; and the barangay's signed approval letter. *(Fill in only what exists.)*
 
@@ -142,9 +147,9 @@ This is a thin margin on cloudy days, so the device lengthens its capture interv
 | Nov 16 – Dec 5 | Refine with Samsung coaches (if shortlisted) |
 | Dec 7 | Present model metrics, baseline data and Stage 2 progress |
 | Dec – Feb | Stages 2 and 3; full pilot with weekly hand-count validation and barangay reports |
-| By Mar 2027 | Build guide published; 1–2 more sites; Phase 2 conveyor if funded |
+| By Mar 2027 | Build guide published; 1–2 more sites; Phase 2 (larger belt or second camera angle) if funded |
 
-**Maintenance agreement.** A one-page memorandum names the barangay focal person who empties the bin weekly, the student team that clears jams, cleans the lens and uploads the data, and the school adviser who signs off the checklist: empty the bin, clear the bar screen, check the arm and ramp, wipe the lens, check the mooring, read the battery, upload the CSV. *[Confirm with the barangay before submission.]*
+**Maintenance agreement.** A one-page memorandum names the barangay focal person who empties the bin weekly, the student team that clears jams, cleans the lens and uploads the data, and the school adviser who signs off the checklist: empty the bin, clear the bar screen, check the belt, rollers and frame, wipe the lens, check the mooring, read the battery, upload the CSV. *[Confirm with the barangay before submission.]*
 
 **Fit with existing programs.** The barangay can run SALOK alongside its estero clean-up and monitoring programs **[VERIFY: names of current DENR/LGU estero programs]**, so the weekly emptying and report slot into work it already does and do not add a new burden.
 
@@ -154,9 +159,9 @@ This is a thin margin on cloudy days, so the device lengthens its capture interv
 
 **Risks and mitigation**
 - *Model fails in new light or water:* collect across times of day and weather, report held-out-location scores, keep the manual fallback count.
-- *Arm jams or the battery drains:* bar screen, motor-current jam detection with auto-reverse, short bursts only when debris is seen, bench-tested lifts per day.
-- *Arm fails entirely:* the boom, bar screen and bin still trap passively and the camera still counts, so the data pilot is not at risk.
-- *Safety:* no student enters the water; guarded arm with lockout; adult-only emptying; barangay and school approval first.
+- *Belt jams or the battery drains:* bar screen, motor-current jam detection with auto-reverse, short bursts only when debris is seen, bench-tested lifts per day.
+- *Conveyor fails entirely:* the boom, bar screen and bin still trap passively and the camera still counts, so the data pilot is not at risk.
+- *Safety:* no student enters the water; guarded belt with lockout; adult-only emptying; barangay and school approval first.
 - *Over-claiming:* targets stated as targets; we report what was measured and what failed.
 
 ## 7. Impact and long-term vision
@@ -169,7 +174,7 @@ This is a thin margin on cloudy days, so the device lengthens its capture interv
 3. A weekly barangay report series and an item-level audit of what the estero carried.
 4. (Secondary) a logged record of level alerts and the warning time they gave.
 
-**What we will show about replication.** A free English/Filipino build guide and at least [1–2] additional sites by March 2027 at no more than PHP 6,000 each, each sharing the same open data format. The impact claim rests on this step: until a second barangay copies it, we describe SALOK's reach as a plan, not a result.
+**What we will show about replication.** A free English/Filipino build guide and at least [1–2] additional sites by March 2027, each a Core unit at no more than about PHP 6,000, each sharing the same open data format. The impact claim rests on this step: until a second barangay copies it, we describe SALOK's reach as a plan, not a result.
 
 **Sustainability.** The barangay runs it with local parts, solar power and a one-page checklist under a named maintenance agreement; no subscription, server or internet is needed. The dataset and model are open so other barangays can retrain on their own waste, and reused floats and bamboo keep replacement cheap.
 
@@ -198,7 +203,7 @@ van Lieshout, C., et al. (2020). Automated river plastic monitoring using deep l
 |---|---|
 | Design Innovation (20%) | An explicit prior-art table shows what exists; SALOK's novelty is the combination: a fixed, low-cost unit that lifts plastic, counts it on-chip, and feeds open EPR-ready data, with the camera as both counter and trigger. |
 | Relevance to the Community (20%) | A real estero, a named barangay partner and letter, a current law, a problem residents see daily. |
-| Feasibility (20%) | Staged build with decision gates, an itemized PHP 6,000 budget, power arithmetic, a passive fallback, and pre-submission evidence. |
+| Feasibility (20%) | Staged build with decision gates, an itemized PHP 10,000 budget, power arithmetic, a passive fallback, and pre-submission evidence. |
 | STEM Integration (15%) | Explicit STEM map; physics, statistics, computer science, engineering and environmental science all used. |
 | Sustainability (15%) | Solar, reused parts, a written maintenance agreement, a typhoon plan, an open replicable design. |
 | Clarity (10%) | One pitch sentence, two core jobs (lift and prove), flood warning clearly secondary. |
@@ -211,5 +216,5 @@ van Lieshout, C., et al. (2020). Automated river plastic monitoring using deep l
 - [ ] Take a photo of the bench prototype; list in "Evidence" only what exists.
 - [ ] Verify every **[VERIFY]** fact and add exact citations.
 - [ ] Confirm the ESP32-S3 board can run your model (RAM/PSRAM) before buying.
-- [ ] Replace budget estimates with real local prices; keep the total within PHP 6,000.
+- [ ] Replace budget estimates with real local prices; keep the total within PHP 10,000.
 - [ ] Trim to under 3,000 words, check against the official entry templates (the Drive connector could not list them) and export a PDF under 40 MB.
