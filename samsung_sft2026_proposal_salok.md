@@ -1,9 +1,9 @@
-# SFT 2026 — Proposal: SALOK
+# SFT 2026 — Proposal: SALOK (PHP 5,000 build)
 
 **Theme:** Environmental Sustainability through Technology
 **Deadline:** Nov 2, 2026, 11:59 PM. Format: Word (≤3,000 words / 7 pages) or PPT (≤6 slides), exported as a PDF under 40 MB.
 
-Facts marked **[VERIFY]** are from memory of public sources and must be checked against the primary source before submission. Items in `[BRACKETS]` are blanks only the team can fill. Nothing here is a measured result; targets are labelled as targets.
+Facts marked **[VERIFY]** are from memory of public sources and must be checked against the primary source before submission. Items in `[BRACKETS]` are blanks only the team can fill. Prices are estimates to confirm locally. Nothing here is a measured result; targets are labelled as targets.
 
 ---
 
@@ -12,136 +12,149 @@ Facts marked **[VERIFY]** are from memory of public sources and must be checked 
 
 ## Entry title
 
-**SALOK: A Solar-Powered Estero Guardian that Traps Plastic, Warns Barangays Before Clogged Waterways Flood, and Builds the First Open, Brand-Level Plastic Data Commons the Philippines Needs to Hold Producers Accountable**
+**SALOK: A PHP 5,000 Solar-Powered Estero Guardian that Traps Plastic, Warns Barangays Before Clogged Waterways Flood, and Builds the First Open, Brand-Level Plastic Data Commons Needed to Hold Producers Accountable**
 
 *(Salok = "to scoop" in Filipino. Rename if the team prefers.)*
 
 ## Project description (three sentences, for official write-ups)
 
-SALOK is a low-cost, solar-powered estero guardian: a floating boom guides surface debris to a bank-side conveyor that lifts it out of the water into a bin, while an on-device AI model counts and classifies every item by type and, where legible, by brand, and a water-level sensor warns the barangay when debris and rising water threaten to block the channel. Barangay officials get a weekly report of what was removed and who made it, plus a flood-risk alert, without internet and without recording faces. Every barangay's anonymized results join an open dataset, so one trap protects one creek and many traps build the evidence to hold producers accountable.
+SALOK is a low-cost, solar-powered estero guardian: a floating boom guides surface plastic into a bank-side collection pocket, an ESP32 camera with an on-device AI model counts and classifies each item by type and, where legible, by brand, and a water-level sensor warns the barangay when debris and rising water threaten to block the channel. Barangay officials get a weekly report of what was removed and who made it, plus a flood-risk alert, without internet and without recording faces. Built for PHP 5,000 from local and upcycled parts, every barangay's anonymized results join an open dataset, so one unit protects one creek and many units build the evidence to hold producers accountable.
 
 ## 1. What problem are you trying to solve?
 
-Plastic reaches the sea through creeks and esteros. Published river-emission studies rank Philippine rivers among the largest sources of ocean plastic **[VERIFY: Meijer et al., 2021, Science Advances]**, and Metro Manila's esteros and the Pasig and Tullahan river systems carry much of it. Single-use sachets, bags and cups are the dominant items in cleanups **[VERIFY: local cleanup audits]**.
+Plastic reaches the sea through creeks and esteros. Published river-emission studies rank Philippine rivers among the largest sources of ocean plastic **[VERIFY: Meijer et al., 2021, Science Advances]**, and Metro Manila's esteros and the Pasig and Tullahan river systems carry much of it. Single-use sachets, bags and cups are dominant items in cleanups **[VERIFY: local cleanup audits]**.
 
-Two gaps keep the problem going:
+Three gaps keep the problem going:
 
 1. **Removal is manual and invisible.** Cleanups happen on schedule and the trash is weighed in bulk. Nobody records what was in it, so the same items return.
-2. **There is no brand-level data.** The Extended Producer Responsibility Act of 2022 (RA 11898) makes large companies responsible for recovering plastic packaging **[VERIFY: scope and thresholds]**, but enforcement needs evidence of *which* packaging actually ends up in waterways. Barangays and LGUs have no cheap way to produce it.
+2. **There is no brand-level data.** The Extended Producer Responsibility Act of 2022 (RA 11898) makes large companies responsible for recovering plastic packaging **[VERIFY: scope and thresholds]**, but enforcement needs evidence of *which* packaging ends up in waterways. Barangays have no cheap way to produce it.
+3. **Clogged waterways flood neighbourhoods.** Plastic and other debris choke drainage and esteros, worsening flooding in low-lying communities **[VERIFY: MMDA/DPWH reports and flood studies]**, and standing, trash-filled water also breeds mosquitoes. Barangays learn a channel is blocked only when it floods.
 
-3. **Clogged waterways flood neighbourhoods.** Plastic and other debris choke drainage and esteros, worsening flooding in low-lying communities **[VERIFY: MMDA/DPWH drainage-clearing reports and flood studies]**, and standing, trash-filled water also breeds mosquitoes. Barangays learn a channel is blocked only when it floods.
+**The problem is therefore three-part: catching the plastic, proving what it is, and seeing the blockage before it floods people's homes.** One device addresses pollution, accountability and safety at once.
 
-**The problem is therefore three-part: catching the plastic, proving what it is, and seeing the blockage before it floods people's homes.** One device addresses a pollution problem, an accountability problem and a safety problem at once, which is why a single barangay-owned unit matters more than a cleanup day.
-
-**Scale of the opportunity.** The Philippines has tens of thousands of barangays **[VERIFY: PSA count, about 42,000]**, and esteros run through a large share of urban ones. Each is a data point nobody is collecting. A design that costs about one barangay's cleanup budget for a month, and shares its data openly, can add up to the first nationwide picture of what plastic is in our waterways.
+**Scale of the opportunity.** The Philippines has tens of thousands of barangays **[VERIFY: PSA count, about 42,000]**, and esteros run through a large share of urban ones. Each is a data point nobody is collecting. A design that costs PHP 5,000 and shares its data openly can add up to the first nationwide picture of what plastic is in our waterways.
 
 ## 2. What do you want to achieve?
 
-**Goal:** remove plastic from one estero in our community and generate the first student-collected, brand-level waste data that a barangay can hand to the LGU, using a design any barangay can copy for low cost.
+**Goal:** remove floating plastic from one estero in our community, warn of blockages, and generate the first student-collected, brand-level waste data that a barangay can hand to the LGU, using a design any barangay can copy for about PHP 5,000.
 
 **Objectives (SMART)**
 
-1. **Clean.** In an [8]-week pilot at [ESTERO SITE], keep the boom and conveyor operating through [N] rain events and lift at least [TARGET] kg of floating debris out of the water, logged by weekly weigh-in, with a measured **capture rate** of at least [X]% of the floating debris reaching the boom (checked with downstream hand-net sampling), and a conveyor that runs on solar power alone, with fewer than [N] jam stops a week.
-2. **Classify.** By Nov 20, 2026 (proposal stage: a prototype dataset), train an on-device model to detect [5] classes (PET bottle, sachet/foil pouch, plastic bag, foam container, cup/other) with at least [0.85] precision and recall on photos from locations *not used in training*.
-3. **Count accurately.** In the pilot, the device's item counts should be within ±15% of a hand count of the same trap contents each week.
+1. **Clean.** In an [8]-week pilot at [ESTERO SITE], keep the boom and collection pocket in place through [N] rain events and remove at least [TARGET] kg of floating debris, logged by weekly weigh-in, with a measured **capture rate** of at least [X]% of the floating debris reaching the boom (checked with downstream hand-net sampling).
+2. **Classify.** By Nov 20, 2026, train an on-device model to detect [5] classes (PET bottle, sachet/foil pouch, plastic bag, foam container, cup/other) with at least [0.85] precision and recall on photos from locations *not used in training*.
+3. **Count accurately.** In the pilot, the device's item counts should be within ±15% of a weekly hand count of the same pocket contents.
 4. **Report.** Produce a one-page weekly barangay report (items, types, estimated weight, top legible brands) with no internet.
-5. **Warn.** Add an ultrasonic water-level sensor on the same post. During the pilot, log water level against rainfall and trap fullness, and set a "channel nearly blocked" alert; success is the alert firing at least [N] minutes before the nearest known flood point is reached in at least [N] observed events (report whatever we measure).
-6. **Open data.** Publish anonymized weekly counts (type, brand tallies, estimated kg, level readings, no images of people) as an open CSV with a data dictionary, so any school or LGU can use or extend it.
-7. **Replicate.** By March 2027, publish a free English/Filipino build guide and help [1–2] other barangays or schools build one for no more than PHP [X], each contributing to the same open dataset.
+5. **Warn.** An ultrasonic water-level sensor logs level against rainfall and pocket fullness and triggers a "channel nearly blocked" alert; success is the alert firing at least [N] minutes before the nearest known flood point is reached in at least [N] observed events (we report whatever we measure).
+6. **Open data.** Publish anonymized weekly counts (type, brand tallies, estimated kg, level readings, no images of people) as an open CSV with a data dictionary.
+7. **Replicate.** By March 2027, publish a free English/Filipino build guide and help [1–2] other barangays or schools build one for no more than PHP 5,000, each contributing to the same open dataset.
 
 ## 3. Who will benefit?
 
-- **Primary:** residents of [BARANGAY/PUROK] along [ESTERO], and the barangay's environmental/sanitation officers, who get cleaner water and flood-prone canals, plus data they have never had.
+- **Primary:** residents of [BARANGAY/PUROK] along [ESTERO] and the barangay's environmental/sanitation officers, who get a cleaner waterway, flood warnings and data they have never had.
 - **Secondary:** the LGU/DENR offices handling solid waste, who can use brand-level evidence; neighbouring barangays who can copy the design; students, who become the community's citizen scientists.
 - **Wider:** downstream communities and fisherfolk affected by plastic reaching Manila Bay.
 
 ## 4. How did you come up with your proposal?
 
-We scored five community problems on significance, feasibility, STEM depth, replicability and originality. Plastic in esteros won because we can reach one, measure it weekly, and the law (RA 11898) has just made the data useful.
+We scored five community problems on significance, feasibility, STEM depth, replicability and originality. Plastic in esteros won because we can reach one, measure it weekly, and RA 11898 has just made the data useful.
 
-We reviewed existing approaches and found two camps. Passive trash booms and traps catch plastic but record nothing beyond bulk weight. Research systems that use cameras and AI to detect river plastic exist **[VERIFY: e.g., published river-plastic monitoring with computer vision]**, but they typically need powerful hardware, a stable connection or an expert to run. **We found no low-cost design that combines a physical trap with a power-frugal on-device classifier built for a barangay to operate.** SALOK sits in that gap.
+We reviewed existing approaches and found two camps. Passive trash booms catch plastic but record nothing beyond bulk weight. Research systems that use cameras and AI to detect river plastic exist **[VERIFY: published river-plastic computer-vision monitoring]**, but typically need powerful hardware, a stable connection or an expert to run. **We found no low-cost design that combines a physical collection boom, a power-frugal on-device classifier and a flood-warning sensor that a barangay can operate.** SALOK sits in that gap.
 
 ## 5. How will your tech solution work?
 
-> **STEM map:** *Physics* (buoyancy, flow, solar power budget) · *Math/Statistics* (precision, recall, count error, sampling) · *Computer Science* (object detection, INT8 quantization) · *Engineering* (floating structure, mounting, weatherproofing) · *Environmental Science* (waterway pollution, EPR policy).
+> **STEM map:** *Physics* (buoyancy, flow, solar power budget, ultrasonic ranging) · *Math/Statistics* (precision, recall, count error, sampling) · *Computer Science* (object detection, INT8 quantization) · *Engineering* (floating structure, mounting, weatherproofing) · *Environmental Science* (waterway pollution, EPR policy).
 
-SALOK **traps, sees, counts and reports.**
+SALOK **traps, sees, counts, warns and reports.**
 
-**Trap and lift (Physics, Engineering).** A V-shaped floating boom of reused PET bottles or bamboo floats guides surface debris toward the estero's edge, anchored to the bank or a bridge post. At the apex, a **bank-mounted inclined mesh conveyor**, driven by a geared DC motor, scoops debris out of the water and drops it into a covered bin above the waterline. The flow of the estero does the herding, and the motor only lifts, so the energy cost stays small. A simple flow check (float-and-time test) tells us the right boom angle for the estero's current.
+**Trap (Physics, Engineering).** A V-shaped boom of reused PET bottles and bamboo floats, joined with rope and net, guides surface debris toward the bank at the apex, where it collects in a mesh pocket anchored to the bank or a bridge post. The estero's own current does the herding, so the boom needs no energy. A float-and-time test sets the boom angle for the estero's flow. Adults, using gloves and a long-handled basket, lift the pocket's contents out of the water into a covered bin each week; students never enter the water.
 
-**Smart, low-energy cleaning (Computer Science, Engineering).** The conveyor does not run all day. The camera model detects debris arriving at the intake and runs the belt in short bursts, then idles; a current sensor on the motor detects a jam and reverses the belt, and a bin-level sensor stops it and alerts the barangay when the bin is full. Running only when there is something to lift is what lets a small solar panel power active cleaning.
+**See (Computer Science).** An ESP32-S3 camera board on a post above the pocket looks *down at the water surface only*, so no faces or houses are in frame. A compact object-detection model, **quantized to INT8** and run with TensorFlow Lite for Microcontrollers, classifies each item entering the pocket. Training photos come from our own collections of real trash on the estero bank, labelled by students and checked by the adviser. To save power, the camera captures on a timer or when motion is detected.
 
-**What it will and will not clean.** SALOK removes **floating and near-surface debris** that reaches the boom: bottles, sachets, bags, foam, cups. It does not remove sunken waste, sediment, oil or dissolved pollutants, and it cannot clean the whole estero, only the stretch upstream of the boom. We report the measured capture rate (kg removed vs. kg passing, estimated from downstream hand-net sampling) rather than claiming the estero is "clean". Students never enter the water; bin emptying is done from the bank by trained, supervised adults.
+**Count and weigh (Math).** Each detection increments a class counter stored on the microSD card. Weekly, students hand-count and weigh the pocket's contents; a per-class average weight turns counts into estimated kilograms, and the hand count becomes our accuracy test.
 
-**See (Computer Science).** A camera on a post above the pocket looks *down at the water surface only*, so no faces or houses are in frame. A compact object-detection model, **quantized to INT8** and running on a low-power microcontroller or single-board board with a camera, classifies each item that enters the pocket. Training photos come from our own collections of real trash on the estero bank, labelled by students and checked by the adviser.
+**Warn (Physics, Engineering).** A waterproof ultrasonic sensor on the same post measures the distance to the water surface. The ESP32 logs level, compares it to a marked staff gauge, and raises an alert (status LED and report flag) when the level rises fast or the pocket is nearly full.
 
-**Count and weigh (Math).** Each detected item increments a class counter. Weekly, students hand-count and weigh the pocket's contents; a per-class average weight turns counts into estimated kilograms, and the hand count becomes our accuracy test.
+**Report (Design).** A small status display or LED and an offline Wi-Fi page the ESP32 hosts for a phone (no cellular needed) show running counts and alerts. A script produces the one-page weekly barangay report and a CSV for the LGU. Legible brand names are tallied by a student volunteer from stored photos; the AI's job is to flag and crop likely labels, because automated brand reading is not yet reliable.
 
-**Report (Design).** A small screen and a phone-readable offline page (no cellular needed) show running counts. A script produces the one-page weekly barangay report and a CSV for the LGU. Legible brand names that a person can read from the stored photos are tallied by a student volunteer, giving the brand-level audit that automated detection alone cannot yet promise; the AI's job is to flag and crop likely labels.
+**Power (Feasibility).** The ESP32 camera averages well under a watt when duty-cycled. A small solar panel, a charge-controller module and two 18650 cells (through a boost converter) cover it, sized from bench measurements the team will report. On cloudy days the device lengthens its capture interval instead of shutting down.
 
-**Power (Feasibility).** Two loads: the camera and sensors (under a few watts) and the conveyor motor, which draws far more but only in short bursts. A solar panel, charge controller and deep-cycle or LiFePO4 battery are sized from a bench-measured energy budget (motor watts × daily run minutes + electronics), with the panel size and battery to be reported, not assumed. On cloudy days the controller lengthens the idle interval and lowers belt speed rather than shutting down; if the battery is low, the boom keeps trapping passively and the camera keeps logging.
+**Safety.** Low-voltage wiring in a sealed enclosure with desiccant; fuse and switch; the boom away from boat routes; barangay and school sign-off on the site; adult-only emptying; no cameras on people.
 
-**Safety.** Low-voltage (12 V) wiring in a sealed enclosure with desiccant; the conveyor fully guarded with a stop switch, a covered drive and a lockout during emptying so no hands reach a moving part; the boom away from boat routes; barangay sign-off on the site; no cameras on people.
+**What it will and will not clean.** SALOK removes **floating and near-surface debris** that reaches the boom: bottles, sachets, bags, foam and cups. It does not remove sunken waste, sediment, oil or dissolved pollutants, and it cannot clean the whole estero, only the stretch upstream of the boom. We report the measured capture rate rather than claiming the estero is "clean".
 
-**Honest limits.** Detection will degrade in rain, glare and murky water; we report that rather than hide it. The device counts and classifies plastic; it does not clean the estero by itself, and it is not a substitute for waste segregation at the source.
+**Phase 2 (not in the PHP 5,000 pilot).** A solar-powered motorized conveyor that lifts debris automatically, triggered by the camera, with jam detection and a full-bin cutoff. We keep it as a funded next step so that the pilot is honest about what the budget can build.
 
-*Figure 1: trap layout. Figure 2: system block diagram (trap → camera → model → counts → report). Figure 3: sample detections.* (Include a photo of the site and the bench prototype.)
+**Honest limits.** Detection will degrade in rain, glare and murky water; we report that rather than hide it.
 
-**How the tiny AI works, in plain words.** A model that has seen thousands of photos of bottles, sachets and bags learns what each looks like. Quantization stores its numbers as small whole numbers so it fits and runs on a few watts of solar power, with no internet and nothing leaving the estero.
+*Figure 1: boom and pocket layout. Figure 2: system block diagram (boom → pocket → camera → model → counts → report, level sensor → alert). Figure 3: sample detections.*
+
+**How the tiny AI works, in plain words.** A model that has seen thousands of photos of bottles, sachets and bags learns what each looks like. Quantization stores its numbers as small whole numbers so it fits on a PHP 1,300 chip that runs on a fraction of a watt from the sun, with no internet and nothing leaving the estero.
 
 ## 6. How will you implement this?
 
-**Materials and budget (estimates; confirm local prices):** camera microcontroller or SBC and enclosure [PHP], solar panel, charge controller and battery [PHP], geared 12 V DC motor, motor driver and current sensor [PHP], mesh belt, rollers and guarded frame (fabricated from steel or recycled materials) [PHP], bin and level sensor [PHP], reused bottles/bamboo, rope [PHP], post and mounting hardware [PHP], contingency 10%. **Pilot total: PHP [X]. Copyable unit target: PHP [Y].**
+**Budget: PHP 5,000 (estimates; confirm local prices).**
+
+| Item | PHP |
+|---|---|
+| ESP32-S3 camera board | 1,300 |
+| microSD card | 200 |
+| Waterproof sealed enclosure, glands, desiccant | 300 |
+| Waterproof ultrasonic level sensor | 350 |
+| Small solar panel (about 6–10 W) | 600 |
+| Charge controller, 2× 18650 cells, holder, boost converter | 700 |
+| Rope, net, zip ties for the boom (bottles and bamboo reused, free) | 450 |
+| Anchor, post, clamps, concrete | 350 |
+| Collection bin (reused) and painted staff gauge | 150 |
+| Wiring, fuse, switch, connectors | 250 |
+| **Subtotal** | **4,650** |
+| Contingency (about 7%) | 350 |
+| **Total** | **5,000** |
+
+**Tools:** Arduino IDE or PlatformIO, Python with TensorFlow Lite for Microcontrollers, a borrowed soldering iron and multimeter, and phones the team already owns for photos.
 
 **Timeline**
 | Dates | Milestone |
 |---|---|
 | Oct 28 – Nov 2 | Site visit and barangay approval; photograph and label a starter dataset; draft and submit the proposal |
-| Nov 3 – Nov 20 | Train and quantize the first model; build and float-test the trap; bench-test power |
+| Nov 3 – Nov 20 | Train and quantize the first model; build and float-test the boom; bench-test power |
 | Nov 16 – Dec 5 | Refine with Samsung coaches (if shortlisted) |
-| Dec 7 | Present early results: model metrics and first trap weights |
+| Dec 7 | Present early results: model metrics and first pocket weights |
 | Dec – Feb | Full pilot, weekly hand-count validation, barangay reports |
-| By Mar 2027 | Build guide published; 1–2 more sites |
+| By Mar 2027 | Build guide published; 1–2 more sites; Phase 2 conveyor if funded |
 
 **Stakeholders:** barangay captain and sanitation/environment officers (site, emptying, using reports), the LGU solid-waste office (data), our adviser and school head (supervision), students (build, label, count, report), residents (consent and awareness).
 
 **Maintenance and handover.** A one-page weekly checklist: empty the pocket, wipe the lens, check the mooring, read the battery, upload the CSV. The barangay names a focal person; students own the data and model updates. Parts are common and repairable locally.
 
 **Risks and mitigation**
-- *Flood or storm damages the trap:* secure mooring, a quick-release line, and a plan to retrieve electronics before a typhoon.
-- *Conveyor jams on large debris or water hyacinth:* a coarse bar screen ahead of the belt, motor-current jam detection with auto-reverse, and a manual clearing step in the checklist.
-- *Motor and panel underperform:* start with a passive boom and bin, add the conveyor once bench-tested, and report which part actually lifted the debris.
+- *Flood or storm damages the boom:* secure mooring, a quick-release line, and a plan to retrieve electronics before a typhoon.
 - *Model fails in new light or water:* collect across times of day and weather, report held-out-location scores, keep a manual fallback count.
-- *Biofouling or theft:* lens cleaning schedule, discreet mounting, barangay tanod awareness.
+- *Biofouling or theft:* lens-cleaning schedule, discreet mounting, barangay tanod awareness.
+- *Power shortfall:* longer capture interval on cloudy days; spare 18650 cells.
 - *Safety:* no student enters the water; adult emptying with gloves; barangay and school approval first.
 - *Over-claiming:* targets stated as targets; we report the measured result and what failed.
 
 ## 7. Impact and long-term vision
 
-**Success means** plastic physically removed from a real estero **and** a weekly, trustworthy record of what it was, giving the barangay a tool it can use to push for producer accountability under RA 11898.
+**Success means** floating plastic physically removed from a real estero, a weekly, trustworthy record of what it was, and a flood warning for the people who live beside it, all for PHP 5,000.
 
 **Measurable outcomes**
-1. [TARGET] kg of floating debris lifted out of the water over the pilot, with weekly weigh-ins and a measured capture rate, and a conveyor powered by solar alone.
+1. [TARGET] kg of floating debris removed over the pilot, with weekly weigh-ins and a measured capture rate.
 2. Model precision and recall ≥ [0.85] on held-out locations; weekly count error within ±15% of hand counts.
-3. A published weekly barangay report series and a first brand-level audit of the estero.
-4. A build guide and at least [1–2] additional sites by March 2027, each at no more than PHP [Y].
+3. A weekly barangay report series, a first brand-level audit of the estero, and a logged record of level alerts.
+4. A build guide and at least [1–2] additional sites by March 2027, each at no more than PHP 5,000.
 
 **Sustainability.** The barangay runs it with local parts, solar power and a one-page checklist; no subscription, server or internet is needed; the dataset and model are open so other barangays can retrain on their own waste.
 
-**Long-term vision.** A student-built, barangay-owned network of low-cost SALOK units along connected esteros, feeding an open dataset that shows:
-- where plastic enters the waterway and which products dominate;
-- which channels clog first, so drainage clearing can be targeted before floods;
-- whether EPR commitments are actually changing what the water carries, measured by the communities who live beside it.
+**Long-term vision.** A student-built, barangay-owned network of low-cost SALOK units along connected esteros, feeding an open dataset that shows where plastic enters the waterway, which products dominate, which channels clog first, and whether EPR commitments are changing what the water carries. Each added barangay makes every other unit's data more valuable, so impact grows faster than cost.
 
-Each added barangay makes every other unit's data more valuable, so impact grows faster than cost. A Science High School team could become the founding node of a national citizen-science network.
-
-**Key takeaway.** Catching plastic is not enough; proving what it is makes producers accountable. SALOK does both, for the cost of one trap.
+**Key takeaway.** Catching plastic is not enough; proving what it is makes producers accountable, and a flood warning protects the people nearby. SALOK does all three for the price of one cheap trap.
 
 ## References **[VERIFY each; add the exact citations]**
 
 Meijer et al. (2021). More than 1,000 rivers account for 80% of global riverine plastic emissions into the ocean. *Science Advances*.
 Republic Act 11898, Extended Producer Responsibility Act of 2022.
-[Local cleanup/brand audit source, e.g., a recognised NGO audit].
+[Local cleanup/brand audit source].
 [A published river-plastic computer-vision monitoring study].
 [A TinyML or object-detection source on low-power microcontrollers].
 
@@ -151,11 +164,11 @@ Republic Act 11898, Extended Producer Responsibility Act of 2022.
 
 | Criterion (weight) | How SALOK earns it |
 |---|---|
-| Design Innovation (20%) | Trap + on-device AI + brand-level audit + flood early warning in one low-cost unit; links physical cleanup to policy evidence and to disaster prevention; open data commons. |
+| Design Innovation (20%) | Boom + on-device AI + brand-level audit + flood early warning in one PHP 5,000 unit; links physical cleanup to policy evidence and disaster prevention; open data commons. |
 | Relevance to the Community (20%) | A real estero, a named barangay partner, a current law, and a problem the community sees daily. |
-| Feasibility (20%) | Common parts, solar, one-page upkeep, a barangay focal person, a safety plan, and a realistic pilot. |
+| Feasibility (20%) | Common parts, solar, one-page upkeep, a fully itemized PHP 5,000 budget, a safety plan, and a realistic pilot. |
 | STEM Integration (15%) | Explicit STEM map; physics, statistics, computer science, engineering and environmental science all used. |
-| Sustainability (15%) | Solar, upcycled floats, no server, open model, replicable by any barangay. |
+| Sustainability (15%) | Solar, upcycled floats, no server, open model, replicable by any barangay for PHP 5,000. |
 | Clarity (10%) | One problem, one device, one measured outcome, plus the report the community can act on. |
 
 ## Pre-submission checklist
@@ -163,7 +176,7 @@ Republic Act 11898, Extended Producer Responsibility Act of 2022.
 - [ ] Choose the real estero and get written barangay/LGU approval; fill in `[SITE]`, `[BARANGAY]`.
 - [ ] Spend this week photographing and labelling real trash to show a starter dataset and sample detections.
 - [ ] Verify every **[VERIFY]** fact and add exact citations.
-- [ ] Bench-measure the camera device's power draw and report the real number.
-- [ ] Fill the budget with real local prices.
-- [ ] Add photos or a labelled drawing of the trap and a sample detection image.
+- [ ] Confirm the ESP32-S3 board can run your model (RAM/PSRAM) and bench-measure power draw; report the real number.
+- [ ] Replace budget estimates with real local prices; keep the total within PHP 5,000.
+- [ ] Add photos or a labelled drawing of the boom and a sample detection image.
 - [ ] Check against the official entry templates (the Drive connector could not list them) and export to PDF under 40 MB.
