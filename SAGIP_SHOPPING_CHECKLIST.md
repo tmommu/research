@@ -1,4 +1,4 @@
-# SALOK — Shopping Checklist (PHP 6,000 budget)
+# SAGIP — Shopping Checklist (PHP 6,000 budget)
 
 Prices are **estimates**; write the real price when you buy. Buy stage by stage: do not buy the next stage until the previous gate passes. Keep the running total at or under **PHP 6,000** including contingency.
 

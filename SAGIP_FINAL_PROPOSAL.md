@@ -7,11 +7,11 @@
 
 ## Entry title
 
-**SALOK: A PHP 6,000 Solar-Powered Estero Guardian That Lifts Floating Plastic from the Water and Counts Every Item as Evidence for Producer Accountability**
+**SAGIP: A PHP 6,000 Solar-Powered Estero Guardian That Lifts Floating Plastic from the Water and Counts Every Item as Evidence for Producer Accountability**
 
 ## Project description
 
-SALOK is a low-cost, solar-powered unit in which a floating boom guides surface plastic toward the bank, a camera-triggered sweeper arm lifts it into a bin, and an ESP32-S3 camera running an on-device model counts each item by plastic type and, where legible, by brand. Barangay officials receive a weekly report of what was removed and who produced it, with no internet connection and no images of people, along with a secondary water-level alert for impending channel blockage. Built from local and upcycled parts for PHP 6,000, the unit contributes anonymized records to an open dataset that many barangays can extend to build evidence for producer accountability.
+SAGIP is a low-cost, solar-powered unit in which a floating boom guides surface plastic toward the bank, a camera-triggered sweeper arm lifts it into a bin, and an ESP32-S3 camera running an on-device model counts each item by plastic type and, where legible, by brand. Barangay officials receive a weekly report of what was removed and who produced it, with no internet connection and no images of people, along with a secondary water-level alert for impending channel blockage. Built from local and upcycled parts for PHP 6,000, the unit contributes anonymized records to an open dataset that many barangays can extend to build evidence for producer accountability.
 
 ## 1. What problem are you trying to solve?
 
@@ -53,7 +53,7 @@ A review of existing approaches showed four families of work, summarized below.
 | Estero trash traps and cleanup programs (Manila Bulletin, 2026) | Remove plastic at scale | Record bulk weight only. |
 | Waste and brand audits (Break Free From Plastic, 2019, Greenpeace) | Name the brands behind plastic waste | Periodic, manual, mostly land-based, and dependent on volunteers. |
 
-None of these components is new. The combination is. SALOK is a fixed, solar-powered unit that lifts plastic out of a creek, classifies it on the chip, and produces open item-level data suitable for EPR evidence. The camera serves as both counter and trigger for the arm, so a single inexpensive chip yields evidence and conserves energy. Our search did not locate a published system that joins these functions at a cost a barangay can bear, although the search was limited in scope. In effect, SALOK is a continuous, community-owned and low-cost counterpart to the brand audits that NGOs now conduct by hand.
+None of these components is new. The combination is. SAGIP is a fixed, solar-powered unit that lifts plastic out of a creek, classifies it on the chip, and produces open item-level data suitable for EPR evidence. The camera serves as both counter and trigger for the arm, so a single inexpensive chip yields evidence and conserves energy. Our search did not locate a published system that joins these functions at a cost a barangay can bear, although the search was limited in scope. In effect, SAGIP is a continuous, community-owned and low-cost counterpart to the brand audits that NGOs now conduct by hand.
 
 ## 5. How will your tech solution work?
 
@@ -73,7 +73,7 @@ The design draws on physics (buoyancy, flow, solar energy budgeting, ultrasonic 
 
 **Power budget.** The following figures are planning arithmetic under stated assumptions and will be replaced by bench measurements. Duty-cycled electronics draw about 0.25 W, or about 6 Wh per day. The arm draws about 5 W for 10 seconds per lift at 20 lifts per day, or about 0.3 Wh per day. A 10 W panel with about 3 effective sun-hours at 60 percent system efficiency yields about 18 Wh per day. Two 18650 cells store about 18 Wh. The margin is thin on cloudy days, so the controller lengthens its capture interval when the battery is low and withholds motor power below a minimum voltage.
 
-**Scope.** SALOK lifts light floating debris reaching the boom, such as bottles, sachets, bags, foam and cups, in small batches. Heavy or tangled items, hyacinth mats, sunken waste, sediment, oil and dissolved pollutants lie outside its reach, as does any stretch of the estero downstream of the boom. We therefore report a measured capture rate in place of any claim that the estero is clean.
+**Scope.** SAGIP lifts light floating debris reaching the boom, such as bottles, sachets, bags, foam and cups, in small batches. Heavy or tangled items, hyacinth mats, sunken waste, sediment, oil and dissolved pollutants lie outside its reach, as does any stretch of the estero downstream of the boom. We therefore report a measured capture rate in place of any claim that the estero is clean.
 
 ## 6. How will you implement this?
 
@@ -138,7 +138,7 @@ The design draws on physics (buoyancy, flow, solar energy budgeting, ultrasonic 
 
 ## 7. What impact do you hope to achieve, and what is the long-term vision?
 
-NGOs already document, largely by hand, which companies produce the most plastic in Philippine waste, and RA 11898 now makes producers responsible for recovering it **[VERIFY]**. A continuous record that is inexpensive and owned by the community beside the water remains missing. SALOK supplies that record at the waterway and lifts part of the plastic out as it does so. The mass removed by a single unit is small. Its significance rests on a design cheap enough for a thousand barangays to copy and on data open enough to be combined.
+NGOs already document, largely by hand, which companies produce the most plastic in Philippine waste, and RA 11898 now makes producers responsible for recovering it **[VERIFY]**. A continuous record that is inexpensive and owned by the community beside the water remains missing. SAGIP supplies that record at the waterway and lifts part of the plastic out as it does so. The mass removed by a single unit is small. Its significance rests on a design cheap enough for a thousand barangays to copy and on data open enough to be combined.
 
 **Pilot measures.** The pilot will report kilograms of floating debris lifted, with weekly weigh-ins, a measured capture rate and a baseline comparison. It will report precision and recall of at least [0.85] on held-out locations and weekly count error within 15 percent of hand counts. It will also yield a weekly report series, an item-level audit of what the estero carried, and, as a secondary result, a record of level alerts with the warning time each provided.
 
@@ -146,9 +146,9 @@ NGOs already document, largely by hand, which companies produce the most plastic
 
 **Sustainability.** The barangay operates the unit with local parts, solar power and a one-page checklist under a named maintenance agreement. No subscription, server or internet connection is required. The dataset and model are open, so other barangays can retrain on their own waste, and reused floats and bamboo keep replacement inexpensive.
 
-**Long-term vision.** We envisage a student-built, barangay-owned network of SALOK units along connected esteros that feeds an open dataset showing where plastic enters the waterway, which products dominate, and whether EPR commitments change what the water carries. Each added barangay raises the value of every other unit's data. The pilot establishes the method at one creek and makes no larger claim.
+**Long-term vision.** We envisage a student-built, barangay-owned network of SAGIP units along connected esteros that feeds an open dataset showing where plastic enters the waterway, which products dominate, and whether EPR commitments change what the water carries. Each added barangay raises the value of every other unit's data. The pilot establishes the method at one creek and makes no larger claim.
 
-**Key takeaway.** The Philippines already knows who makes much of its plastic. SALOK makes the proof continuous, cheap and community-owned, and it lifts some of the plastic out along the way.
+**Key takeaway.** The Philippines already knows who makes much of its plastic. SAGIP makes the proof continuous, cheap and community-owned, and it lifts some of the plastic out along the way.
 
 ## References
 

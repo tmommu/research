@@ -1,10 +1,12 @@
-# SALOK — Handoff (Samsung Solve for Tomorrow 2026 PH)
+# SAGIP — Handoff (Samsung Solve for Tomorrow 2026 PH)
 
-**Written:** Oct 28, 2026. **Deadline: Nov 2, 2026, 11:59 PM.** Branch: `claude/affectionate-maxwell-ld4ech`. Main file: `samsung_sft2026_proposal_salok.md`.
+**Written:** Oct 28, 2026. **Deadline: Nov 2, 2026, 11:59 PM.** Branch: `claude/affectionate-maxwell-ld4ech`. Main file: `samsung_sft2026_proposal_sagip.md`.
 
 ## Decision
 
-The team is building **SALOK**, a PHP 6,000 solar-powered estero guardian:
+The project was originally called SALOK and was renamed **SAGIP** (Filipino for "to rescue") on Oct 28. The six-slide deck is `SAGIP.pptx`. Search for existing projects with the same name before submitting.
+
+The team is building **SAGIP**, a PHP 6,000 solar-powered estero guardian:
 - A floating boom with a hyacinth deflector guides surface plastic to the bank.
 - A camera-triggered sweeper arm lifts it up a ramp into a bin.
 - An ESP32-S3 camera runs an INT8 on-device model that counts items (5 plastic classes plus vegetation).
@@ -34,7 +36,7 @@ Entry-form answers for all 7 questions, a prior-art table, a staged PHP 6,000 bu
 - **Entry templates not seen.** The Drive folder `2026 SFT Entry Templates` (owned by another account) listed no files to the connector. Compare the proposal against the official forms before submitting.
 - **samsung.com was unreachable** from the cloud session, so rubric, themes and dates came from the user's screenshots. Dates: entries Sept 15 – Nov 2; the proposal's later milestones (Nov 16, Dec 7) come from a web search and should be confirmed.
 - **All prices are estimates from memory.**
-- **Novelty claim is limited.** Brand audits, camera-AI river monitoring and trash traps all exist. SALOK claims the *combination* and the *continuous, community-owned* angle, and says its search was limited.
+- **Novelty claim is limited.** Brand audits, camera-AI river monitoring and trash traps all exist. SAGIP claims the *combination* and the *continuous, community-owned* angle, and says its search was limited.
 - **Flood-warning feature** and the arm are the riskiest build items. The passive boom plus camera still works if the arm fails.
 - **Estero hazards:** hyacinth mats, silt, oil and grease are the likely failure causes. The design mitigates them but only a wet bench test will prove it.
 
@@ -48,5 +50,5 @@ Entry-form answers for all 7 questions, a prior-art table, a staged PHP 6,000 bu
 ## Suggested next steps for a new session
 
 - Ask for the Word (≤3,000 words) or six-slide (≤6 slides) version once the blanks are filled.
-- Re-read this file and `samsung_sft2026_proposal_salok.md` first. Update the proposal rather than starting over.
+- Re-read this file and `samsung_sft2026_proposal_sagip.md` first. Update the proposal rather than starting over.
 - If the user wants the Drive entry updated, the existing heat-device Google Docs are in their Drive; do not overwrite them without asking.

@@ -1,4 +1,4 @@
-# SALOK — Step-by-Step Plan
+# SAGIP — Step-by-Step Plan
 
 Today is **Oct 28, 2026**. Entry deadline: **Nov 2, 11:59 PM**. That is 5 days. Phase 1 gets a credible, evidence-backed entry submitted; phases 2–4 are the build and pilot if you are shortlisted (shortlist announced about Nov 16 per a web search; confirm).
 
@@ -7,9 +7,9 @@ Today is **Oct 28, 2026**. Entry deadline: **Nov 2, 11:59 PM**. That is 5 days. 
 ## Phase 1 — Submit a strong entry (Oct 28 – Nov 2)
 
 ### Day 1 — Wed Oct 28: lock the plan and the partner
-1. **Lead:** read `samsung_sft2026_proposal_salok.md` and `SALOK_HANDOFF.md`. Agree on the name and the one-sentence pitch.
+1. **Lead:** read `samsung_sft2026_proposal_sagip.md` and `SAGIP_HANDOFF.md`. Agree on the name and the one-sentence pitch.
 2. **Partner:** tell the adviser and school head the plan. Ask which barangay and estero are closest and safe to visit.
-3. **Partner:** message or visit the **barangay captain / sanitation or environment officer**. Ask for (a) permission to photograph floating trash at a creek stretch, (b) a signed letter of support, and (c) a named focal person for weekly bin emptying. A short letter is enough: *"[Barangay] supports the QCSHS team's SALOK pilot at [estero], and designates [name] to empty the bin weekly."*
+3. **Partner:** message or visit the **barangay captain / sanitation or environment officer**. Ask for (a) permission to photograph floating trash at a creek stretch, (b) a signed letter of support, and (c) a named focal person for weekly bin emptying. A short letter is enough: *"[Barangay] supports the QCSHS team's SAGIP pilot at [estero], and designates [name] to empty the bin weekly."*
 4. **Hardware:** make a parts list with real prices from Shopee/Lazada and local electronics shops. Replace the estimates in the budget table.
 
 ### Day 2 — Thu Oct 29: collect the evidence
