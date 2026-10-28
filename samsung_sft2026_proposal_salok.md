@@ -37,6 +37,8 @@ Two gaps keep the problem going:
 
 **Goal:** lift floating plastic out of one estero in our community and generate continuous, student-collected, item-level waste data that a barangay can hand to the LGU, with a design any barangay can copy for about PHP 6,000.
 
+**Research question:** can a PHP 6,000 on-chip counter match a trained hand audit within ±15%, and does continuous counting reveal rain-driven plastic pulses that weekly audits miss?
+
 **Core objectives (SMART)**
 
 1. **Clean.** In an [8]-week pilot at [ESTERO SITE], lift at least [TARGET] kg of floating debris out of the water, with a measured **capture rate** of at least [X]% of the floating debris reaching the boom, compared against a **baseline week** before installation.
@@ -85,6 +87,8 @@ SALOK **traps, lifts, counts and reports.**
 **See and count (Computer Science, Math).** An ESP32-S3 camera on a post looks *down at the water surface only*, so no faces or houses are in frame. A compact object-detection model, **quantized to INT8** and run with TensorFlow Lite for Microcontrollers, classifies each item. The camera views a pocket one to two metres away, so items are large in frame and a small model on an ESP32-S3 with PSRAM is realistic; our Stage 1 gate tests it before we build more. Training photos come from our own collections of real trash on the estero bank, labelled by students and checked by the adviser. Detections increment class counters on a microSD card. Each week students hand-count and weigh the bin's contents; a per-class average weight converts counts to kilograms, and the hand count is our accuracy test. A hood and hydrophobic cover protect the lens, and a drop in image sharpness flags fouling.
 
 **Report (Design).** The ESP32 hosts an offline Wi-Fi page a phone can read. A script produces the weekly report and the CSV. Brand names that a person can read from stored photos are tallied by a student volunteer; the AI flags and crops likely labels, because automated brand reading is not yet reliable.
+
+**Audit-grade data (Math, Computer Science).** Each record stores class, time, water level and an image hash in an append-only log. Each week the counter is checked against a hand audit that uses the same categories as NGO brand audits, so results are comparable and hard to dispute. Plotting counts against rainfall and level shows whether plastic arrives in rain-driven pulses, which lets the barangay time its emptying and clean-ups.
 
 **Secondary: warn (Physics).** A waterproof ultrasonic sensor on the post measures the distance to the water surface against a painted staff gauge and raises an alert (LED and report flag) when the level rises fast or the bin is nearly full. Above a set level, the arm stops.
 
@@ -148,7 +152,6 @@ SALOK **traps, lifts, counts and reports.**
 - *Oil and silt:* motor and bearings mounted high, sealed bearings with marine grease, stainless fasteners, hooded lens.
 - *Model fails in new light or water:* collect across times of day and weather; report held-out scores; keep the manual count.
 - *Arm fails entirely:* the boom, bar screen and bin still trap passively and the camera still counts, so the data pilot is not at risk.
-- *Safety:* no student enters the water; guarded arm with lockout; adult-only emptying; barangay and school approval first.
 - *Over-claiming:* targets stated as targets; we report what was measured and what failed.
 
 ## 7. Impact and long-term vision
