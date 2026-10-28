@@ -33,11 +33,11 @@ Two gaps keep the problem going:
 
 A secondary problem sits on the same creek: debris-choked channels flood neighbourhoods **[VERIFY: MMDA/DPWH reports]**, and barangays learn a channel is blocked only when it floods.
 
-**The Philippines has tens of thousands of barangays [VERIFY: PSA count, about 42,000], and esteros run through many urban ones. Each is a data point nobody is collecting.** A design that costs PHP 6,000 and shares its data openly can add up to the first nationwide, community-collected picture of what plastic is in our waterways.
+Brand audits already exist, but they are periodic, manual and mostly land-based: volunteers sort household or dump waste by hand. The government is expanding estero trash traps and says plastic-recovery audits could be used to check EPR compliance (Manila Bulletin, 2026). **What is missing is a continuous, low-cost record from the waterway itself that a single barangay can run.** The Philippines has tens of thousands of barangays **[VERIFY: PSA count, about 42,000]**, and esteros run through many urban ones. A design that costs PHP 6,000 and shares its data openly lets many barangays contribute to one comparable picture of what plastic is in our waterways.
 
 ## 2. What do you want to achieve?
 
-**Goal:** lift floating plastic out of one estero in our community and generate the first student-collected, brand-level waste data that a barangay can hand to the LGU, with a design any barangay can copy for about PHP 6,000.
+**Goal:** lift floating plastic out of one estero in our community and generate continuous, student-collected, item-level waste data from the waterway that a barangay can hand to the LGU, with a design any barangay can copy for about PHP 6,000.
 
 **Core objectives (SMART)**
 
@@ -61,9 +61,16 @@ A secondary problem sits on the same creek: debris-choked channels flood neighbo
 
 We scored five community problems on significance, feasibility, STEM depth, replicability and originality. Plastic in esteros won because we can reach one, measure it weekly, and RA 11898 has just made the data useful.
 
-We reviewed existing approaches and found two camps. Passive trash booms catch plastic but record nothing beyond bulk weight. Research systems that use cameras and AI to detect river plastic exist **[VERIFY: published river-plastic computer-vision monitoring]**, but they typically need powerful hardware, a connection or an expert. **We found no low-cost design that physically lifts plastic out, counts it by type and brand on a chip, and a barangay can run.** SALOK sits in that gap.
+**What already exists, and how SALOK differs.**
 
-**What is new.** The parts are common; the combination is not. The camera is both the *counter* and the *trigger* for the arm, so the AI saves energy and produces evidence with the same hardware, and the data is built to be open and comparable across barangays.
+| Existing approach | What it does | What it leaves open |
+|---|---|---|
+| Camera and deep learning for river plastic (Van Lieshout et al., 2020) | Counts floating plastic from bridge-mounted cameras, tested in Jakarta | Monitors only; removes nothing; needs a bridge, power and offline analysis |
+| Low-cost robotic boats for plastic detection and removal (HydroSentinel, 2026) | Detects and collects plastic with a small onboard model | A moving vehicle needing radio, charging and an operator, not a fixed community-run unit |
+| Estero trash traps and clean-up programs (Manila Bulletin, 2026) | Remove plastic at scale | Record only bulk weight, not what the plastic is |
+| Waste and brand audits (Break Free From Plastic; Greenpeace) | Name the brands behind plastic waste | Periodic, manual, mostly land-based, and dependent on volunteers |
+
+**What is new.** The parts are not new; the combination is. SALOK is a fixed, solar-powered unit that physically lifts plastic out of a creek, counts it by type on the chip, and produces open item-level data the barangay can use for EPR evidence. The camera is both the *counter* and the *trigger* for the arm, so one inexpensive chip produces evidence and saves energy. We did not find a published system combining all of these at a barangay-affordable cost, though our search was limited and we say so. SALOK is the continuous, community-owned, low-cost counterpart of the brand audits NGOs already run by hand, and it feeds the very audits the government says it wants.
 
 ## 5. How will your tech solution work?
 
@@ -75,7 +82,7 @@ SALOK **traps, lifts, counts and reports.**
 
 **Lift (Engineering).** A small geared DC motor turns a rake arm that sweeps debris up the ramp into a covered bin above the waterline. It runs only when the camera sees debris, for a few seconds at a time. The ESP32 reads the motor current, so a spike (a jam) makes the arm reverse and retry, and a full bin stops it and alerts the barangay. The arm is guarded, with a stop switch and a lockout during emptying; students never enter the water, and adults empty the bin weekly.
 
-**See and count (Computer Science, Math).** An ESP32-S3 camera on a post looks *down at the water surface only*, so no faces or houses are in frame. A compact object-detection model, **quantized to INT8** and run with TensorFlow Lite for Microcontrollers, classifies each item. Training photos come from our own collections of real trash on the estero bank, labelled by students and checked by the adviser. Detections increment class counters stored on a microSD card. Each week students hand-count and weigh the bin's contents; a per-class average weight converts counts to kilograms, and the hand count is our accuracy test.
+**See and count (Computer Science, Math).** An ESP32-S3 camera on a post looks *down at the water surface only*, so no faces or houses are in frame. A compact object-detection model, **quantized to INT8** and run with TensorFlow Lite for Microcontrollers, classifies each item. Because the camera looks at a pocket one to two metres away, not a wide river, items are large in frame and a small model on an ESP32-S3 with PSRAM is realistic; our Stage 1 gate tests that it fits and runs fast enough before we build more. Training photos come from our own collections of real trash on the estero bank, labelled by students and checked by the adviser. Detections increment class counters stored on a microSD card. Each week students hand-count and weigh the bin's contents; a per-class average weight converts counts to kilograms, and the hand count is our accuracy test.
 
 **Report (Design).** The ESP32 hosts an offline Wi-Fi page a phone can read, with no cellular needed. A script produces the weekly barangay report and the CSV. Brand names that a person can read from stored photos are tallied by a student volunteer; the AI flags and crops likely labels, because automated brand reading is not yet reliable.
 
@@ -139,6 +146,8 @@ This is a thin margin on cloudy days, so the device lengthens its capture interv
 
 **Maintenance agreement.** A one-page memorandum names the barangay focal person who empties the bin weekly, the student team that clears jams, cleans the lens and uploads the data, and the school adviser who signs off the checklist: empty the bin, clear the bar screen, check the arm and ramp, wipe the lens, check the mooring, read the battery, upload the CSV. *[Confirm with the barangay before submission.]*
 
+**Fit with existing programs.** The barangay can run SALOK alongside its estero clean-up and monitoring programs **[VERIFY: names of current DENR/LGU estero programs]**, so the weekly emptying and report slot into work it already does and do not add a new burden.
+
 **Typhoon and theft plan.** A quick-release line and a rule to retrieve the electronics before a typhoon signal; the camera and controller mounted discreetly high on the post; barangay tanod informed.
 
 **Stakeholders:** barangay captain and sanitation/environment officers (site, emptying, using reports), the LGU solid-waste office (data), our adviser and school head (supervision), students (build, label, count, report), residents (consent and awareness).
@@ -169,11 +178,16 @@ This is a thin margin on cloudy days, so the device lengthens its capture interv
 
 ## References **[VERIFY each; add exact citations]**
 
-Meijer et al. (2021). More than 1,000 rivers account for 80% of global riverine plastic emissions into the ocean. *Science Advances*.
-Republic Act 11898, Extended Producer Responsibility Act of 2022.
-[Local cleanup/brand audit source].
-[A published river-plastic computer-vision monitoring study].
+Break Free From Plastic / GAIA (2019). *Plastics Exposed: How Waste Assessments and Brand Audits are Helping Philippine Cities Fight Plastic Pollution*. no-burn.org.
+Greenpeace International. *Nestlé and Unilever identified as top plastic polluters in Philippines waste audits.* greenpeace.org.
+HydroSentinel (2026). An IoT-enabled autonomous surface vehicle for dual-scale riverine plastic detection and remediation. *ScienceDirect*. **[add authors and journal details]**
+Manila Bulletin (Aug 24, 2026). Report on government estero trash traps and EPR audits. **[add headline and byline]**
+Meijer et al. (2021). More than 1,000 rivers account for 80% of global riverine plastic emissions into the ocean. *Science Advances*. **[VERIFY]**
+Republic Act 11898, Extended Producer Responsibility Act of 2022. **[VERIFY]**
+van Lieshout, C., et al. (2020). Automated river plastic monitoring using deep learning and cameras. *Earth and Space Science*, 7, e2019EA000960.
 [A TinyML or object-detection source on low-power microcontrollers].
+
+*All references above were found by web search; open each source and confirm the details before submitting.*
 
 ---
 
@@ -181,7 +195,7 @@ Republic Act 11898, Extended Producer Responsibility Act of 2022.
 
 | Criterion (weight) | How SALOK earns it |
 |---|---|
-| Design Innovation (20%) | The camera is both counter and trigger, so one chip lifts plastic and produces brand-level evidence; open, comparable community data. |
+| Design Innovation (20%) | An explicit prior-art table shows what exists; SALOK's novelty is the combination: a fixed, low-cost unit that lifts plastic, counts it on-chip, and feeds open EPR-ready data, with the camera as both counter and trigger. |
 | Relevance to the Community (20%) | A real estero, a named barangay partner and letter, a current law, a problem residents see daily. |
 | Feasibility (20%) | Staged build with decision gates, an itemized PHP 6,000 budget, power arithmetic, a passive fallback, and pre-submission evidence. |
 | STEM Integration (15%) | Explicit STEM map; physics, statistics, computer science, engineering and environmental science all used. |
