@@ -161,20 +161,21 @@ This is a thin margin on cloudy days, so the device lengthens its capture interv
 
 ## 7. Impact and long-term vision
 
-**Success means** floating plastic physically lifted from a real estero and a weekly, trustworthy record of what it was, all for PHP 6,000.
+**Why this matters.** NGOs already prove, by hand, which companies make the most plastic in Philippine waste, and RA 11898 now makes producers responsible for recovering it **[VERIFY]**. What is missing is proof that is continuous, cheap and owned by the community that lives beside the water. SALOK makes that proof continuous at the waterway and lifts some of the plastic out while it does so. One unit's kilograms are small; its significance is that the design is cheap enough for a thousand barangays to copy and its data is open enough to add up.
 
-**Measurable outcomes**
-1. [TARGET] kg lifted over the pilot, with weekly weigh-ins, a measured capture rate and a baseline comparison.
-2. Model precision and recall ≥ [0.85] on held-out locations; weekly count error within ±15% of hand counts.
-3. A weekly barangay report series and a first brand-level audit of the estero.
-4. A build guide and at least [1–2] additional sites by March 2027, each no more than PHP 6,000.
-5. A logged record of level alerts (secondary).
+**What we will measure (our pilot).**
+1. [TARGET] kg of floating debris lifted, with weekly weigh-ins, a measured capture rate and a baseline-week comparison.
+2. Model precision and recall of at least [0.85] on held-out locations; weekly count error within ±15% of hand counts.
+3. A weekly barangay report series and an item-level audit of what the estero carried.
+4. (Secondary) a logged record of level alerts and the warning time they gave.
 
-**Sustainability.** The barangay runs it with local parts, solar power and a one-page checklist under a named maintenance agreement; no subscription, server or internet is needed; the dataset and model are open so other barangays can retrain on their own waste. Reused floats and bamboo keep replacement cheap.
+**What we will show about replication.** A free English/Filipino build guide and at least [1–2] additional sites by March 2027 at no more than PHP 6,000 each, each sharing the same open data format. The impact claim rests on this step: until a second barangay copies it, we describe SALOK's reach as a plan, not a result.
 
-**Long-term vision.** A student-built, barangay-owned network of low-cost SALOK units along connected esteros, feeding an open dataset that shows where plastic enters the waterway, which products dominate, and whether EPR commitments are changing what the water carries. Each added barangay makes every other unit's data more valuable, so impact grows faster than cost.
+**Sustainability.** The barangay runs it with local parts, solar power and a one-page checklist under a named maintenance agreement; no subscription, server or internet is needed. The dataset and model are open so other barangays can retrain on their own waste, and reused floats and bamboo keep replacement cheap.
 
-**Key takeaway.** Lifting plastic is not enough; proving what it is makes producers accountable. SALOK does both for the price of one cheap trap.
+**Long-term vision.** A student-built, barangay-owned network of SALOK units along connected esteros, feeding an open dataset that shows where plastic enters the waterway, which products dominate, and whether EPR commitments are changing what the water carries. Each added barangay makes every other unit's data more valuable, so impact grows faster than cost. We will say plainly what we cannot yet claim: the pilot proves the method at one creek.
+
+**Key takeaway.** The Philippines already knows who makes the plastic; SALOK makes the proof continuous, cheap and community-owned, and lifts some of the plastic out while it does it.
 
 ## References **[VERIFY each; add exact citations]**
 
