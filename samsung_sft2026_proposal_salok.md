@@ -12,7 +12,7 @@
 
 ## Entry title
 
-**SALOK: A PHP 6,000 Solar-Powered Estero Guardian that Lifts Plastic Out of the Water and Proves, Item by Item, Who Made It**
+**SALOK: A PHP 6,000 Solar-Powered Estero Guardian that Lifts Plastic Out of the Water and Counts Every Item as Evidence for Producer Accountability**
 
 *(Salok = "to scoop" in Filipino. Rename if the team prefers.)*
 
