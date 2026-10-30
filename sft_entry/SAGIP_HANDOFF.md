@@ -15,7 +15,7 @@ SAGIP is a floating, moored, solar-powered estero raft (11,500 plus 500 continge
 - Limit stated in the entry: people must still empty bins weekly, clear the screen, wipe the lens and check the battery. Hours are logged.
 - A bank-mounted hybrid version (hinged floating ramp foot, about PHP 6,800) is saved in `old_versions/` (files ending `_v4_hybrid`).
 
-Research question: can a PHP 6,800 on-chip counter match a trained hand audit within 15%, and does continuous counting reveal rain-driven pulses that weekly audits miss?
+Research question: can a PHP 12,000 on-chip counter match a trained hand audit within 15%, and does continuous counting reveal rain-driven pulses that weekly audits miss?
 
 ## Files in `sft_entry/`
 
