@@ -68,13 +68,13 @@ fig("fig_cut.png", 6.6, "Cutaway of the SAGIP unit at the creek bank, with the e
 
 h("2. Why it is built this way")
 bullet("Hyacinth: ", "water hyacinth mats carried most of the floating plastic counted in a Saigon River study (Schreyers et al., 2021), so the boom has a deflector and mats go to Bin B.")
-bullet("Rain pulses: ", "debris release in Greater Jakarta rose in the rainy season (Cordova & Nurhati, 2019), so the device logs every item with time and water level.")
-bullet("On-chip AI: ", "INT8 quantization shrinks a model about fourfold (Jacob et al., 2018) and TensorFlow Lite for Microcontrollers runs it on an ESP32-S3 (David et al., 2021).")
-bullet("Bank-mounted: ", "electronics stay above the flood mark, students stay out of the water, and no hull is needed. Only the boom and the ramp foot float.")
+bullet("Rain pulses: ", "floating plastic transport rose up to six times at peak river flow (van Emmerik et al., 2022), so the device logs every item with time and water level.")
+bullet("On-chip AI: ", "INT8 quantization shrinks a model about fourfold (Gholami et al., 2021) and TensorFlow Lite for Microcontrollers runs it on an ESP32-S3 (David et al., 2021).")
+bullet("Bank-mounted: ", "electronics stay above the flood mark, students stay out of the water, and no hull is needed. Only the boom and the ramp foot float, so the unit is a hybrid.")
 
 h("3. How it works")
 bullet("Catch: ", "a boom of reused PET bottles with a net skirt guides plastic to the bank. A wide-gapped deflector upstream lets hyacinth mats pass.")
-bullet("Filter: ", "coarse bars, then a fine mesh basket, both sloped to shed leaves and mud. The ramp foot is hinged on bottle floats and follows the water level.")
+bullet("Filter: ", "coarse bars, then a fine mesh basket, both sloped to shed leaves and mud. The ramp foot is hinged on bottle floats and joins the fixed ramp through a flexible chute, so it follows the water level.")
 bullet("Lift: ", "a worm-gear motor above the flood mark turns a short rake arm in bursts. A shear pin protects the gearbox.")
 bullet("Protect and adapt: ", "the chip reads motor current. It slows the motor under heavy load and speeds it up under light load. A jam triggers a short reverse, up to three retries, then a lockout and an alert. The driver defaults to off.")
 bullet("Count and sort: ", "a hooded, LED-lit camera looks at a landing plate. The CNN names the item. A servo gate drops plastic into Bin A and plants or unsure items into Bin B. Every week students hand-count both bins to check it.")
@@ -95,15 +95,16 @@ table([("Item", "Qty", "PHP"),
        ("Two reused bins and painted staff gauge", "1 set", "150"), ("Wiring, fuse, switch, connectors", "1 set", "250"),
        ("Worm-gear DC motor (6 to 7.4 V)", "1", "450"), ("Motor driver", "1", "200"),
        ("Current and Hall sensing", "1 set", "150"), ("Servo with metal gears (sorter gate)", "1", "200"),
-       ("Ramp with hinged float foot, rake arm, coarse bars, fine mesh, shear pins", "1 set", "350"),
-       ("Subtotal", "", "5,850"), ("Contingency", "", "150"), ("Pilot total", "", "6,000")],
-      [4.4, 0.8, 1.2], bold_rows=(17, 18, 19))
+       ("Ramp, rake arm, coarse bars, fine mesh, shear pins", "1 set", "350"),
+       ("Hinged float foot: bottle floats, hinges, stainless hardware, flexible chute", "1 set", "600"),
+       ("Subtotal", "", "6,450"), ("Contingency", "", "350"), ("Pilot total", "", "6,800")],
+      [4.4, 0.8, 1.2], bold_rows=(18, 19, 20))
 para("Materials: reused bottles and bamboo for floats, PVC or plastic stock for the ramp and arm, stainless fasteners, UV-stable rope and an IP65 box. These are pilot-grade and should last months. "
      "Upgrades: HDPE floats and stainless mesh. We will ask the barangay for posts, rope and bins in kind.")
 para("Add-ons, only when a measured trigger fires:")
 table([("Add-on", "PHP"),
        ("Belt conveyor in place of the rake arm (frame, belt, rollers, larger motor)", "+4,000 to 10,000 (unconfirmed)"),
-       ("Fully floating platform with pontoons and mooring", "+3,000 to 6,000 (unconfirmed)"),
+       ("Fully floating platform with pontoons and mooring", "+3,000 to 6,800 (unconfirmed)"),
        ("Second camera angle", "+1,300"),
        ("Larger solar panel and 12 V battery", "+2,500 to 4,000 (unconfirmed)")], [4.4, 2.0])
 para("Tools to borrow: soldering iron, multimeter or USB power meter, drill, saw, pliers, kitchen scale.")
@@ -120,6 +121,6 @@ h("7. Build steps")
 para("Oct 30 to Nov 2: site visit, barangay letter, photographs and labels, bench power test. Nov 3 to 20: Stage 1 bench build with the CNN on the "
      "ESP32-S3, and a baseline week at the creek. Stage 2 passive trap, then Stage 3 arm and sorter after a wet bench test with hyacinth, silt and a little "
      "cooking oil. Pilot December to February: weekly emptying, hand count and report to the barangay.")
-para("Sources: Cordova & Nurhati (2019), Scientific Reports 9, 18730. David et al. (2021), Proceedings of Machine Learning and Systems 3. Jacob et al. (2018), CVPR. Schreyers et al. (2021), Frontiers in Environmental Science 9, 686334. Full list in the written entry.", size=9)
+para("Sources: David et al. (2021), Proceedings of Machine Learning and Systems 3. Gholami et al. (2021), arXiv:2103.13630. Schreyers et al. (2021), Frontiers in Environmental Science 9, 686334. van Emmerik et al. (2022), Earth's Future 10, e2022EF002811. Full list in the written entry.", size=9)
 d.save("SAGIP_SFT2026_Prototype_Design.docx")
 print("saved")
