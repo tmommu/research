@@ -102,6 +102,7 @@ def make_table(after_el, rows, widths, bold_last=0):
             c = t.cell(ri, ci); c.width = Inches(widths[ci])
             p = c.paragraphs[0]
             p.paragraph_format.line_spacing = 1.0; p.paragraph_format.space_after = Pt(2); p.paragraph_format.space_before = Pt(2)
+            if ri < len(rows) - 1: p.paragraph_format.keep_with_next = True
             isb = ri == 0 or (bold_last and ri >= len(rows) - bold_last)
             add_text(p, val, True if isb else None)
             if ci == len(widths) - 1 and re.fullmatch(r'[\d,]+', val or ''): p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
@@ -162,16 +163,16 @@ sp = OxmlElement('w:p'); t._tbl.addnext(sp)
 g = clone_after(sp, P(18), "Gap we test. ", C.S4_GAP)
 # ---------------- section 5 ----------------
 p = fill(P(22), None, C.S5_STEM)
-cap = picture_after(p, "fig_logic.png", 6.0, "Figure 1. What the chip decides, from camera to report.")
+cap = picture_after(p, "fig_flow.png", 6.0, "Figure 1. How plastic and signals move through the unit.")
 last = cap
 for i, (lab, txt) in enumerate(C.S5_STEPS):
     last = clone_after(last, P(18), lab + " ", txt.strip())
     if lab.startswith("Report"):
-        last = picture_after(last, "fig_dev.png", 6.0, "Figure 2. The SAGIP unit at the creek bank (schematic).")
+        last = picture_after(last, "fig_cut.png", 6.4, "Figure 2. Cutaway of the SAGIP unit at the creek bank (schematic).")
 last = clone_after(last, P(18), "In plain words. ", C.S5_PLAIN)
 # ---------------- section 6 ----------------
 fill(P(26), None, "The pilot unit costs about PHP 6,000 and is built in three stages, each bought only after the previous test passes.")
-fill(P(27), "Resources: ", "")
+fill(P(27), "Resources: ", ""); P(27).paragraph_format.keep_with_next = True
 t = make_table(P(27)._p, [("Item", "PHP")] + C.BUDGET, [5.4, 1.1], bold_last=3)
 sp = OxmlElement('w:p'); t._tbl.addnext(sp)
 last = clone_after(sp, P(26), "Tools. ", C.TOOLS)

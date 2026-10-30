@@ -61,57 +61,64 @@ title("SAGIP: Solar-Powered Estero Guardian with On-Chip AI (Prototype Design)")
 para("Quick visual of what we will build and buy. Quezon City Science High School, Grade 10 team. Adviser: Skjoukje U. Jemoya.")
 
 h("1. What it is")
-para("One solar-powered unit on a creek bank. A floating boom guides plastic to a ramp, a small arm lifts it into a bin, and a camera on a post counts "
-     "every item on the chip and triggers the arm. A weekly offline report goes to the barangay. The same chip also watches the water level for blockages.")
-fig("fig_dev.png", 6.3, "The SAGIP unit at the creek bank (schematic).")
+para("One solar-powered unit on a creek bank. A floating boom and a filter catch plastic, a small arm lifts it up a ramp, a camera on a post names each item "
+     "with a 2D convolutional neural network (CNN) on the chip, and a servo gate sorts it into two bins. A weekly offline report goes to the barangay. "
+     "The same chip also watches the water level for blockages.")
+fig("fig_cut.png", 6.6, "Cutaway of the SAGIP unit at the creek bank, with the electronics box opened (schematic).")
 
 h("2. Why it is built this way")
-bullet("Hyacinth: ", "water hyacinth mats carried most of the floating plastic counted in a Saigon River study (Schreyers et al., 2021), so the boom needs a deflector and the arm must tell plastic from vegetation.")
-bullet("Rain pulses: ", "debris release in Greater Jakarta rose in the rainy season (Cordova & Nurhati, 2019), so the device logs every item with time and water level and we compare counts with rainfall.")
-bullet("On-chip AI: ", "INT8 quantization shrinks a model about fourfold (Jacob et al., 2018) and TensorFlow Lite for Microcontrollers runs it on an ESP32-S3 (David et al., 2021), so no internet is needed.")
+bullet("Hyacinth: ", "water hyacinth mats carried most of the floating plastic counted in a Saigon River study (Schreyers et al., 2021), so the boom has a deflector and mats go to Bin B.")
+bullet("Rain pulses: ", "debris release in Greater Jakarta rose in the rainy season (Cordova & Nurhati, 2019), so the device logs every item with time and water level.")
+bullet("On-chip AI: ", "INT8 quantization shrinks a model about fourfold (Jacob et al., 2018) and TensorFlow Lite for Microcontrollers runs it on an ESP32-S3 (David et al., 2021).")
+bullet("Bank-mounted: ", "electronics stay above the flood mark, students stay out of the water, and no hull is needed. Only the boom and the ramp foot float.")
 
 h("3. How it works")
-bullet("Trap: ", "a boom of reused PET bottles and bamboo guides surface plastic to a bar screen at the foot of a ramp. A wide-gapped deflector upstream lets hyacinth mats pass.")
-bullet("Lift: ", "a geared DC motor, mounted above the flood line, turns a rake arm that sweeps debris into a covered bin in short bursts, only when the camera sees plastic and not vegetation.")
-bullet("Protect: ", "a shear pin protects the gearbox. Current and Hall sensing stop jams and slipping, with at most three retries and a driver that defaults to off.")
-bullet("Count: ", "an ESP32-S3 camera looks down at the water only. An INT8 model classifies each item on the chip, and every week students hand-count the bin to check it.")
-bullet("Report: ", "an offline Wi-Fi page gives the weekly report and an anonymized open dataset. Counts are plotted against rainfall to see whether plastic arrives in pulses.")
-bullet("Warn (secondary): ", "an ultrasonic sensor reads the water level against a painted gauge and alerts before a channel blocks.")
+bullet("Catch: ", "a boom of reused PET bottles with a net skirt guides plastic to the bank. A wide-gapped deflector upstream lets hyacinth mats pass.")
+bullet("Filter: ", "coarse bars, then a fine mesh basket, both sloped to shed leaves and mud. The ramp foot is hinged on bottle floats and follows the water level.")
+bullet("Lift: ", "a worm-gear motor above the flood mark turns a short rake arm in bursts. A shear pin protects the gearbox.")
+bullet("Protect and adapt: ", "the chip reads motor current. It slows the motor under heavy load and speeds it up under light load. A jam triggers a short reverse, up to three retries, then a lockout and an alert. The driver defaults to off.")
+bullet("Count and sort: ", "a hooded, LED-lit camera looks at a landing plate. The CNN names the item. A servo gate drops plastic into Bin A and plants or unsure items into Bin B. Every week students hand-count both bins to check it.")
+bullet("Report: ", "an offline Wi-Fi page gives the weekly report and an anonymized open dataset, with time from a clock module. Counts are plotted against rainfall.")
+bullet("Warn (secondary): ", "an ultrasonic sensor reads the water level against a painted staff gauge and alerts before a channel blocks.")
 
 h("4. The electronics box")
-fig("fig_box.png", 6.0, "Electronics box, cover off (schematic).")
-bullet("Brain: ", "ESP32-S3 camera board with PSRAM.")
-bullet("Power: ", "a 6 to 10 W solar panel, a charge controller and two 18650 cells (about 18 Wh), with a fuse and master switch. Electronics draw about 6 Wh a day as a planning figure.")
+bullet("Brain: ", "ESP32-S3 camera board with PSRAM, microSD card and clock module.")
+bullet("Power: ", "a 6 W solar panel, a charge controller and two 18650 cells (about 18 Wh), with a fuse and master switch. The camera runs only when an item is present. Planning figures: about 6 Wh a day used and about 11 Wh a day produced.")
 bullet("Safety: ", "low-voltage wiring in a sealed box with desiccant, a guarded arm with a stop switch and lockout, a motor driver that is off by default, and no student in the water.")
 
 h("5. Materials and cost (estimated local prices, to be confirmed)")
 table([("Item", "Qty", "PHP"),
-       ("ESP32-S3 camera board with PSRAM", "1", "1,300"), ("microSD card", "1", "200"),
-       ("Sealed enclosure, glands, desiccant", "1", "300"), ("Waterproof ultrasonic level sensor", "1", "350"),
-       ("Solar panel (about 6 to 10 W)", "1", "600"), ("Charge controller, two 18650 cells, holder, converter", "1 set", "700"),
-       ("Rope, net, zip ties (bottles and bamboo reused)", "1 set", "450"), ("Anchor, post, clamps, concrete", "1 set", "350"),
-       ("Bin (reused) and painted staff gauge", "1", "150"), ("Wiring, fuse, switch, connectors", "1 set", "250"),
-       ("Small geared DC motor (6 to 7.4 V)", "1", "500"), ("Motor driver", "1", "200"),
-       ("Current and motion sensing", "1 set", "150"), ("Ramp, rake arm, shaft, bar screen, spare shear pins", "1 set", "150"),
-       ("Subtotal", "", "5,650"), ("Contingency", "", "350"), ("Pilot total", "", "6,000")],
-      [4.4, 0.8, 1.2], bold_rows=(15, 16, 17))
+       ("ESP32-S3 camera board with PSRAM", "1", "1,300"), ("microSD card", "1", "150"), ("Clock module", "1", "100"),
+       ("Sealed enclosure, glands, desiccant, light hood", "1", "300"), ("Waterproof ultrasonic level sensor", "1", "350"),
+       ("6 W solar panel", "1", "500"), ("Charge controller, two 18650 cells, holder, converter", "1 set", "700"),
+       ("Rope, net, zip ties (bottles and bamboo reused)", "1 set", "400"), ("Anchor, post, clamps, concrete", "1 set", "300"),
+       ("Two reused bins and painted staff gauge", "1 set", "150"), ("Wiring, fuse, switch, connectors", "1 set", "250"),
+       ("Worm-gear DC motor (6 to 7.4 V)", "1", "450"), ("Motor driver", "1", "200"),
+       ("Current and Hall sensing", "1 set", "150"), ("Servo with metal gears (sorter gate)", "1", "200"),
+       ("Ramp with hinged float foot, rake arm, coarse bars, fine mesh, shear pins", "1 set", "350"),
+       ("Subtotal", "", "5,850"), ("Contingency", "", "150"), ("Pilot total", "", "6,000")],
+      [4.4, 0.8, 1.2], bold_rows=(17, 18, 19))
+para("Materials: reused bottles and bamboo for floats, PVC or plastic stock for the ramp and arm, stainless fasteners, UV-stable rope and an IP65 box. These are pilot-grade and should last months. "
+     "Upgrades: HDPE floats and stainless mesh. We will ask the barangay for posts, rope and bins in kind.")
 para("Add-ons, only when a measured trigger fires:")
 table([("Add-on", "PHP"),
        ("Belt conveyor in place of the rake arm (frame, belt, rollers, larger motor)", "+4,000 to 10,000 (unconfirmed)"),
+       ("Fully floating platform with pontoons and mooring", "+3,000 to 6,000 (unconfirmed)"),
        ("Second camera angle", "+1,300"),
        ("Larger solar panel and 12 V battery", "+2,500 to 4,000 (unconfirmed)")], [4.4, 2.0])
-para("Tools to borrow: soldering iron, multimeter or USB power meter, drill, saw, pliers.")
+para("Tools to borrow: soldering iron, multimeter or USB power meter, drill, saw, pliers, kitchen scale.")
 
 h("6. What we expect (to be tested, not promised)")
-para("Capture: we aim to lift at least [TARGET] kg of floating debris in 8 weeks and capture at least [X]% of what reaches the boom. Counting: weekly "
-     "device counts within 15% of a trained hand audit, and at least 85% precision and recall on photographs from unseen places.")
-para("**Measurement details: Capture rate is kilograms lifted divided by kilograms lifted plus kilograms that pass the boom, estimated by downstream "
-     "hand-net sampling. A baseline week before installation records the hand-net count, hyacinth cover and flow. The hand audit uses the same categories "
-     "as NGO brand audits. If the arm cannot lift on solar power alone, the passive boom and bin continue and the camera still counts.**")
+para("Capture: we aim to capture at least 50% of the floating debris that reaches the boom against a baseline week, lift at least 20 kg in 8 weeks and log at least 1,000 classified items. "
+     "Counting: weekly device counts within 15% of a trained hand audit, and at least 85% precision and recall on photographs from unseen places.")
+para("Measurement details: Capture rate is kilograms lifted divided by kilograms lifted plus kilograms that pass the boom, estimated by downstream hand-net sampling. "
+     "A baseline week before installation records the hand-net count, hyacinth cover and flow. The hand audit uses the same categories as NGO brand audits. "
+     "If the arm cannot lift on solar power alone, the passive boom and bins continue and the camera still counts. Limits: people must still empty both bins weekly, "
+     "clear the screen after storms, wipe the lens and check the battery. We will log those hours.", size=10)
 
 h("7. Build steps")
-para("Oct 28 to Nov 2: site visit, barangay letter, photographs and labels, bench power test. Nov 3 to 20: Stage 1 bench build with the model on the "
-     "ESP32-S3, and a baseline week at the creek. Stage 2 passive trap, then Stage 3 arm and sensor after a wet bench test with hyacinth, silt and a little "
+para("Oct 30 to Nov 2: site visit, barangay letter, photographs and labels, bench power test. Nov 3 to 20: Stage 1 bench build with the CNN on the "
+     "ESP32-S3, and a baseline week at the creek. Stage 2 passive trap, then Stage 3 arm and sorter after a wet bench test with hyacinth, silt and a little "
      "cooking oil. Pilot December to February: weekly emptying, hand count and report to the barangay.")
 para("Sources: Cordova & Nurhati (2019), Scientific Reports 9, 18730. David et al. (2021), Proceedings of Machine Learning and Systems 3. Jacob et al. (2018), CVPR. Schreyers et al. (2021), Frontiers in Environmental Science 9, 686334. Full list in the written entry.", size=9)
 d.save("SAGIP_SFT2026_Prototype_Design.docx")
