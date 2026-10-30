@@ -59,7 +59,7 @@ for el in list(d0._p):
 
 # ---------------- slide 2 ----------------
 sh = Shape(shp(S[1], 62)); p = sh.ps
-sh.set(p[1], [(False, "Philippine rivers rank first among countries for river plastic emissions (Meijer et al., 2021). "
+sh.set(p[1], [(False, "Philippine rivers rank first among countries for river plastic emissions, with the Pasig first among rivers in the model (Meijer et al., 2021). "
                       "Cleanups weigh bulk waste and record nothing about it. Brand audits are periodic and mostly land-based (Break Free From Plastic, 2021), "
                       "and RA 11898 needs proof of which packaging reaches waterways. The gap is a continuous, low-cost record taken at the creek itself.")])
 sh.set(p[3], [(True, "Goal: "), (False, "make creek plastic measurable evidence instead of invisible waste, with cleaner creeks and community-owned data.")])
@@ -72,15 +72,14 @@ sh.set(p[6], [(True, "Primary: "), (False, "the [N] households of [barangay and 
 
 # ---------------- slide 3 ----------------
 sh = Shape(shp(S[2], 67)); p = sh.ps
-sh.set(p[1], [(True, "Select. "), (False, "We scored five community problems on significance, feasibility, STEM depth, replicability and originality. Creek plastic won, "
-                                          "and we fitted the design to PHP 12,000. [Edit to match your process.]")])
+sh.set(p[1], [(True, "Select. "), (False, "We scored five community problems on significance, feasibility, STEM depth, replicability and originality. Creek plastic won. [Edit to match your process.]")])
 q2 = sh.clone_after(p[1], p[1], [(True, "What exists. "), (False, "Cameras detect floating plastic but remove nothing (Kataoka et al., 2024). Solar Interceptor barriers and AI boats "
         "are planned or piloted on large Pasig-area rivers (The Ocean Cleanup, 2026, Manila Bulletin, 2025). Trash traps remove plastic in bulk and record only weight "
-        "(Philstar, 2022). Brand audits name companies but are manual (Break Free From Plastic, 2021).")])
+        "(Philstar, 2022). Brand audits are manual (Break Free From Plastic, 2021). Tiny on-chip classifiers have only had controlled tests (Mendez-Cruz et al., 2024).")])
 q3 = sh.clone_after(p[1], q2, [(True, "Gap we test. "), (False, "No system we found lifts, counts and shares open data at barangay cost. Can a PHP 12,000 on-chip counter match a hand audit "
         "within 15%, and does continuous counting show rain-driven pulses of plastic (van Emmerik et al., 2022) that weekly audits miss?")])
 sh.clone_after(p[1], q3, [(True, "Sources: "), (False, "Break Free From Plastic 2021, David et al. 2021, Gholami et al. 2021, Kataoka et al. 2024, Manila Bulletin 2025, "
-        "Meijer et al. 2021, Philstar 2022, RA 11898, The Ocean Cleanup 2026, van Emmerik et al. 2022.")])
+        "Meijer et al. 2021, Mendez-Cruz et al. 2024, Philstar 2022, RA 11898, The Ocean Cleanup 2026, van Emmerik et al. 2022.")])
 # ---------------- slide 4 ----------------
 sh = Shape(shp(S[3], 72)); p = sh.ps
 sh.set(p[1], [(True, "Summary. "), (False, "A boom and hyacinth deflector guide plastic to a floating, moored solar raft, where coarse bars and a fine mesh basket catch it. A rake arm lifts it up a ramp, a hooded camera runs a small "
