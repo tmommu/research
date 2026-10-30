@@ -168,10 +168,10 @@ last = cap
 for i, (lab, txt) in enumerate(C.S5_STEPS):
     last = clone_after(last, P(18), lab + " ", txt.strip())
     if lab.startswith("Report"):
-        last = picture_after(last, "fig_cut.png", 6.4, "Figure 2. Cutaway of the SAGIP unit at the creek bank (schematic).")
+        last = picture_after(last, "fig_cut.png", 6.4, "Figure 2. Cutaway of the floating SAGIP unit (schematic).")
 last = clone_after(last, P(18), "In plain words. ", C.S5_PLAIN)
 # ---------------- section 6 ----------------
-fill(P(26), None, "The pilot unit costs about PHP 6,800 and is built in three stages, each bought only after the previous test passes.")
+fill(P(26), None, "The pilot unit costs about PHP 12,000 and is built in three stages, each bought only after the previous test passes.")
 fill(P(27), "Resources: ", ""); P(27).paragraph_format.keep_with_next = True
 t = make_table(P(27)._p, [("Item", "PHP")] + C.BUDGET, [5.4, 1.1], bold_last=3)
 sp = OxmlElement('w:p'); t._tbl.addnext(sp)
