@@ -1,0 +1,146 @@
+<title>SAGIP Wiring</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one block schematic of the power rails and signal lines, with a short note on each rail. */
+:root {
+  --bg: #f2f6f6; --surface: #ffffff; --fg: #11262c; --muted: #4d646b; --line: #c5d4d6;
+  --water: #0d7c86; --water-soft: #cfe9ec; --warn: #b4600f; --warn-soft: #fbe9d6; --board: #2f7d4f;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1b1f; --surface: #14292f; --fg: #e5f0f1; --muted: #9bb4b9; --line: #2b4950;
+    --water: #4fc3cd; --water-soft: #12363c; --warn: #f0a458; --warn-soft: #3a2a17; --board: #4fa874; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1b1f; --surface: #14292f; --fg: #e5f0f1; --muted: #9bb4b9; --line: #2b4950;
+  --water: #4fc3cd; --water-soft: #12363c; --warn: #f0a458; --warn-soft: #3a2a17; --board: #4fa874; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.45;
+  padding-block: 26px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+h1 { font-family: var(--font-display); font-size: clamp(1.7rem, 4.5vw, 2.4rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+.tag { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--water); font-weight: 700; }
+.lede { color: var(--muted); margin: 8px 0 0; max-width: 70ch; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.scroll svg { display: block; min-width: 980px; width: 100%; height: auto; }
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 10px 22px; margin: 0; padding: 0; list-style: none; }
+.notes li { color: var(--muted); font-size: .95rem; }
+.notes strong { color: var(--fg); }
+.b { fill: var(--surface); stroke: var(--fg); stroke-width: 1.6; }
+.bw { fill: var(--water-soft); stroke: var(--water); stroke-width: 1.6; }
+.bo { fill: var(--warn-soft); stroke: var(--warn); stroke-width: 1.6; }
+.bg { fill: var(--board); stroke: var(--fg); stroke-width: 1.6; }
+.t { fill: var(--fg); font-family: var(--font-body); font-size: 13px; }
+.tb { fill: var(--fg); font-family: var(--font-display); font-size: 14px; font-weight: 700; }
+.ts { fill: var(--muted); font-family: var(--font-body); font-size: 11.5px; }
+.tw { fill: #fff; font-family: var(--font-display); font-size: 14px; font-weight: 700; }
+.r12 { stroke: var(--warn); stroke-width: 3; fill: none; }
+.r5 { stroke: var(--water); stroke-width: 3; fill: none; }
+.sg { stroke: var(--fg); stroke-width: 1.4; fill: none; stroke-dasharray: 5 4; }
+</style>
+<main>
+  <header>
+    <span class="tag">SAGIP &middot; wiring schematic (block level)</span>
+    <h1>How the boat and flood node are wired</h1>
+    <p class="lede">Orange lines carry 12 V power, teal lines carry 5 V, dashed lines carry signals. The motors run on fused 12 V branches of their own, so a motor surge cannot reset a board.</p>
+  </header>
+  <div class="scroll">
+    <svg viewBox="0 0 1240 650" role="img" aria-label="Block schematic of the SAGIP boat. A 30 W panel charges a 12 V 12 Ah battery through a controller. Fuses feed a 12 V rail that powers the thruster driver, the belt driver with a current sensor, and two 5 V buck converters. One converter powers the ESP32-S3 belt camera board and the ESP32-CAM bow detector, the other powers the servo and LED ring. A separate solar flood node on the bank has an ESP32, three float switches and a buzzer, and talks to the boat over ESP-NOW.">
+      <defs>
+        <marker id="a12" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--warn)"/></marker>
+        <marker id="a5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--water)"/></marker>
+        <marker id="as" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--fg)"/></marker>
+      </defs>
+      <text class="tb" x="20" y="22">Boat</text>
+      <rect class="bw" x="20" y="36" width="150" height="62" rx="8"/><text class="tb" x="32" y="60">30 W panel</text><text class="ts" x="32" y="80">flat on the deck</text>
+      <rect class="bw" x="20" y="146" width="150" height="62" rx="8"/><text class="tb" x="32" y="170">Charge controller</text><text class="ts" x="32" y="190">20 A, low-voltage cutoff</text>
+      <rect class="bw" x="20" y="256" width="150" height="62" rx="8"/><text class="tb" x="32" y="280">12 V 12 Ah</text><text class="ts" x="32" y="300">battery, about 144 Wh</text>
+      <rect class="bo" x="20" y="366" width="150" height="62" rx="8"/><text class="tb" x="32" y="390">Fuse + switch</text><text class="ts" x="32" y="410">master cut-off</text>
+      <path class="r12" d="M95 98 V144" marker-end="url(#a12)"/><path class="r12" d="M95 208 V254" marker-end="url(#a12)"/><path class="r12" d="M95 318 V364" marker-end="url(#a12)"/>
+      <path class="r12" d="M95 428 V540 H930"/><text class="tb" x="180" y="532" style="fill:var(--warn)">12 V rail</text>
+
+      <!-- thrusters -->
+      <rect class="bo" x="230" y="440" width="110" height="56" rx="8"/><text class="tb" x="242" y="464">Fuse 10 A</text><text class="ts" x="242" y="482">+ 1000 uF cap</text>
+      <path class="r12" d="M285 540 V498" marker-end="url(#a12)"/>
+      <rect class="bo" x="230" y="340" width="110" height="60" rx="8"/><text class="tb" x="242" y="364">Dual driver</text><text class="ts" x="242" y="382">10 A, off by default</text>
+      <path class="r12" d="M285 440 V402" marker-end="url(#a12)"/>
+      <rect class="b" x="230" y="240" width="110" height="60" rx="8"/><text class="tb" x="242" y="264">2 thrusters</text><text class="ts" x="242" y="282">12 V, shrouded props</text>
+      <path class="r12" d="M285 340 V302" marker-end="url(#a12)"/>
+
+      <!-- belt -->
+      <rect class="bo" x="390" y="440" width="110" height="56" rx="8"/><text class="tb" x="402" y="464">Fuse 3 A</text><text class="ts" x="402" y="482">+ capacitor</text>
+      <path class="r12" d="M445 540 V498" marker-end="url(#a12)"/>
+      <rect class="bo" x="390" y="360" width="110" height="52" rx="8"/><text class="tb" x="402" y="382">Current sensor</text><text class="ts" x="402" y="400">INA219 on I2C</text>
+      <path class="r12" d="M445 440 V414" marker-end="url(#a12)"/>
+      <rect class="bo" x="390" y="270" width="110" height="52" rx="8"/><text class="tb" x="402" y="292">Belt driver</text><text class="ts" x="402" y="310">3 A, off by default</text>
+      <path class="r12" d="M445 360 V324" marker-end="url(#a12)"/>
+      <rect class="b" x="390" y="180" width="110" height="52" rx="8"/><text class="tb" x="402" y="202">Belt motor</text><text class="ts" x="402" y="220">12 V gear motor</text>
+      <path class="r12" d="M445 270 V234" marker-end="url(#a12)"/>
+
+      <!-- board branch -->
+      <rect class="bg" x="560" y="440" width="120" height="56" rx="8"/><text class="tw" x="572" y="464">Buck A 5 V</text><text class="tw" x="572" y="482" style="font-size:11.5px">3 A, boards</text>
+      <path class="r12" d="M620 540 V498" marker-end="url(#a12)"/>
+      <rect class="bg" x="540" y="190" width="186" height="170" rx="10"/>
+      <text class="tw" x="554" y="214">ESP32-S3 (brain)</text>
+      <text class="tw" x="554" y="236" style="font-size:12px">belt camera + 2D CNN</text><text class="tw" x="554" y="254" style="font-size:12px">patrol, jam logic, sorting</text>
+      <text class="tw" x="554" y="272" style="font-size:12px">microSD log + clock (I2C)</text><text class="tw" x="554" y="290" style="font-size:12px">Wi-Fi page and phone remote</text>
+      <path class="r5" d="M620 440 V362" marker-end="url(#a5)"/>
+      <rect class="bg" x="800" y="190" width="150" height="60" rx="8"/><text class="tw" x="812" y="214">ESP32-CAM</text><text class="tw" x="812" y="232" style="font-size:12px">bow detector</text>
+      <path class="r5" d="M660 440 H700 V400 H870 V252" marker-end="url(#a5)"/>
+      <path class="sg" d="M800 222 H728" marker-end="url(#as)"/><text class="ts" x="738" y="214">targets</text>
+
+      <!-- servo + LED -->
+      <rect class="bg" x="740" y="440" width="120" height="56" rx="8"/><text class="tw" x="752" y="464">Buck B 5 V</text><text class="tw" x="752" y="482" style="font-size:11.5px">3 A, servo + LEDs</text>
+      <path class="r12" d="M800 540 V498" marker-end="url(#a12)"/>
+      <rect class="b" x="740" y="320" width="110" height="52" rx="8"/><text class="tb" x="752" y="342">Servo gate</text><text class="ts" x="752" y="360">metal gears</text>
+      <path class="r5" d="M800 440 V374" marker-end="url(#a5)"/>
+      <rect class="b" x="880" y="320" width="110" height="52" rx="8"/><text class="tb" x="892" y="342">LED ring</text><text class="ts" x="892" y="360">via MOSFET</text>
+      <path class="r5" d="M860 468 H935 V374" marker-end="url(#a5)"/>
+
+      <!-- signals -->
+      <path class="sg" d="M540 310 H522 V296 H502" marker-end="url(#as)"/><text class="ts" x="506" y="262">PWM, EN</text>
+      <path class="sg" d="M540 340 H520 V428 H350 V372 H342" marker-end="url(#as)"/><text class="ts" x="356" y="420">PWM, DIR, EN</text>
+      <path class="sg" d="M540 300 V380 H504" marker-end="url(#as)" opacity="0"/>
+      <path class="sg" d="M726 346 H738" marker-end="url(#as)"/>
+      <path class="sg" d="M770 330 L880 330" marker-end="url(#as)" opacity="0"/>
+
+      <!-- sensors -->
+      <rect class="b" x="1000" y="50" width="220" height="110" rx="8"/><text class="tb" x="1012" y="74">Navigation sensors</text><text class="ts" x="1012" y="94">compass and tilt sensor (I2C)</text><text class="ts" x="1012" y="112">3 waterproof ultrasonic sensors</text><text class="ts" x="1012" y="130">2 bump switches</text><text class="ts" x="1012" y="148">5 V from the board</text>
+      <path class="sg" d="M770 230 H980 V105 H998" marker-end="url(#as)"/>
+
+      <!-- flood node on bank -->
+      <rect x="980" y="400" width="250" height="230" rx="10" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.6" stroke-dasharray="6 4"/>
+      <text class="tb" x="994" y="424">Flood node on the bank</text>
+      <rect class="bw" x="994" y="438" width="100" height="44" rx="6"/><text class="t" x="1004" y="458">2 W panel</text><text class="ts" x="1004" y="474">TP4056, 18650</text>
+      <rect class="bg" x="1112" y="438" width="104" height="44" rx="6"/><text class="tw" x="1122" y="465" style="font-size:12.5px">ESP32</text>
+      <path class="r5" d="M1094 460 H1110" marker-end="url(#a5)"/>
+      <rect class="b" x="994" y="510" width="100" height="44" rx="6"/><text class="t" x="1004" y="530">3 float</text><text class="ts" x="1004" y="546">switches</text>
+      <rect class="b" x="1112" y="510" width="104" height="44" rx="6"/><text class="t" x="1122" y="530">Buzzer</text><text class="ts" x="1122" y="546">and beacon</text>
+      <path class="sg" d="M1094 532 H1100 V484" marker-end="url(#as)" opacity="0"/>
+      <path class="sg" d="M1050 510 V500 H1150 V484" marker-end="url(#as)"/>
+      <path class="sg" d="M1164 484 V508" marker-end="url(#as)"/>
+      <path class="sg" d="M1112 454 H1000 V420 H900 V380 H870" marker-end="url(#as)" opacity="0"/>
+      <path class="sg" d="M1112 460 L1100 440 H990 V390 H860 V380" marker-end="url(#as)" opacity="0"/>
+      <path class="sg" d="M980 470 H950 V400 H890 V374" marker-end="url(#as)" opacity="0"/>
+      <path class="sg" d="M980 600 H900 V572 H640 V500" marker-end="url(#as)" opacity="0"/>
+      <text class="ts" x="994" y="596">ESP-NOW alert link to the boat</text>
+      <path class="sg" d="M980 586 H680 V362" marker-end="url(#as)"/>
+
+      <!-- legend -->
+      <path class="r12" d="M20 600 H70"/><text class="ts" x="78" y="604">12 V power</text>
+      <path class="r5" d="M20 622 H70"/><text class="ts" x="78" y="626">5 V power</text>
+      <path class="sg" d="M170 600 H220"/><text class="ts" x="228" y="604">signal</text>
+      <text class="ts" x="170" y="626">All grounds are common and not drawn. Pin numbers are set when the boards are chosen.</text>
+    </svg>
+  </div>
+  <ul class="notes">
+    <li><strong>Solar chain.</strong> Panel, charge controller and battery on the boat. The controller cuts the load when the battery is low.</li>
+    <li><strong>Thrusters and belt.</strong> Each has its own fuse and a driver that stays off until the board enables it. A current sensor on the belt detects jams.</li>
+    <li><strong>Boards.</strong> One buck converter feeds the ESP32-S3 and the ESP32-CAM. A second feeds the servo and LED ring, so their spikes cannot reset the boards.</li>
+    <li><strong>Flood node.</strong> A separate small solar node with three float switches and a buzzer. It tells the boat to stay docked from the alert level.</li>
+  </ul>
+</main>
