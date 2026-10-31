@@ -7,7 +7,7 @@ TEAM = ["Aaron Jed E. Campo, Grade 10", "Raya Kalayaan R. Amparo, Grade 10",
         "Ayeza Leigh F. Delos Santos, Grade 10", "Sophia Laureen A. Tado, Grade 10"]
 THEME = "Environmental Sustainability through Technology"
 
-TITLE = "SAGIP: A Self-Navigating Boat That Collects and Counts Creek Plastic"
+TITLE = "SAGIP: A Solar-Powered AI Boat That Collects and Counts Creek Plastic"
 
 DESC = ("SAGIP is a low-cost, solar-powered robot boat that patrols a creek, goes to floating debris, lifts it onto a conveyor and names each item using a small on-chip neural network running on an ESP32 chip. "
         "Barangay officials get a weekly report of the plastic collected by type and weight through an offline phone page, plus a float-switch flood alarm at the bank. "
