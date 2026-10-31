@@ -89,7 +89,7 @@ for sl, idx in ((S[2], 67), (S[3], 72)):
 # ---------------- slide 4 ----------------
 sh = Shape(shp(S[3], 72)); p = sh.ps
 sh.set(p[1], [(True, "Summary. "), (False, "A solar robot boat navigates on its own between two barriers, the upstream one a 30-degree float rope that angles mats to the bank. "
-        "A bow camera runs an object detector, the boat steers to the plastic it boxes, and a scoop lifts it onto a cleated conveyor, one item per pocket. "
+        "A bow camera detects plastic, the boat steers to it, and a scoop lifts it onto a cleated conveyor. "
         "A second camera runs a 2D CNN (Gholami et al., 2021, David et al., 2021), and a servo gate sends plastic to Bin A and plants, mixed or unsure items to Bin B. "
         "Weekly reports, a monthly Plastic Trend Scoreboard and a flood alarm serve the barangay.")])
 q1 = sh.clone_after(p[1], p[1], [(True, "Reliability. "), (False, "A skirted hood and fixed LED give every photo the same light, and a hydrophobic film, angled window and desiccant pack keep housings clear of fog. "

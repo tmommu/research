@@ -207,9 +207,13 @@ if ind is not None: h._p.pPr.remove(ind)
 last = h
 for r in C.REFS:
     last = clone_after(last, P(26), None, r)
-    set_spacing(last, line=276, after=60)
+    set_spacing(last, line=360, after=60)
 # ---------------- remove reminders table ----------------
 REM.getparent().remove(REM)
+# clear a leftover orange paragraph-mark shade from the template
+for shd in list(d.element.body.iter(qn('w:shd'))):
+    if (shd.get(qn('w:fill')) or '').lower() == 'ff9900':
+        shd.getparent().remove(shd)
 
 d.save(OUT)
 
