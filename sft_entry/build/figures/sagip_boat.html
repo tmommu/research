@@ -1,0 +1,158 @@
+<title>SAGIP Skimmer Boat</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one cutaway drawing with numbered markers, an inset of the electronics box, and a short name-only key. */
+:root {
+  --bg: #f2f6f6; --surface: #ffffff; --fg: #11262c; --muted: #4d646b; --line: #c5d4d6;
+  --water: #0d7c86; --water-soft: #cfe9ec; --ground: #d9d3c4; --leaf: #4f8a3a; --item: #c4561a; --metal: #7c8f95; --board: #2f7d4f;
+  --warn: #b4600f; --warn-soft: #fbe9d6;
+  --font-display: "Bricolage Grotesque", "Trebuchet MS", sans-serif;
+  --font-body: "Atkinson Hyperlegible", "Segoe UI", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d1b1f; --surface: #14292f; --fg: #e5f0f1; --muted: #9bb4b9; --line: #2b4950;
+    --water: #4fc3cd; --water-soft: #12363c; --ground: #3b3a33; --leaf: #7fbf68; --item: #f08a55; --metal: #8fa6ad; --board: #4fa874;
+    --warn: #f0a458; --warn-soft: #3a2a17; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d1b1f; --surface: #14292f; --fg: #e5f0f1; --muted: #9bb4b9; --line: #2b4950;
+  --water: #4fc3cd; --water-soft: #12363c; --ground: #3b3a33; --leaf: #7fbf68; --item: #f08a55; --metal: #8fa6ad; --board: #4fa874;
+  --warn: #f0a458; --warn-soft: #3a2a17; color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 16px; line-height: 1.45;
+  padding-block: 26px 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px; }
+h1 { font-family: var(--font-display); font-size: clamp(1.7rem, 4.5vw, 2.4rem); line-height: 1.15; margin: 0; text-wrap: balance; }
+.tag { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--water); font-weight: 700; }
+.scroll { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
+.scroll svg { display: block; min-width: 980px; width: 100%; height: auto; }
+.key { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 8px 20px; margin: 0; padding: 0; list-style: none; }
+.key li { display: flex; gap: 9px; align-items: center; min-width: 0; font-size: .95rem; }
+.key span { color: var(--muted); }
+.key strong { color: var(--fg); }
+.key b { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--water); color: var(--surface); display: inline-grid; place-items: center; font-family: var(--font-display); font-size: .82rem; }
+.sv-n { fill: var(--water); }
+.sv-nt { fill: var(--surface); font-family: var(--font-display); font-size: 12.5px; font-weight: 700; }
+.sv-s { fill: var(--muted); font-family: var(--font-body); font-size: 11.5px; }
+.sv-i { fill: #fff; font-family: var(--font-body); font-size: 10.5px; font-weight: 700; }
+.sv-d { fill: var(--fg); font-family: var(--font-body); font-size: 10.5px; }
+</style>
+<main>
+  <header>
+    <span class="tag">SAGIP &middot; autonomous solar skimmer boat (draft)</span>
+    <h1>It spots debris, goes to it and collects it</h1>
+  </header>
+  <div class="scroll"><svg viewBox="0 0 1000 400" role="img" aria-label="Side view of the autonomous skimmer boat: a bow camera looks ahead for floating debris, a scoop lifts debris onto an inclined cleated conveyor belt, a hooded camera over the belt names each item, a servo gate drops plastic into Bin A and plants or unsure items into Bin B. A solar panel and electronics box sit on a mast, a battery sits between two floats, and a thruster is at the stern.">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--fg)"/></marker>
+    <pattern id="mesh" width="5" height="5" patternUnits="userSpaceOnUse"><path d="M0 0L5 5M5 0L0 5" stroke="var(--metal)" stroke-width="0.8"/></pattern>
+  </defs>
+  <rect x="0" y="250" width="1000" height="150" fill="var(--water-soft)"/>
+  <!-- floating debris ahead with detection boxes -->
+  <g fill="var(--item)"><rect x="92" y="243" width="20" height="8" rx="3"/><rect x="128" y="246" width="14" height="6" rx="2"/><rect x="158" y="243" width="18" height="8" rx="3"/></g>
+  <ellipse cx="205" cy="248" rx="14" ry="5" fill="var(--leaf)"/>
+  <g fill="none" stroke="var(--leaf)" stroke-width="1.8"><rect x="87" y="235" width="30" height="20" rx="2"/><rect x="123" y="238" width="24" height="18" rx="2"/><rect x="153" y="235" width="28" height="20" rx="2"/></g>
+  <!-- bow camera view cone -->
+  <polygon points="292,172 70,250 215,250" fill="var(--water)" opacity=".16"/>
+  <line x1="292" y1="172" x2="70" y2="250" stroke="var(--water)" stroke-width="1.2" stroke-dasharray="4 3"/><line x1="292" y1="172" x2="215" y2="250" stroke="var(--water)" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <!-- hull floats and deck -->
+  <rect x="330" y="238" width="390" height="44" rx="22" fill="var(--surface)" stroke="var(--fg)" stroke-width="2"/>
+  <g stroke="var(--metal)" stroke-width="1.2"><line x1="390" y1="240" x2="390" y2="280"/><line x1="560" y1="240" x2="560" y2="280"/><line x1="640" y1="240" x2="640" y2="280"/></g>
+  <rect x="300" y="228" width="430" height="9" fill="var(--metal)"/>
+  <rect x="0" y="250" width="1000" height="150" fill="var(--water)" opacity=".14"/>
+  <path d="M0 250 q12 -6 24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 t24 0 " fill="none" stroke="var(--water)" stroke-width="2"/>
+  <!-- battery between floats -->
+  <rect x="405" y="248" width="70" height="26" rx="4" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="1.8"/><text class="sv-s" x="440" y="266" text-anchor="middle">12 V</text>
+  <!-- scoop and belt -->
+  <g stroke="var(--metal)" stroke-width="3"><line x1="300" y1="237" x2="272" y2="262"/><line x1="318" y1="237" x2="296" y2="258"/></g>
+  <polygon points="228,270 262,256 276,274" fill="url(#mesh)" stroke="var(--metal)" stroke-width="1.5"/>
+  <line x1="262" y1="264" x2="450" y2="176" stroke="var(--metal)" stroke-width="13" stroke-linecap="round"/>
+  <line x1="278.1" y1="246.5" x2="285.7" y2="262.8" stroke="var(--fg)" stroke-width="3"/><line x1="298.0" y1="237.2" x2="305.7" y2="253.5" stroke="var(--fg)" stroke-width="3"/><line x1="318.0" y1="227.9" x2="325.6" y2="244.2" stroke="var(--fg)" stroke-width="3"/><line x1="337.9" y1="218.5" x2="345.5" y2="234.8" stroke="var(--fg)" stroke-width="3"/><line x1="357.8" y1="209.2" x2="365.4" y2="225.5" stroke="var(--fg)" stroke-width="3"/><line x1="377.7" y1="199.9" x2="385.4" y2="216.2" stroke="var(--fg)" stroke-width="3"/><line x1="397.7" y1="190.6" x2="405.3" y2="206.9" stroke="var(--fg)" stroke-width="3"/><line x1="417.6" y1="181.2" x2="425.2" y2="197.5" stroke="var(--fg)" stroke-width="3"/>
+  <circle cx="262" cy="264" r="9" fill="var(--surface)" stroke="var(--fg)" stroke-width="2"/><circle cx="450" cy="176" r="9" fill="var(--surface)" stroke="var(--fg)" stroke-width="2"/>
+  <rect x="452" y="150" width="30" height="22" rx="4" fill="var(--fg)"/>
+  <g fill="var(--item)"><rect x="318" y="226" width="12" height="6" rx="2" transform="rotate(-25 324 229)" opacity="0"/><rect x="330" y="214" width="12" height="6" rx="2" transform="rotate(-25 336 217)"/><rect x="392" y="190" width="12" height="6" rx="2" transform="rotate(-25 398 193)"/></g>
+  <!-- side sensor -->
+  <rect x="338" y="214" width="12" height="9" rx="2" fill="var(--fg)"/>
+  <path d="M352 212 q8 -4 8 -10 M352 218 q12 -6 12 -16" fill="none" stroke="var(--water)" stroke-width="1.4"/>
+  <!-- bow mast and camera -->
+  <rect x="297" y="170" width="6" height="58" fill="var(--metal)"/>
+  <rect x="282" y="156" width="36" height="17" rx="3" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.8"/><circle cx="292" cy="165" r="5" fill="var(--fg)"/>
+  <!-- belt camera hood and cone -->
+  <g stroke="var(--metal)" stroke-width="3"><line x1="436" y1="140" x2="436" y2="180"/><line x1="504" y1="140" x2="504" y2="228"/></g>
+  <polygon points="430,108 510,108 500,140 440,140" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.8"/><circle cx="470" cy="134" r="6" fill="var(--fg)"/>
+  <g fill="var(--warn)"><circle cx="448" cy="136" r="2.5"/><circle cx="492" cy="136" r="2.5"/></g>
+  <polygon points="470,140 430,186 480,174" fill="var(--water)" opacity=".18"/>
+  <line x1="470" y1="140" x2="430" y2="186" stroke="var(--water)" stroke-width="1.2" stroke-dasharray="4 3"/><line x1="470" y1="140" x2="480" y2="174" stroke="var(--water)" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <!-- servo gate and bins -->
+  <line x1="466" y1="186" x2="500" y2="204" stroke="var(--fg)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M470 196 Q560 170 596 212" fill="none" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#ar)"/>
+  <rect x="510" y="196" width="60" height="32" fill="var(--surface)" stroke="var(--fg)" stroke-width="2"/>
+  <rect x="580" y="196" width="60" height="32" fill="var(--warn-soft)" stroke="var(--warn)" stroke-width="2"/>
+  <g fill="var(--item)"><rect x="518" y="216" width="14" height="6" rx="2"/><rect x="538" y="218" width="12" height="5" rx="2"/></g><ellipse cx="604" cy="219" rx="10" ry="4" fill="var(--leaf)"/>
+  <text class="sv-s" x="540" y="190" text-anchor="middle">A</text><text class="sv-s" x="610" y="190" text-anchor="middle">B</text>
+  <!-- mast, solar, electronics -->
+  <g stroke="var(--metal)" stroke-width="4"><line x1="526" y1="174" x2="526" y2="196"/><line x1="722" y1="174" x2="722" y2="228"/></g>
+  <rect x="514" y="164" width="224" height="9" rx="2" fill="var(--water)" stroke="var(--fg)" stroke-width="1.5"/>
+  <rect x="650" y="184" width="64" height="44" rx="5" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.8"/>
+  <rect x="656" y="190" width="24" height="14" fill="var(--board)"/><rect x="684" y="190" width="24" height="14" fill="var(--board)"/><rect x="656" y="209" width="24" height="12" fill="var(--metal)"/><rect x="686" y="209" width="18" height="12" rx="3" fill="var(--warn)"/>
+  <!-- thruster -->
+  <rect x="722" y="256" width="16" height="12" rx="3" fill="var(--fg)"/><circle cx="748" cy="262" r="12" fill="none" stroke="var(--fg)" stroke-width="2.5"/><line x1="748" y1="252" x2="748" y2="272" stroke="var(--fg)" stroke-width="2"/>
+  <!-- markers -->
+  <circle class="sv-n" cx="262" cy="130" r="11"/><text class="sv-nt" x="262" y="134" text-anchor="middle">1</text><circle class="sv-n" cx="236" cy="300" r="11"/><text class="sv-nt" x="236" y="304" text-anchor="middle">2</text><circle class="sv-n" cx="372" cy="182" r="11"/><text class="sv-nt" x="372" y="186" text-anchor="middle">3</text><circle class="sv-n" cx="470" cy="86" r="11"/><text class="sv-nt" x="470" y="90" text-anchor="middle">4</text><circle class="sv-n" cx="494" cy="150" r="11"/><text class="sv-nt" x="494" y="154" text-anchor="middle">5</text><circle class="sv-n" cx="592" cy="146" r="11"/><text class="sv-nt" x="592" y="150" text-anchor="middle">6</text><circle class="sv-n" cx="748" cy="198" r="11"/><text class="sv-nt" x="748" y="202" text-anchor="middle">7</text><circle class="sv-n" cx="664" cy="146" r="11"/><text class="sv-nt" x="664" y="150" text-anchor="middle">8</text><circle class="sv-n" cx="440" cy="310" r="11"/><text class="sv-nt" x="440" y="314" text-anchor="middle">9</text><circle class="sv-n" cx="748" cy="305" r="11"/><text class="sv-nt" x="748" y="309" text-anchor="middle">10</text><circle class="sv-n" cx="360" cy="300" r="11"/><text class="sv-nt" x="360" y="304" text-anchor="middle">11</text><circle class="sv-n" cx="345" cy="194" r="11"/><text class="sv-nt" x="345" y="198" text-anchor="middle">12</text>
+</svg></div>
+  <ol class="key">
+    <li><b>1</b><span><strong>Bow camera:</strong> spots floating debris ahead</span></li>
+    <li><b>2</b><span><strong>Scoop:</strong> lifts debris onto the belt</span></li>
+    <li><b>3</b><span><strong>Cleated conveyor belt:</strong> carries items up in a single layer</span></li>
+    <li><b>4</b><span><strong>Belt camera and CNN:</strong> names each item under a lit hood</span></li>
+    <li><b>5</b><span><strong>Servo gate:</strong> plastic to Bin A, plants or unsure to Bin B</span></li>
+    <li><b>6</b><span><strong>Bins A and B:</strong> held on board, emptied at the dock</span></li>
+    <li><b>7</b><span><strong>Electronics box:</strong> two ESP32-S3 boards, drivers, converters</span></li>
+    <li><b>8</b><span><strong>30 W solar panel:</strong> flat roof over the deck, charges the battery</span></li>
+    <li><b>9</b><span><strong>12 V battery:</strong> powers thrusters, belt and boards</span></li>
+    <li><b>10</b><span><strong>Thruster:</strong> steers and drives the boat</span></li>
+    <li><b>11</b><span><strong>Twin floats and deck:</strong> keep it afloat and stable</span></li>
+    <li><b>12</b><span><strong>Side sensors and compass:</strong> follow the bank, turn at barriers</span></li>
+  </ol>
+  <div class="scroll"><svg viewBox="0 0 1000 330" role="img" aria-label="Top view of the patrol: the boat follows the bank between two floating barriers, its bow camera spots floating debris ahead, it steers to the debris and scoops it, then resumes the patrol and returns to the bank dock when full or low on battery.">
+  <defs>
+    <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--fg)"/></marker>
+    <marker id="ar3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--water)"/></marker>
+  </defs>
+  <rect x="0" y="0" width="1000" height="60" fill="var(--ground)"/><rect x="0" y="270" width="1000" height="60" fill="var(--ground)"/>
+  <rect x="0" y="60" width="1000" height="210" fill="var(--water-soft)"/>
+  <text class="sv-s" x="20" y="48">bank</text><text class="sv-s" x="158" y="52">barrier</text><text class="sv-s" x="858" y="52">barrier</text><text class="sv-s" x="20" y="296">bank</text>
+  <line x1="40" y1="90" x2="150" y2="90" stroke="var(--water)" stroke-width="2" marker-end="url(#ar3)"/><text class="sv-s" x="40" y="82">creek flow</text>
+  <!-- barriers -->
+  <g stroke="var(--fg)" stroke-width="2" stroke-dasharray="3 6"><line x1="150" y1="60" x2="150" y2="270"/><line x1="850" y1="60" x2="850" y2="270"/></g>
+  <g fill="var(--water)"><circle cx="150" cy="80" r="5"/><circle cx="150" cy="130" r="5"/><circle cx="150" cy="180" r="5"/><circle cx="150" cy="230" r="5"/><circle cx="850" cy="80" r="5"/><circle cx="850" cy="130" r="5"/><circle cx="850" cy="180" r="5"/><circle cx="850" cy="230" r="5"/></g>
+  <!-- dock -->
+  <rect x="170" y="256" width="90" height="38" rx="5" fill="var(--surface)" stroke="var(--fg)" stroke-width="2"/><text class="sv-s" x="215" y="279" text-anchor="middle">dock</text>
+  <rect x="300" y="262" width="46" height="30" rx="4" fill="var(--surface)" stroke="var(--fg)" stroke-width="1.8"/><g stroke="var(--water)" stroke-width="2.4"><line x1="310" y1="268" x2="310" y2="286"/><line x1="323" y1="268" x2="323" y2="286"/><line x1="336" y1="268" x2="336" y2="286"/></g>
+  <!-- patrol path -->
+  <path d="M215 250 H470" fill="none" stroke="var(--fg)" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#ar2)"/>
+  <path d="M600 250 H830" fill="none" stroke="var(--fg)" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#ar2)"/>
+  <!-- debris -->
+  <g fill="var(--item)"><rect x="640" y="150" width="16" height="9" rx="3"/><rect x="672" y="172" width="12" height="7" rx="2"/><rect x="620" y="188" width="14" height="8" rx="2"/></g><ellipse cx="700" cy="140" rx="12" ry="5" fill="var(--leaf)"/>
+  <!-- boat top view -->
+  <g transform="translate(500 240)"><rect x="0" y="-20" width="90" height="12" rx="6" fill="var(--surface)" stroke="var(--fg)" stroke-width="2"/><rect x="0" y="8" width="90" height="12" rx="6" fill="var(--surface)" stroke="var(--fg)" stroke-width="2"/><rect x="8" y="-10" width="74" height="20" fill="var(--metal)"/><rect x="-14" y="-12" width="22" height="24" fill="url(#none)" stroke="var(--metal)" stroke-width="2"/><rect x="20" y="-8" width="40" height="16" fill="var(--board)"/></g>
+  <!-- detection cone and approach -->
+  <polygon points="498,240 330,150 420,100" fill="var(--water)" opacity=".18"/>
+  <path d="M498 240 Q560 175 640 160" fill="none" stroke="var(--water)" stroke-width="2.4" marker-end="url(#ar3)"/>
+  <polygon points="498,240 760,120 760,210" fill="none"/>
+  <polygon points="498,238 780,100 780,215" fill="var(--water)" opacity=".10"/>
+  <!-- numbered steps -->
+  <circle class="sv-n" cx="345" cy="228" r="11"/><text class="sv-nt" x="345" y="232" text-anchor="middle">1</text><circle class="sv-n" cx="560" cy="120" r="11"/><text class="sv-nt" x="560" y="124" text-anchor="middle">2</text><circle class="sv-n" cx="575" cy="196" r="11"/><text class="sv-nt" x="575" y="200" text-anchor="middle">3</text><circle class="sv-n" cx="780" cy="228" r="11"/><text class="sv-nt" x="780" y="232" text-anchor="middle">4</text><circle class="sv-n" cx="215" cy="236" r="11"/><text class="sv-nt" x="215" y="240" text-anchor="middle">5</text>
+</svg></div>
+  <ol class="key">
+    <li><b>1</b><span><strong>Patrol:</strong> follows the bank between two barriers</span></li>
+    <li><b>2</b><span><strong>Detect:</strong> the bow camera spots floating debris</span></li>
+    <li><b>3</b><span><strong>Approach and scoop:</strong> steers to it and lifts it onto the belt</span></li>
+    <li><b>4</b><span><strong>Resume:</strong> returns to the bank path</span></li>
+    <li><b>5</b><span><strong>Dock:</strong> unload bins when full or the battery is low</span></li>
+    <li><b>6</b><span><strong>Flood node:</strong> three float switches and a buzzer, boat stays docked from the alert level</span></li>
+  </ol>
+</main>
