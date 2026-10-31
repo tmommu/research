@@ -1,6 +1,6 @@
 # SAGIP electronics list, pin map and open design points
 
-Matches `kicad/SAGIP.kicad_sch` (open it in KiCad 7 or later) and `SAGIP_Simplified_Diagram.png`. References (U1, M1 and so on) are the same in all three. All values are planning values to confirm against the parts you buy. "Sheet" means the Materials Tracker sheet in Drive.
+Matches `kicad/SAGIP.kicad_sch` (open it in KiCad 7 or later) and `SAGIP_Wiring_Boat.png` and `SAGIP_Wiring_FloodNode.png` (pictorial wiring diagrams). References (U1, M1 and so on) are the same in all three. All values are planning values to confirm against the parts you buy. "Sheet" means the Materials Tracker sheet in Drive.
 
 ## 1. Boards (4 ESP32 boards in total)
 
