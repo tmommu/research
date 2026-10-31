@@ -7,11 +7,11 @@ TEAM = ["Aaron Jed E. Campo, Grade 10", "Raya Kalayaan R. Amparo, Grade 10",
         "Ayeza Leigh F. Delos Santos, Grade 10", "Sophia Laureen A. Tado, Grade 10"]
 THEME = "Environmental Sustainability through Technology"
 
-TITLE = "SAGIP: Autonomous Solar Skimmer Boat with On-Chip AI"
+TITLE = "SAGIP: A Self-Navigating Boat That Collects and Counts Creek Plastic"
 
 DESC = ("SAGIP is a low-cost, solar-powered robot boat that patrols a creek, goes to floating debris, lifts it onto a conveyor and names each item using a small on-chip neural network running on an ESP32 chip. "
         "Barangay officials get a weekly report of the plastic collected by type and weight through an offline phone page, plus a float-switch flood alarm at the bank. "
-        "Built for about PHP 16,000 from local parts, it adds anonymized records to an open dataset that other barangays can copy.")
+        "Built for about PHP 15,800 from local parts, it adds anonymized records to an open dataset that other barangays can copy.")
 
 # ---------------- WORD ENTRY ----------------
 S1 = [
@@ -41,7 +41,7 @@ OBJ = [
      "from places it has not seen, with weekly counts within 15% of a trained hand audit."),
     ("3. Make it copyable.",
      " By March 2027, publish a free English and Filipino build guide (parts list, wiring, code) and an open dataset of anonymized counts and photographs, and help at least 2 other barangays or "
-     "schools build a unit for about PHP 16,000 each."),
+     "schools build a unit for about PHP 15,800 each."),
 ]
 
 S3 = ("Primary beneficiaries are the households of [Barangay Santo Cristo, Bago Bantay] ([6,531 on record, confirm creek-side count]) along Dario River in Quezon City, who bear the creek's pollution "
@@ -64,75 +64,74 @@ PRIOR = [
     ("Brand audits (Break Free From Plastic, 2021)", "Name the brands behind plastic waste", "Periodic, manual, mostly land-based"),
 ]
 S4_GAP = ("None of these patrols a creek, collects plastic, counts it item by item and shares open data at a price a barangay can pay. "
-          "Our search found no system that does all four. We therefore ask one question: can a PHP 16,000 robot boat match a trained hand audit within 15%, "
+          "Our search found no system that does all four. We therefore ask one question: can a PHP 15,800 robot boat match a trained hand audit within 15%, "
           "and does continuous counting reveal rain-driven pulses that weekly audits miss?")
 
 S5_STEM = ("STEM is the core of the design. Physics sets the hull's buoyancy, the thrust, the belt torque and the solar energy budget, and mathematics defines precision, recall and count error. "
            "Computer science supplies a small 2D convolutional neural network (CNN) with INT8 quantization, which shrinks a model about fourfold with little loss of accuracy "
            "(Gholami et al., 2021), running on TensorFlow Lite for Microcontrollers (David et al., 2021).")
-S5_STEPS = [
-    ("Float.", " Two sealed 6-inch PVC floats filled with foam carry a deck. A wide beam and a low battery keep the boat stable at about 25 kg, "
-               "and a tilt sensor stops the motors past 20 degrees."),
-    ("Patrol.", " Two thrusters steer by differential thrust. Side ultrasonic sensors and a compass keep the boat along the bank between two floating barriers about 30 m apart, "
-                "and it docks when its bins are full or its battery is low. A phone remote lets staff take over."),
-    ("Barriers.", " The upstream barrier is a 10 mm rope with a plastic float every 30 cm, strung at about 30 degrees to the flow between bank posts, so hyacinth mats and large debris slide to the bank. "
-                  "The downstream barrier is the same rope strung straight across. A pond test checks sag and hold."),
-    ("Detect and scoop.", " The bow ESP32-CAM runs a small INT8 object detector that boxes each floating item and separates plastic from plants. "
-                          "The boat steers to the nearest plastic box, and a scoop lifts it onto a cleated conveyor belt."),
-    ("Count and sort.", " The cleats hold one item per pocket, so the belt delivers items singly to an ESP32-S3 camera. A skirted black hood blocks sunlight and a fixed LED strip "
-                        "lights each photograph the same way. A hydrophobic film, an angled window and a desiccant pack keep each sealed camera housing clear of droplets and fog. "
-                        "The CNN labels each item as PET bottle, sachet or film, bag, foam, cup, plant or other. "
-                        "A blob count against an empty-belt photograph flags two items in one frame as mixed. A servo gate drops plastic into Bin A and plants, "
-                        "mixed or unsure items into Bin B for a hand count."),
-    ("Software.", " We train in Keras, start from small pretrained MobileNet-style networks, quantize to INT8 and deploy on the ESP32 boards. Creek-bank photographs "
-                  "are augmented with brightness, contrast and color shifts, blur, rotation, crops, random erasing "
-                  "and synthetic mud and droplet overlays to hold accuracy in muddy water."),
-    ("Protect.", " The chip reads belt and thruster current. After a jam it reverses, retries up to three times, then stops and docks. "
-                 "Drivers default to off, so a crash cannot leave a motor running."),
-    ("Report.", " Each record stores class, time and an image hash on a microSD card. A docked phone reads "
-                "an offline Wi-Fi page with the weekly report and an anonymized open dataset, and counts are plotted against rainfall. Each month the barangay posts "
-                "a Plastic Trend Scoreboard at the Barangay Hall showing the top plastic types, estimated kilograms and flood alarms."),
-    ("Plastic accounting.", " Counts become estimated kilograms from typical item weights, corrected by a weekly weigh-in. A weekly sheet lists items by type "
-                            "with estimated junk-shop value as item-level evidence for RA 11898."),
-    ("Flood warning.", " A separate solar node on the bank carries three float switches at watch, alert and danger levels on a painted staff gauge. A buzzer and a small LED alert residents, "
-                       "and the boat stays docked from the alert level."),
-    ("Power.", " Planning figures: a 30 W panel on the deck yields about 54 Wh per day at 3 effective sun-hours and 60% efficiency and charges a sealed 12 V 12 Ah lead-acid battery of about 144 Wh. "
-               "A 20-minute patrol uses about 25 Wh, "
-               "and a low battery skips it."),
-    ("Deep sleep.", " At 5 V a camera board draws about 180 mA awake and 6 mA asleep (datasheet values), about 22 Wh a day against 0.7 Wh, so sleep protects the 54 Wh solar budget. "
-                    "Docked boards sleep and wake on a timer for each patrol, then check the flood node's last status. "
-                    "On patrol the bow camera idles at a low frame rate until it sees plastic, and the belt camera and LED power up only when an item arrives. "
-                    "The flood node sleeps until a float switch trips and wakes every ten minutes to report."),
-    ("End of life and safety.", " The floats are PVC pipe, the bins are plastic and the hardware is stainless steel, all materials that local junk shops take. "
-                                "Foam, the one hard-to-recycle part, is used only to keep a holed float afloat. The lead-acid battery returns to a dealer for recycling. "
-                                "The flood node's protected 18650 cell sits in an IP67 box with overcharge and over-discharge protection, so a tipped node cannot leak into the creek."),
-    ("Scope.", " SAGIP lifts light floating debris such as bottles, sachets, bags, foam and cups. It cannot lift heavy or tangled items or sunken waste, "
-               "and it covers one creek stretch, so we report a measured capture rate."),
+S5_PARAS = [
+    "Two sealed 6-inch PVC floats filled with foam carry a 1.4 m deck, and a wide beam and a low battery keep the boat stable at about 25 kg. "
+    "It measures about 1.7 m long, 0.85 m wide and 0.55 m high, with a draft near 10 cm. A tilt sensor stops the motors past 20 degrees. "
+    "Two thrusters steer by differential thrust, and the boat navigates on its own along a preset route between two floating barriers about 30 m apart. "
+    "Side ultrasonic sensors keep it off the bank, bump switches cover the bow, and it docks when its bins are full or its battery is low. "
+    "The upstream barrier is a 10 mm rope with a plastic float every 30 cm, strung at about 30 degrees to the flow between bank posts, so hyacinth mats and large debris slide to the bank. "
+    "The downstream barrier is the same rope strung straight across, and a pond test checks sag and hold.",
+    "The bow ESP32-CAM runs a small INT8 object detector that boxes each floating item and separates plastic from plants. "
+    "The boat steers to the nearest plastic box, and a scoop lifts it onto a cleated conveyor belt. "
+    "The cleats hold one item per pocket, so the belt delivers items singly to an ESP32-S3 camera. A skirted black hood blocks sunlight, and a fixed LED strip "
+    "lights each photograph the same way. A hydrophobic film, an angled window and a desiccant pack keep each sealed camera housing clear of droplets and fog. "
+    "The CNN labels each item as PET bottle, sachet or film, bag, foam, cup, plant or other. "
+    "A blob count against an empty-belt photograph flags two items in one frame as mixed. A servo gate drops plastic into Bin A and plants, "
+    "mixed or unsure items into Bin B for a hand count.",
+    "We train in Keras, start from small pretrained MobileNet-style networks, quantize to INT8 and deploy on the ESP32 boards. Creek-bank photographs "
+    "are augmented with brightness, contrast and color shifts, blur, rotation, crops, random erasing "
+    "and synthetic mud and droplet overlays to hold accuracy in muddy water. "
+    "To protect the motors, the chip reads belt and thruster current. After a jam it reverses, retries up to three times, then stops and docks. "
+    "Drivers default to off, so a crash cannot leave a motor running. Each item becomes a record of class, time and an image hash on a microSD card. A docked phone reads "
+    "an offline Wi-Fi page with the weekly report and an anonymized open dataset, and counts are plotted against rainfall. Each month the barangay posts "
+    "a Plastic Trend Scoreboard at the Barangay Hall showing the top plastic types, estimated kilograms and flood alarms.",
+    "Counts become estimated kilograms from typical item weights, corrected by a weekly weigh-in. A weekly sheet lists items by type "
+    "with estimated junk-shop value as item-level evidence for RA 11898. "
+    "On the bank, a separate solar node carries three float switches at watch, alert and danger levels on a painted staff gauge. A buzzer and a small LED alert residents, "
+    "and the boat stays docked from the alert level.",
+    "Planning figures: a 30 W panel on the deck yields about 54 Wh per day at 3 effective sun-hours and 60% efficiency and charges a sealed 12 V 12 Ah lead-acid battery of about 144 Wh. "
+    "A 20-minute patrol uses about 25 Wh, "
+    "and a low battery skips it. "
+    "At 5 V a camera board draws about 180 mA awake and 6 mA asleep (datasheet values), about 22 Wh a day against 0.7 Wh, so sleep protects the 54 Wh solar budget. "
+    "Docked boards sleep and wake on a timer for each patrol, then check the flood node's last status. "
+    "On patrol the bow camera idles at a low frame rate until it sees plastic, and the belt camera and LED power up only when an item arrives. "
+    "The flood node sleeps until a float switch trips and wakes every ten minutes to report.",
+    "The floats are PVC pipe, the bins are plastic and the hardware is stainless steel, all materials that local junk shops take. "
+    "Foam, the one hard-to-recycle part, is used only to keep a holed float afloat. The lead-acid battery returns to a dealer for recycling. "
+    "The flood node's protected 18650 cell sits in an IP67 box with overcharge and over-discharge protection, so a tipped node cannot leak into the creek. "
+    "SAGIP lifts light floating debris. It cannot lift heavy or tangled items or sunken waste, so we report a measured capture rate for one creek stretch.",
 ]
-S5_PLAIN = ("The model is a sanitation worker's eye for bottles and sachets, saved as a file of numbers.")
+S5_FIG2_AFTER = 2   # Figure 2 follows the third paragraph
+S5_PLAIN = ("Put plainly, the model is a sanitation worker's eye for bottles and sachets, saved as a file of numbers.")
 
 BUDGET = [
-    ("Two 6-inch PVC floats, foam, frame and deck", "2,300"),
-    ("Two 12 V thrusters and dual driver", "1,800"),
-    ("Cleated conveyor, gear motor and driver", "2,000"),
-    ("ESP32-S3 camera board, hood, LED, enclosure", "1,850"),
+    ("Two 6-inch PVC floats, foam, frame and deck", "3,228"),
+    ("Two 12 V thrusters and dual driver", "2,410"),
+    ("Cleated conveyor, gear motor and driver", "1,500"),
+    ("ESP32-S3 camera board, hood, LED, enclosure", "700"),
     ("ESP32-CAM bow detector", "600"),
-    ("Compass, tilt and ultrasonic sensors, bump switches", "900"),
+    ("Tilt and ultrasonic sensors, bump switches", "680"),
     ("Gate servo and reused bins", "300"),
     ("12 V 12 Ah battery, converters, fuses, wiring", "2,400"),
     ("30 W solar panel and 20 A charge controller", "1,100"),
     ("Waterproofing and hardware", "500"),
     ("Flood node: ESP32, float switches, buzzer, mini panel, cell, gauge", "1,000"),
     ("Bank dock and two barriers (rope, floats, post)", "600"),
-    ("Subtotal", "15,350"),
-    ("Contingency", "650"),
-    ("Total", "16,000"),
+    ("Subtotal", "15,018"),
+    ("Contingency", "782"),
+    ("Total", "15,800"),
 ]
 TOOLS = ("Python, Keras, TensorFlow Lite for Microcontrollers, a borrowed multimeter, a kitchen scale and our phones. "
          "Prices are online-shop estimates, and the barangay may give rope, floats, a post and bins in kind.")
 STAGES = [
-    ("Stage 1, bench (about PHP 7,650).", " Build the conveyor, camera, CNN, gate, battery and panel on a bench. Gate: 85% precision and recall on held-out photographs and a simulated patrol on battery."),
-    ("Stage 2, boat (about PHP 6,100).", " Build the floats, deck, thrusters, bow detector and sensors. Gate: float and tilt tests, then a pond test where the boat scoops at least 70% of 20 items placed 2 to 5 m ahead."),
+    ("Stage 1, bench (about PHP 6,000).", " Build the conveyor, camera, CNN, gate, battery and panel on a bench. Gate: 85% precision and recall on held-out photographs and a simulated patrol on battery."),
+    ("Stage 2, boat (about PHP 7,400).", " Build the floats, deck, thrusters, bow detector and sensors. Gate: float and tilt tests, then a pond test where the boat scoops at least 70% of 20 items placed 2 to 5 m ahead."),
     ("Stage 3, dock, barriers and flood node (about PHP 1,600).", " Gate: the boat patrols between barriers without help, and the flood alarm sounds at all three marks in a bucket test."),
 ]
 TIMELINE = ("Site visit, barangay letter and starter dataset by November 2. If shortlisted, mentorship from November 16 to December 5 "
@@ -146,7 +145,7 @@ STAKE = [
 ]
 RISKS = [
     ("Manual labor:", " people still empty the bins, clear snags and wipe the lenses, and we log those hours."),
-    ("Stability and navigation:", " foam-filled floats, a tilt cut-off, pond tests, barriers that set the stretch and a phone remote for takeover."),
+    ("Stability and navigation:", " foam-filled floats, a tilt cut-off, pond tests, barriers that set the stretch and a stop switch."),
     ("Fast water and permission:", " the boat stays docked from the alert level, and the stretch needs barangay, city and DENR approval."),
     ("Hyacinth and snags:", " the upstream barrier turns mats aside, the detector sends plants to Bin B and current sensing reverses a jam."),
     ("Model errors:", " test on unseen places, send unsure and mixed items to Bin B and keep the weekly hand count."),
@@ -157,7 +156,7 @@ S7_INTRO = ("Success means plastic lifted from a real creek, a trustworthy weekl
 OUTCOMES = [
     ("1. Less plastic in the creek:", " at least 50% of floating debris removed against the baseline week and 20 kg lifted in 8 weeks."),
     ("2. Trustworthy counts and warnings:", " at least 1,000 classified items, weekly error of 15% or less, 85% precision and recall on unseen places and a flood alarm at all three marks."),
-    ("3. Replication:", " at least 2 more sites by March 2027 at about PHP 16,000 each, one open data format and weekly labor hours reported."),
+    ("3. Replication:", " at least 2 more sites by March 2027 at about PHP 15,800 each, one open data format and weekly labor hours reported."),
 ]
 VISION = ("We see a student-built, barangay-owned network of units along connected creeks that feeds one open dataset showing where plastic enters, "
           "which products dominate, and whether EPR commitments change what the water carries.")

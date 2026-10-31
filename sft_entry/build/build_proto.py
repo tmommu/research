@@ -60,11 +60,11 @@ def table(rows, widths, bold_rows=()):
             if ci == len(widths) - 1 and re.fullmatch(r'[+\d,]+( to [\d,]+)?( \(.*\))?', v or ''): p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     d.add_paragraph().paragraph_format.space_after = Pt(0)
 
-title("SAGIP: Autonomous Solar Skimmer Boat with On-Chip AI (Prototype Design)")
+title(C.TITLE + " (Prototype Design)")
 para("Quick visual of what we will build and buy. Quezon City Science High School, Grade 10 team. Adviser: Skjoukje U. Jemoya. Site: Dario River, [Barangay Santo Cristo, Bago Bantay, to confirm]. All costs and sizes are planning estimates.")
 
 h("1. What it is")
-para("A solar-powered robot boat, about 1.5 m long, patrols a creek between two floating barriers. A bow camera runs an object detector that boxes floating plastic, the boat steers to it, "
+para("A solar-powered robot boat, about 1.7 m long, 0.85 m wide and 0.55 m high with a draft near 10 cm, navigates on its own along a preset route between two floating barriers in a creek. A bow camera runs an object detector that boxes floating plastic, the boat steers to it, "
      "and a scoop lifts it onto a cleated conveyor, one item per pocket. A second camera under a light-tight hood names each item with a small 2D convolutional neural network (CNN), "
      "and a servo gate sorts plastic into Bin A and plants, mixed or unsure items into Bin B. A weekly offline report goes to the barangay and a monthly Plastic Trend Scoreboard goes up "
      "at the Barangay Hall. A separate float-switch node on the bank sounds a flood alarm.")
@@ -83,35 +83,39 @@ table([("No.", "Part", "What it does"),
        ("7", "30 W solar panel", "Flat on the deck, charges the battery"),
        ("8", "12 V 12 Ah sealed lead-acid battery", "Powers thrusters, belt and boards, kept low between the floats"),
        ("9", "Two thrusters", "Steer by differential thrust"),
-       ("10", "Two side ultrasonic sensors, bump switches, compass if needed", "Follow the bank, sense contact at the bow, hold a heading"),
+       ("10", "Two side ultrasonic sensors and bump switches", "Keep the boat off the bank and sense contact at the bow"),
        ("11", "Twin 6-inch PVC floats and deck", "Keep it afloat and stable"),
        ("12", "Flood node on the bank", "Three float switches, buzzer and LED, protected 18650 cell in an IP67 box")],
       [0.5, 2.5, 3.4])
 
 h("3. Why it is built this way")
-bullet("Hyacinth: ", "water hyacinth mats carried most of the floating plastic counted in a Saigon River study (Schreyers et al., 2021), so the upstream barrier angles mats to the bank, the detector separates plants and the propellers are shrouded.")
-bullet("Rain pulses: ", "floating plastic transport rose up to six times at peak river flow (van Emmerik et al., 2022), so the boat logs every item with time and the flood node logs the water level.")
-bullet("On-chip AI: ", "INT8 quantization shrinks a model about fourfold (Gholami et al., 2021) and TensorFlow Lite for Microcontrollers runs it on an ESP32 (David et al., 2021).")
-bullet("Set patrol, no GPS: ", "the creek banks and two barriers define the route, so the boat needs only side sensors, bump switches and a compass if a heading is needed.")
-bullet("Stability: ", "twin floats with a wide beam, the battery low between them, foam in the bow and stern, and a tilt cut-off. Float and tilt tests come first.")
-bullet("Weather and light: ", "a skirted black hood and a fixed LED light every photo the same way, and a hydrophobic film, an angled window and a desiccant pack keep camera housings clear of droplets and fog.")
-bullet("One item at a time: ", "cleat pockets hold one item each, and a blob count against an empty-belt photograph flags two items in one frame as mixed so they go to Bin B for a hand count.")
+para("Water hyacinth mats carried most of the floating plastic counted in a Saigon River study (Schreyers et al., 2021), so the upstream barrier angles mats to the bank, the detector separates plants and the propellers are shrouded. "
+     "Floating plastic transport rose up to six times at peak river flow (van Emmerik et al., 2022), so the boat logs every item with time and the flood node logs the water level.")
+para("INT8 quantization shrinks a model about fourfold (Gholami et al., 2021) and TensorFlow Lite for Microcontrollers runs it on an ESP32 (David et al., 2021). "
+     "The creek banks and two barriers define a preset route, so the boat needs only side sensors and bump switches, with no GPS or compass. "
+     "Twin floats with a wide beam, a low battery, foam in the bow and stern and a tilt cut-off keep it stable, and float and tilt tests come first.")
+para("A skirted black hood and a fixed LED light every photo the same way, and a hydrophobic film, an angled window and a desiccant pack keep camera housings clear of droplets and fog. "
+     "Cleat pockets hold one item each, and a blob count against an empty-belt photograph flags two items in one frame as mixed, so they go to Bin B for a hand count.")
 
 h("4. How it works")
-bullet("Patrol: ", "follows the bank between two barriers and returns to the dock when the bins are full or the battery is low. Staff can take over with a phone remote.")
-bullet("Barriers: ", "the upstream barrier is a 10 mm rope with a plastic float every 30 cm, strung at about 30 degrees to the flow between bank posts so mats and large debris slide to the bank. The downstream barrier is the same rope strung straight across. A pond test checks sag and hold.")
-bullet("Detect and scoop: ", "a small INT8 object detector boxes each floating item and separates plastic from plants. The boat steers to the nearest plastic box and the scoop lifts it onto the belt.")
-bullet("Count and sort: ", "the CNN names each item. Plastic goes to Bin A, and plants, mixed and low-confidence items go to Bin B. Training photographs are augmented with color shifts, blur, rotation, crops, random erasing and synthetic mud and droplets.")
-bullet("Protect: ", "belt and thruster current is monitored. A jam triggers a reverse, up to three retries, then a stop and a return to the dock. Drivers default to off.")
-bullet("Plastic accounting: ", "counts become estimated kilograms and value, corrected by a weekly weigh-in, in an evidence sheet for the barangay and the DENR.")
-bullet("Flood warning: ", "three float switches on a staff gauge set watch, alert and danger levels. A buzzer and a small LED alert residents nearby and the level is logged.")
+para("On patrol the boat follows its preset route between two barriers and returns to the dock when the bins are full or the battery is low. "
+     "The upstream barrier is a 10 mm rope with a plastic float every 30 cm, strung at about 30 degrees to the flow between bank posts so mats and large debris slide to the bank. "
+     "The downstream barrier is the same rope strung straight across, and a pond test checks sag and hold.")
+para("A small INT8 object detector boxes each floating item and separates plants from plastic. The boat steers to the nearest plastic box and the scoop lifts it onto the belt, where the CNN names each item. "
+     "Plastic goes to Bin A, and plants, mixed and low-confidence items go to Bin B. Training photographs are augmented with color shifts, blur, rotation, crops, random erasing and synthetic mud and droplets.")
+para("Belt and thruster current is monitored. A jam triggers a reverse, up to three retries, then a stop and a return to the dock, and the drivers default to off. "
+     "Counts become estimated kilograms and value, corrected by a weekly weigh-in, in an evidence sheet for the barangay and the DENR. "
+     "On the bank, three float switches on a staff gauge set watch, alert and danger levels, and a buzzer and a small LED alert residents nearby while the level is logged.")
 
 h("5. Power, sleep and safety")
 fig("fig_wiring.png", 6.6, "Block schematic of the boat and the flood node (schematic).")
-bullet("Planning figures: ", "a 30 W panel yields about 54 Wh a day. A 20-minute patrol uses about 25 Wh. The 12 V 12 Ah battery stores about 144 Wh, with about 72 Wh usable. We will measure these on the bench.")
-bullet("Protection: ", "each motor has its own fuse and driver, the master switch cuts everything, and a low-battery rule skips patrols.")
-bullet("Deep sleep: ", "a camera board draws about 180 mA awake and 6 mA asleep at 5 V (datasheet values), about 22 Wh a day against 0.7 Wh, so sleep protects the 54 Wh solar budget. Docked boards sleep and wake on a timer for each patrol, then check the flood node's last status. On patrol the bow camera idles until it sees plastic and the belt camera and LED power up only when an item arrives. The flood node sleeps until a float switch trips and wakes every ten minutes to report.")
-bullet("End of life and battery safety: ", "PVC floats, plastic bins and stainless hardware are materials local junk shops take, foam is kept to the minimum, and the lead-acid battery goes back to a dealer. The flood node's protected 18650 cell sits in an IP67 box with overcharge and over-discharge protection.")
+para("A 30 W panel yields about 54 Wh a day and a 20-minute patrol uses about 25 Wh. The 12 V 12 Ah battery stores about 144 Wh, with about 72 Wh usable, and we will measure these figures on the bench. "
+     "Each motor has its own fuse and driver, the master switch cuts everything, a stop switch cuts motor power and a low-battery rule skips patrols.")
+para("A camera board draws about 180 mA awake and 6 mA asleep at 5 V (datasheet values), about 22 Wh a day against 0.7 Wh, so sleep protects the 54 Wh solar budget. "
+     "Docked boards sleep and wake on a timer for each patrol, then check the flood node's last status. On patrol the bow camera idles until it sees plastic and the belt camera and LED power up only when an item arrives. "
+     "The flood node sleeps until a float switch trips and wakes every ten minutes to report.")
+para("PVC floats, plastic bins and stainless hardware are materials local junk shops take, foam is kept to the minimum, and the lead-acid battery goes back to a dealer. "
+     "The flood node's protected 18650 cell sits in an IP67 box with overcharge and over-discharge protection.")
 
 h("6. Materials and cost (estimated online-shop prices, to be confirmed)")
 rows = [("Item", "PHP")] + list(C.BUDGET)

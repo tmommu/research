@@ -65,7 +65,7 @@ sh.set(p[1], [(False, "Philippine rivers rank first among countries for river pl
 sh.set(p[3], [(True, "Goal: "), (False, "make creek plastic measurable evidence instead of invisible waste, with cleaner creeks and community-owned data.")])
 sh.set(p[4], [(True, "Objectives"), (False, ": (1) In an 8-week pilot from January 2027, remove at least 50% of the floating debris entering a 30 m patrol stretch, lift at least 20 kg "
                       "and log at least 1,000 classified items. (2) By December 5, reach 85% precision and recall on unseen photos, with weekly counts within 15% "
-                      "of a hand audit. (3) By March 2027, publish an open dataset and build guide and help 2 more barangays or schools build a PHP 16,000 unit.")])
+                      "of a hand audit. (3) By March 2027, publish an open dataset and build guide and help 2 more barangays or schools build a PHP 15,800 unit.")])
 sh.set(p[5], [(True, "Who will benefit from this project?")])
 sh.set(p[6], [(True, "Primary: "), (False, "the households of [Barangay Santo Cristo, Bago Bantay] ([6,531 on record, confirm creek-side count]) along Dario River in Quezon City, who gain a flood alarm and a monthly Plastic Trend Scoreboard, and the sanitation officers. "),
               (True, "Secondary: "), (False, "the city solid-waste office and DENR, 2 more barangays or schools, and downstream fisherfolk.")])
@@ -76,7 +76,7 @@ sh.set(p[1], [(True, "Select. "), (False, "We scored five community problems on 
 q2 = sh.clone_after(p[1], p[1], [(True, "What exists. "), (False, "Cameras detect floating plastic but remove nothing (Kataoka et al., 2024). Solar Interceptor barriers and an AI boat are planned or piloted on "
         "large Pasig-area rivers (The Ocean Cleanup, 2026, Manila Bulletin, 2025). Trash traps record only weight (Philstar, 2022). Brand audits are manual (Break Free From Plastic, 2021). "
         "Tiny on-chip classifiers have only had controlled tests (Mendez-Cruz et al., 2024).")])
-q3 = sh.clone_after(p[1], q2, [(True, "Gap we test. "), (False, "No system we found patrols a creek, collects plastic, counts it item by item and shares open data at barangay cost. Can a PHP 16,000 robot boat match a hand audit "
+q3 = sh.clone_after(p[1], q2, [(True, "Gap we test. "), (False, "No system we found patrols a creek, collects plastic, counts it item by item and shares open data at barangay cost. Can a PHP 15,800 robot boat match a hand audit "
         "within 15%, and does continuous counting show rain-driven pulses of plastic (van Emmerik et al., 2022) that weekly audits miss?")])
 sh.clone_after(p[1], q3, [(True, "Sources: "), (False, "Break Free From Plastic 2021, David et al. 2021, Gholami et al. 2021, Kataoka et al. 2024, Manila Bulletin 2025, "
         "Meijer et al. 2021, Mendez-Cruz et al. 2024, Philstar 2022, RA 11898, The Ocean Cleanup 2026, van Emmerik et al. 2022.")])
@@ -88,7 +88,7 @@ for sl, idx in ((S[2], 67), (S[3], 72)):
 
 # ---------------- slide 4 ----------------
 sh = Shape(shp(S[3], 72)); p = sh.ps
-sh.set(p[1], [(True, "Summary. "), (False, "A solar robot boat patrols between two barriers, the upstream one a 30-degree float rope that angles mats to the bank. "
+sh.set(p[1], [(True, "Summary. "), (False, "A solar robot boat navigates on its own between two barriers, the upstream one a 30-degree float rope that angles mats to the bank. "
         "A bow camera runs an object detector, the boat steers to the plastic it boxes, and a scoop lifts it onto a cleated conveyor, one item per pocket. "
         "A second camera runs a 2D CNN (Gholami et al., 2021, David et al., 2021), and a servo gate sends plastic to Bin A and plants, mixed or unsure items to Bin B. "
         "Weekly reports, a monthly Plastic Trend Scoreboard and a flood alarm serve the barangay.")])
@@ -109,14 +109,14 @@ for p_ in ps4[2:]:
 
 # ---------------- slide 5 ----------------
 sh = Shape(shp(S[4], 77)); p = sh.ps
-sh.set(p[1], [(False, "A pilot unit costs about PHP 16,000, built in three stages that are each bought only after the previous test passes.")])
-sh.set(p[2], [(True, "Resources:"), (False, " floats, frame and deck 2,300, thrusters 1,800, conveyor 2,000, ESP32-S3 camera set 1,850, bow detector 600, sensors 900, gate and bins 300, "
-        "battery and wiring 2,400, 30 W panel 1,100, hardware 500, flood node 1,000, dock and barriers 600, contingency 650. Stages: bench 7,650, boat 6,100, dock and flood node 1,600. "
+sh.set(p[1], [(False, "A pilot unit costs about PHP 15,800, built in three stages that are each bought only after the previous test passes.")])
+sh.set(p[2], [(True, "Resources:"), (False, " floats, frame and deck 3,228, thrusters 2,410, conveyor 1,500, ESP32-S3 camera set 700, bow detector 600, sensors 680, gate and bins 300, "
+        "battery and wiring 2,400, 30 W panel 1,100, hardware 500, flood node 1,000, dock and barriers 600, contingency 782. Stages: bench 6,000, boat 7,400, dock and flood node 1,600. "
         "Timeline: screening Nov 9 to 13, mentorship Nov 16 to Dec 5, pitch Dec 7, creek pilot Jan to Feb.")])
 sh.set(p[3], [(True, "Stakeholders:"), (False, " barangay captain and sanitation officers (site approval, bin emptying, flood alarm, one-page agreement), city solid-waste office and DENR "
         "(use the data), adviser and school head (supervision, safety), and residents (consent).")])
 sh.set(p[4], [(True, "Risks & Mitigation:"), (False, " Manual labor: bin emptying and snag clearing, logged in hours. Stability: foam-filled floats, tilt cut-off, pond tests. "
-        "Navigation: barriers, side sensors, compass and phone remote. Hyacinth: upstream barrier, plant class and shrouded propellers. "
+        "Navigation: a preset route, barriers, side sensors and a stop switch. Hyacinth: upstream barrier, plant class and shrouded propellers. "
         "Fog, glare and mixed items: hood, hydrophobic film, angled window and a blob count that sends mixed items to Bin B. Fast water: stays docked. Permission: barangay and city approval.")])
 
 # ---------------- slide 6 ----------------
@@ -124,7 +124,7 @@ sh = Shape(shp(S[5], 82)); p = sh.ps
 sh.set(p[1], [(False, "Success means plastic lifted from a real creek, a trustworthy weekly record of what it was and a flood alarm that works.")])
 sh.set(p[2], [(True, "Measurable Outcomes:"), (False, " (1) At least 50% of floating debris removed in the patrol stretch against a baseline week, and 20 kg lifted in 8 weeks. "
         "(2) At least 1,000 classified items, weekly counts within 15% of the hand audit, 85% precision and recall on unseen places, and a flood alarm that sounds at all three marks. "
-        "(3) At least 2 more sites by March 2027 at about PHP 16,000 each, with weekly labor hours reported and a monthly Plastic Trend Scoreboard at the Barangay Hall.")])
+        "(3) At least 2 more sites by March 2027 at about PHP 15,800 each, with weekly labor hours reported and a monthly Plastic Trend Scoreboard at the Barangay Hall.")])
 sh.set(p[3], [(True, "Long-Term Vision:"), (False, " a student-built, barangay-owned network of units along connected creeks, feeding one open dataset that shows where plastic enters, "
         "which products dominate and whether EPR commitments change what the water carries. Planned upgrades are a longer patrol stretch and a second boat.")])
 sh.set(p[4], [(True, "Key Takeaway:"), (False, " the Philippines already knows who makes much of its plastic. SAGIP makes the proof continuous, cheap and community-owned, "
