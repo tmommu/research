@@ -75,8 +75,8 @@ S5_STEPS = [
                "and a tilt sensor stops the motors past 20 degrees."),
     ("Patrol.", " Two thrusters steer by differential thrust. Side ultrasonic sensors and a compass keep the boat along the bank between two floating barriers about 30 m apart, "
                 "and it docks when its bins are full or its battery is low. A phone remote lets staff take over."),
-    ("Barriers.", " The upstream barrier is a rope of floats strung at about 30 degrees to the flow between bank posts, so hyacinth mats and large debris slide to the bank. "
-                  "The downstream barrier is a straight line of floats that stops drifting debris."),
+    ("Barriers.", " The upstream barrier is a 10 mm rope with a plastic float every 30 cm, strung at about 30 degrees to the flow between bank posts, so hyacinth mats and large debris slide to the bank. "
+                  "The downstream barrier is the same rope strung straight across. A pond test checks sag and hold."),
     ("Detect and scoop.", " The bow ESP32-CAM runs a small INT8 object detector that boxes each floating item and separates plastic from plants. "
                           "The boat steers to the nearest plastic box, and a scoop lifts it onto a cleated conveyor belt."),
     ("Count and sort.", " The cleats hold one item per pocket, so the belt delivers items singly to an ESP32-S3 camera. A skirted black hood blocks sunlight and a fixed LED strip "
@@ -84,8 +84,8 @@ S5_STEPS = [
                         "The CNN labels each item as PET bottle, sachet or film, bag, foam, cup, plant or other. "
                         "A blob count against an empty-belt photograph flags two items in one frame as mixed. A servo gate drops plastic into Bin A and plants, "
                         "mixed or unsure items into Bin B for a hand count."),
-    ("Software.", " We train in Keras, start from small pretrained MobileNet-style networks, quantize to INT8 and deploy on the ESP32 boards. Student-labelled creek-bank photographs, "
-                  "checked by the adviser, are augmented with brightness, contrast and color shifts, blur, rotation, crops, random erasing "
+    ("Software.", " We train in Keras, start from small pretrained MobileNet-style networks, quantize to INT8 and deploy on the ESP32 boards. Creek-bank photographs "
+                  "are augmented with brightness, contrast and color shifts, blur, rotation, crops, random erasing "
                   "and synthetic mud and droplet overlays to hold accuracy in muddy water."),
     ("Protect.", " The chip reads belt and thruster current. After a jam it reverses, retries up to three times, then stops and docks. "
                  "Drivers default to off, so a crash cannot leave a motor running."),
@@ -93,17 +93,18 @@ S5_STEPS = [
                 "an offline Wi-Fi page with the weekly report and an anonymized open dataset, and counts are plotted against rainfall. Each month the barangay posts "
                 "a Plastic Trend Scoreboard at the Barangay Hall showing the top plastic types, estimated kilograms and flood alarms."),
     ("Plastic accounting.", " Counts become estimated kilograms from typical item weights, corrected by a weekly weigh-in. A weekly sheet lists items by type "
-                            "with their estimated value at junk-shop rates, giving the barangay and the DENR item-level evidence for RA 11898."),
-    ("Flood warning.", " A separate solar node on the bank carries three float switches at watch, alert and danger levels on a painted staff gauge. A buzzer and a small LED alert nearby residents, "
-                       "the level is logged, and the boat stays docked from the alert level."),
+                            "with estimated junk-shop value as item-level evidence for RA 11898."),
+    ("Flood warning.", " A separate solar node on the bank carries three float switches at watch, alert and danger levels on a painted staff gauge. A buzzer and a small LED alert residents, "
+                       "and the boat stays docked from the alert level."),
     ("Power.", " Planning figures: a 30 W panel on the deck yields about 54 Wh per day at 3 effective sun-hours and 60% efficiency and charges a sealed 12 V 12 Ah lead-acid battery of about 144 Wh. "
-               "Separate 5 V converters feed the boards and servo, and each motor has its own fuse. A 20-minute patrol uses about 25 Wh, "
+               "A 20-minute patrol uses about 25 Wh, "
                "and a low battery skips it."),
-    ("Deep sleep.", " Docked boards sleep and wake on a timer for each patrol, then check the flood node's last status. "
+    ("Deep sleep.", " At 5 V a camera board draws about 180 mA awake and 6 mA asleep (datasheet values), about 22 Wh a day against 0.7 Wh, so sleep protects the 54 Wh solar budget. "
+                    "Docked boards sleep and wake on a timer for each patrol, then check the flood node's last status. "
                     "On patrol the bow camera idles at a low frame rate until it sees plastic, and the belt camera and LED power up only when an item arrives. "
                     "The flood node sleeps until a float switch trips and wakes every ten minutes to report."),
     ("End of life and safety.", " The floats are PVC pipe, the bins are plastic and the hardware is stainless steel, all materials that local junk shops take. "
-                                "Foam is the one hard-to-recycle part, so we use only enough to keep a holed float afloat. The lead-acid battery returns to a dealer for recycling. "
+                                "Foam, the one hard-to-recycle part, is used only to keep a holed float afloat. The lead-acid battery returns to a dealer for recycling. "
                                 "The flood node's protected 18650 cell sits in an IP67 box with overcharge and over-discharge protection, so a tipped node cannot leak into the creek."),
     ("Scope.", " SAGIP lifts light floating debris such as bottles, sachets, bags, foam and cups. It cannot lift heavy or tangled items or sunken waste, "
                "and it covers one creek stretch, so we report a measured capture rate."),
@@ -146,7 +147,7 @@ STAKE = [
 RISKS = [
     ("Manual labor:", " people still empty the bins, clear snags and wipe the lenses, and we log those hours."),
     ("Stability and navigation:", " foam-filled floats, a tilt cut-off, pond tests, barriers that set the stretch and a phone remote for takeover."),
-    ("Fast water and permission:", " the boat stays docked from the alert level, and the stretch needs barangay and city approval, and the DENR where required."),
+    ("Fast water and permission:", " the boat stays docked from the alert level, and the stretch needs barangay, city and DENR approval."),
     ("Hyacinth and snags:", " the upstream barrier turns mats aside, the detector sends plants to Bin B and current sensing reverses a jam."),
     ("Model errors:", " test on unseen places, send unsure and mixed items to Bin B and keep the weekly hand count."),
     ("Safety, privacy, theft:", " no student rides the boat or enters the water, the cameras see only the water, and the boat is docked when unattended."),
@@ -155,7 +156,7 @@ RISKS = [
 S7_INTRO = ("Success means plastic lifted from a real creek, a trustworthy weekly record of what it was and a flood alarm that works.")
 OUTCOMES = [
     ("1. Less plastic in the creek:", " at least 50% of floating debris removed against the baseline week and 20 kg lifted in 8 weeks."),
-    ("2. Trustworthy counts and warnings:", " at least 1,000 classified items, weekly error of 15% or less, 85% precision and recall on unseen places and a flood alarm that sounds at all three marks."),
+    ("2. Trustworthy counts and warnings:", " at least 1,000 classified items, weekly error of 15% or less, 85% precision and recall on unseen places and a flood alarm at all three marks."),
     ("3. Replication:", " at least 2 more sites by March 2027 at about PHP 16,000 each, one open data format and weekly labor hours reported."),
 ]
 VISION = ("We see a student-built, barangay-owned network of units along connected creeks that feeds one open dataset showing where plastic enters, "

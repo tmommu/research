@@ -88,14 +88,14 @@ for sl, idx in ((S[2], 67), (S[3], 72)):
 
 # ---------------- slide 4 ----------------
 sh = Shape(shp(S[3], 72)); p = sh.ps
-sh.set(p[1], [(True, "Summary. "), (False, "A solar robot boat patrols between two barriers, the upstream one angling hyacinth mats to the bank. "
+sh.set(p[1], [(True, "Summary. "), (False, "A solar robot boat patrols between two barriers, the upstream one a 30-degree float rope that angles mats to the bank. "
         "A bow camera runs an object detector, the boat steers to the plastic it boxes, and a scoop lifts it onto a cleated conveyor, one item per pocket. "
         "A second camera runs a 2D CNN (Gholami et al., 2021, David et al., 2021), and a servo gate sends plastic to Bin A and plants, mixed or unsure items to Bin B. "
         "Weekly reports, a monthly Plastic Trend Scoreboard and a flood alarm serve the barangay.")])
 q1 = sh.clone_after(p[1], p[1], [(True, "Reliability. "), (False, "A skirted hood and fixed LED give every photo the same light, and a hydrophobic film, angled window and desiccant pack keep housings clear of fog. "
         "A blob count flags mixed items. Photos are augmented with color shifts, blur, rotation and synthetic mud and droplets.")])
-q15 = sh.clone_after(p[1], q1, [(True, "Power and end of life. "), (False, "Boards deep-sleep between patrols and the belt camera wakes only for an item. "
-        "Floats, bins and hardware are PVC, plastic and stainless steel for local salvage, and the flood node's protected 18650 cell sits in an IP67 box.")])
+q15 = sh.clone_after(p[1], q1, [(True, "Power and end of life. "), (False, "Boards deep-sleep between patrols (6 mA asleep, 180 mA awake) and the belt camera wakes only for an item. "
+        "Parts are PVC, plastic and steel that junk shops take, and the flood node's protected 18650 cell sits in an IP67 box.")])
 q2 = sh.clone_after(p[1], q15, [(True, "STEM. "), (False, "Physics sets buoyancy, thrust and the solar budget, mathematics defines precision, recall and count error, "
         "and computer science supplies the detector and CNN.")])
 sh.clone_after(p[1], q2, [(True, "Key message. "), (False, "Proof of what plastic reaches a creek can be continuous, cheap and community-owned.")])

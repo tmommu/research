@@ -99,7 +99,7 @@ bullet("One item at a time: ", "cleat pockets hold one item each, and a blob cou
 
 h("4. How it works")
 bullet("Patrol: ", "follows the bank between two barriers and returns to the dock when the bins are full or the battery is low. Staff can take over with a phone remote.")
-bullet("Barriers: ", "the upstream barrier is a rope of floats at about 30 degrees to the flow that slides mats and large debris to the bank. The downstream barrier is a straight line of floats that stops drifting debris.")
+bullet("Barriers: ", "the upstream barrier is a 10 mm rope with a plastic float every 30 cm, strung at about 30 degrees to the flow between bank posts so mats and large debris slide to the bank. The downstream barrier is the same rope strung straight across. A pond test checks sag and hold.")
 bullet("Detect and scoop: ", "a small INT8 object detector boxes each floating item and separates plastic from plants. The boat steers to the nearest plastic box and the scoop lifts it onto the belt.")
 bullet("Count and sort: ", "the CNN names each item. Plastic goes to Bin A, and plants, mixed and low-confidence items go to Bin B. Training photographs are augmented with color shifts, blur, rotation, crops, random erasing and synthetic mud and droplets.")
 bullet("Protect: ", "belt and thruster current is monitored. A jam triggers a reverse, up to three retries, then a stop and a return to the dock. Drivers default to off.")
@@ -110,7 +110,7 @@ h("5. Power, sleep and safety")
 fig("fig_wiring.png", 6.6, "Block schematic of the boat and the flood node (schematic).")
 bullet("Planning figures: ", "a 30 W panel yields about 54 Wh a day. A 20-minute patrol uses about 25 Wh. The 12 V 12 Ah battery stores about 144 Wh, with about 72 Wh usable. We will measure these on the bench.")
 bullet("Protection: ", "each motor has its own fuse and driver, the master switch cuts everything, and a low-battery rule skips patrols.")
-bullet("Deep sleep: ", "docked boards sleep and wake on a timer for each patrol, then check the flood node's last status. On patrol the bow camera idles until it sees plastic and the belt camera and LED power up only when an item arrives. The flood node sleeps until a float switch trips and wakes every ten minutes to report.")
+bullet("Deep sleep: ", "a camera board draws about 180 mA awake and 6 mA asleep at 5 V (datasheet values), about 22 Wh a day against 0.7 Wh, so sleep protects the 54 Wh solar budget. Docked boards sleep and wake on a timer for each patrol, then check the flood node's last status. On patrol the bow camera idles until it sees plastic and the belt camera and LED power up only when an item arrives. The flood node sleeps until a float switch trips and wakes every ten minutes to report.")
 bullet("End of life and battery safety: ", "PVC floats, plastic bins and stainless hardware are materials local junk shops take, foam is kept to the minimum, and the lead-acid battery goes back to a dealer. The flood node's protected 18650 cell sits in an IP67 box with overcharge and over-discharge protection.")
 
 h("6. Materials and cost (estimated online-shop prices, to be confirmed)")
