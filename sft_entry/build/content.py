@@ -44,7 +44,7 @@ OBJ = [
      "schools build a unit for about PHP 16,000 each."),
 ]
 
-S3 = ("Primary beneficiaries are the [N] households of [BARANGAY AND PUROK] along Dario River in Quezon City, who bear the creek's pollution "
+S3 = ("Primary beneficiaries are the [N] households of [Barangay Santo Cristo, Bago Bantay] along Dario River in Quezon City, who bear the creek's pollution "
       "and flooding, gain a flood alarm and see monthly results on a Plastic Trend Scoreboard at the Barangay Hall, and the sanitation officers, who empty the bins and use the report. "
       "Secondary beneficiaries are the city solid-waste office and the DENR, who need item-level evidence, and the barangays or schools that "
       "copy the design. We chose a barangay estero because Quezon City "

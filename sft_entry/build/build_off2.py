@@ -67,7 +67,7 @@ sh.set(p[4], [(True, "Objectives"), (False, ": (1) In an 8-week pilot from Janua
                       "and log at least 1,000 classified items. (2) By December 5, reach 85% precision and recall on unseen photos, with weekly counts within 15% "
                       "of a hand audit. (3) By March 2027, publish an open dataset and build guide and help 2 more barangays or schools build a PHP 16,000 unit.")])
 sh.set(p[5], [(True, "Who will benefit from this project?")])
-sh.set(p[6], [(True, "Primary: "), (False, "the [N] households of [barangay and purok] along Dario River in Quezon City, who gain a flood alarm and a monthly Plastic Trend Scoreboard, and the sanitation officers. "),
+sh.set(p[6], [(True, "Primary: "), (False, "the [N] households of [Barangay Santo Cristo, Bago Bantay] along Dario River in Quezon City, who gain a flood alarm and a monthly Plastic Trend Scoreboard, and the sanitation officers. "),
               (True, "Secondary: "), (False, "the city solid-waste office and DENR, 2 more barangays or schools, and downstream fisherfolk.")])
 
 # ---------------- slide 3 ----------------

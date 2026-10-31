@@ -61,7 +61,7 @@ def table(rows, widths, bold_rows=()):
     d.add_paragraph().paragraph_format.space_after = Pt(0)
 
 title("SAGIP: Autonomous Solar Skimmer Boat with On-Chip AI (Prototype Design)")
-para("Quick visual of what we will build and buy. Quezon City Science High School, Grade 10 team. Adviser: Skjoukje U. Jemoya. Site: Dario River. All costs and sizes are planning estimates.")
+para("Quick visual of what we will build and buy. Quezon City Science High School, Grade 10 team. Adviser: Skjoukje U. Jemoya. Site: Dario River, [Barangay Santo Cristo, Bago Bantay, to confirm]. All costs and sizes are planning estimates.")
 
 h("1. What it is")
 para("A solar-powered robot boat, about 1.5 m long, patrols a creek between two floating barriers. A bow camera runs an object detector that boxes floating plastic, the boat steers to it, "
