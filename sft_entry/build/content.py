@@ -1,5 +1,5 @@
 # Shared content for the SAGIP Word entry, prototype design doc and 6-slide deck.
-# Text avoids semicolons and em dashes. Items in [BRACKETS] are highlighted for the team to fill or verify.
+# Text avoids semicolons and em dashes. Bracketed items, if any, are highlighted for the team to fill or verify.
 
 SCHOOL = "Quezon City Science High School"
 ADVISER = "Skjoukje U. Jemoya"
@@ -43,16 +43,14 @@ OBJ = [
      "schools build a unit for about PHP 15,800 each."),
 ]
 
-S3 = ("Primary beneficiaries are the households of [Barangay Santo Cristo, Bago Bantay] ([6,531 on record, confirm creek-side count]) along Dario River in Quezon City, who bear the creek's pollution "
+S3 = ("Primary beneficiaries are the households along Dario River in Quezon City, who bear the creek's pollution "
       "and flooding, gain a flood alarm and see monthly results on a Plastic Trend Scoreboard at the Barangay Hall, and the sanitation officers, who empty the bins and use the report. "
       "Secondary beneficiaries are the city solid-waste office and the DENR, who need item-level evidence, and the barangays or schools that "
       "copy the design. A barangay-run record adds new data where citizen science is rare (Cook et al., 2021) "
-      "and fits Quezon City's river programs (Philstar, 2025). "
-      "[Confirm Dario River is the estero nearest to our school and most in need, and add the household count and cleanup program.]")
+      "and fits Quezon City's river programs (Philstar, 2025).")
 
-S4_SELECT = ("We listed five community problems and scored each on significance, feasibility, STEM depth, replicability and originality. "
-             "Creek plastic won because we can reach a creek and measure it weekly, and RA 11898 has just made item-level data useful. "
-             "[Edit this to match your team's actual brainstorming steps.]")
+S4_SELECT = ("We considered community problems against five criteria: significance, feasibility, STEM depth, replicability and originality. "
+             "Creek plastic fit best because we can reach a creek and measure it weekly. RA 11898 has just made item-level data useful.")
 S4_EXISTS = ""
 PRIOR = [
     ("Cameras with deep learning (Kataoka et al., 2024)", "Detect floating plastic in fixed river camera images", "Monitor only, remove nothing"),
@@ -70,7 +68,7 @@ S5_STEM = ("Physics sets buoyancy, thrust, belt torque and the solar energy budg
            "A small 2D convolutional neural network (CNN) with INT8 quantization, which shrinks a model about fourfold with little loss of accuracy "
            "(Gholami et al., 2021), runs on TensorFlow Lite for Microcontrollers (David et al., 2021).")
 S5_PARAS = [
-    "Two sealed, foam-filled 6-inch PVC floats carry a 1.4 m deck. The boat measures about 1.7 by 0.85 by 0.55 m, draws about 10 cm and weighs about 25 kg. "
+    "Two sealed, foam-filled 6-inch PVC floats carry a 1.4 m deck. The boat measures about 1.7 by 0.85 by 0.55 m, draws about 10 cm and weighs about 30 kg. "
     "A wide beam and a low battery keep it stable, and a tilt sensor stops the motors past 20 degrees. "
     "It follows a preset route between two floating barriers 30 m apart, steering with two thrusters. "
     "Side ultrasonic sensors keep it off the bank, bump switches cover the bow, and it docks when its bins are full or its battery is low. "

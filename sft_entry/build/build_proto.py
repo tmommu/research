@@ -61,7 +61,7 @@ def table(rows, widths, bold_rows=()):
     d.add_paragraph().paragraph_format.space_after = Pt(0)
 
 title(C.TITLE + " (Prototype Design)")
-para("Quick visual of what we will build and buy. Quezon City Science High School, Grade 10 team. Adviser: Skjoukje U. Jemoya. Site: Dario River, [Barangay Santo Cristo, Bago Bantay, to confirm]. All costs and sizes are planning estimates.")
+para("Quick visual of what we will build and buy. Quezon City Science High School, Grade 10 team. Adviser: Skjoukje U. Jemoya. Site: Dario River, Quezon City. All costs and sizes are planning estimates.")
 
 h("1. What it is")
 para("A solar-powered robot boat, about 1.7 m long, 0.85 m wide and 0.55 m high with a draft near 10 cm, navigates on its own along a preset route between two floating barriers in a creek. A bow camera runs an object detector that boxes floating plastic, the boat steers to it, "

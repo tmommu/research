@@ -67,12 +67,12 @@ sh.set(p[4], [(True, "Objectives"), (False, ": (1) In an 8-week pilot from Janua
                       "and log at least 1,000 classified items. (2) By December 5, reach 85% precision and recall on unseen photos, with weekly counts within 15% "
                       "of a hand audit. (3) By March 2027, publish an open dataset and build guide and help 2 more barangays or schools build a PHP 15,800 unit.")])
 sh.set(p[5], [(True, "Who will benefit from this project?")])
-sh.set(p[6], [(True, "Primary: "), (False, "the households of [Barangay Santo Cristo, Bago Bantay] ([6,531 on record, confirm creek-side count]) along Dario River in Quezon City, who gain a flood alarm and a monthly Plastic Trend Scoreboard, and the sanitation officers. "),
+sh.set(p[6], [(True, "Primary: "), (False, "the households along Dario River in Quezon City, who gain a flood alarm and a monthly Plastic Trend Scoreboard, and the sanitation officers. "),
               (True, "Secondary: "), (False, "the city solid-waste office and DENR, 2 more barangays or schools, and downstream fisherfolk.")])
 
 # ---------------- slide 3 ----------------
 sh = Shape(shp(S[2], 67)); p = sh.ps
-sh.set(p[1], [(True, "Select. "), (False, "We scored five community problems on significance, feasibility, STEM depth, replicability and originality. Creek plastic won. [Edit to match your process.]")])
+sh.set(p[1], [(True, "Select. "), (False, "We considered community problems against five criteria: significance, feasibility, STEM depth, replicability and originality. Creek plastic fit best because we can reach a creek and measure it weekly.")])
 q2 = sh.clone_after(p[1], p[1], [(True, "What exists. "), (False, "Cameras detect floating plastic but remove nothing (Kataoka et al., 2024). Solar Interceptor barriers and an AI boat are planned or piloted on "
         "large Pasig-area rivers (The Ocean Cleanup, 2026, Manila Bulletin, 2025). Trash traps record only weight (Philstar, 2022). Brand audits are manual (Break Free From Plastic, 2021). "
         "Tiny on-chip classifiers have only had controlled tests (Mendez-Cruz et al., 2024).")])
