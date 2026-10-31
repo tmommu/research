@@ -7,7 +7,7 @@ import content as C
 A = 'http://schemas.openxmlformats.org/drawingml/2006/main'
 def q(t): return '{%s}%s' % (A, t)
 
-prs = Presentation('off.pptx')
+prs = Presentation('templates/off_PPT_template.pptx')
 S = list(prs.slides)
 def shp(slide, idx): return [s for s in slide.shapes if s.name.startswith('Google Shape;%d;' % idx)][0]
 
@@ -67,7 +67,7 @@ sh.set(p[4], [(True, "Objectives"), (False, ": (1) In an 8-week pilot from Janua
                       "and log at least 1,000 classified items. (2) By December 5, reach 85% precision and recall on unseen photos, with weekly counts within 15% "
                       "of a hand audit. (3) By March 2027, publish an open dataset and build guide and help 2 more barangays or schools build a PHP 16,000 unit.")])
 sh.set(p[5], [(True, "Who will benefit from this project?")])
-sh.set(p[6], [(True, "Primary: "), (False, "the [N] households of [barangay and purok] along [estero site] in Quezon City, who also gain a flood alarm, and the barangay sanitation officers. "),
+sh.set(p[6], [(True, "Primary: "), (False, "the [N] households of [barangay and purok] along Dario River in Quezon City, who gain a flood alarm and a monthly Plastic Trend Scoreboard, and the sanitation officers. "),
               (True, "Secondary: "), (False, "the city solid-waste office and DENR, 2 more barangays or schools, and downstream fisherfolk.")])
 
 # ---------------- slide 3 ----------------
@@ -88,12 +88,24 @@ for sl, idx in ((S[2], 67), (S[3], 72)):
 
 # ---------------- slide 4 ----------------
 sh = Shape(shp(S[3], 72)); p = sh.ps
-sh.set(p[1], [(True, "Summary. "), (False, "A solar-charged robot boat patrols the creek between two barriers. A bow camera spots floating debris, the boat steers to it, and a scoop lifts it onto a conveyor "
-        "where a second camera runs a small 2D CNN (Gholami et al., 2021, David et al., 2021). A servo gate drops plastic into Bin A and plants or unsure items into Bin B. "
-        "A weekly offline report gives counts, estimated kilograms and recovery value, and a float-switch flood alarm at the bank keeps the boat docked in rising water.")])
-q2 = sh.clone_after(p[1], p[1], [(True, "STEM. "), (False, "Physics sets the hull's buoyancy, thrust and the solar budget. Mathematics defines precision, recall and count error. Computer science supplies "
-        "the detector and the quantized CNN. Engineering joins them in a weatherproof boat.")])
-sh.clone_after(p[1], q2, [(True, "Key message. "), (False, "Proof of what plastic reaches a creek can be continuous, cheap and community-owned, and one robot collects and counts it.")])
+sh.set(p[1], [(True, "Summary. "), (False, "A solar robot boat patrols between two barriers, the upstream one angling hyacinth mats to the bank. "
+        "A bow camera runs an object detector, the boat steers to the plastic it boxes, and a scoop lifts it onto a cleated conveyor, one item per pocket. "
+        "A second camera runs a 2D CNN (Gholami et al., 2021, David et al., 2021), and a servo gate sends plastic to Bin A and plants, mixed or unsure items to Bin B. "
+        "Weekly reports, a monthly Plastic Trend Scoreboard and a flood alarm serve the barangay.")])
+q1 = sh.clone_after(p[1], p[1], [(True, "Reliability. "), (False, "A skirted hood and fixed LED give every photo the same light, and a hydrophobic film, angled window and desiccant pack keep housings clear of fog. "
+        "A blob count flags mixed items. Photos are augmented with color shifts, blur, rotation and synthetic mud and droplets.")])
+q15 = sh.clone_after(p[1], q1, [(True, "Power and end of life. "), (False, "Boards deep-sleep between patrols and the belt camera wakes only for an item. "
+        "Floats, bins and hardware are PVC, plastic and stainless steel for local salvage, and the flood node's protected 18650 cell sits in an IP67 box.")])
+q2 = sh.clone_after(p[1], q15, [(True, "STEM. "), (False, "Physics sets buoyancy, thrust and the solar budget, mathematics defines precision, recall and count error, "
+        "and computer science supplies the detector and CNN.")])
+sh.clone_after(p[1], q2, [(True, "Key message. "), (False, "Proof of what plastic reaches a creek can be continuous, cheap and community-owned.")])
+ps4 = sh.tb.findall(q('p'))
+for p_ in ps4[1:-1]:
+    aft = p_.find(q('pPr')).find(q('spcAft'))
+    if aft is not None: aft.find(q('spcPts')).set('val', '0')
+for p_ in ps4[2:]:
+    bef = p_.find(q('pPr')).find(q('spcBef'))
+    if bef is not None: bef.find(q('spcPts')).set('val', '600')
 
 # ---------------- slide 5 ----------------
 sh = Shape(shp(S[4], 77)); p = sh.ps
@@ -104,14 +116,15 @@ sh.set(p[2], [(True, "Resources:"), (False, " floats, frame and deck 2,300, thru
 sh.set(p[3], [(True, "Stakeholders:"), (False, " barangay captain and sanitation officers (site approval, bin emptying, flood alarm, one-page agreement), city solid-waste office and DENR "
         "(use the data), adviser and school head (supervision, safety), and residents (consent).")])
 sh.set(p[4], [(True, "Risks & Mitigation:"), (False, " Manual labor: bin emptying and snag clearing, logged in hours. Stability: foam-filled floats, tilt cut-off, pond tests. "
-        "Navigation: barriers, side sensors, compass and phone remote. Hyacinth: plant class and shrouded propellers. Fast water: stays docked. Permission: barangay and city approval.")])
+        "Navigation: barriers, side sensors, compass and phone remote. Hyacinth: upstream barrier, plant class and shrouded propellers. "
+        "Fog, glare and mixed items: hood, hydrophobic film, angled window and a blob count that sends mixed items to Bin B. Fast water: stays docked. Permission: barangay and city approval.")])
 
 # ---------------- slide 6 ----------------
 sh = Shape(shp(S[5], 82)); p = sh.ps
 sh.set(p[1], [(False, "Success means plastic lifted from a real creek, a trustworthy weekly record of what it was and a flood alarm that works.")])
 sh.set(p[2], [(True, "Measurable Outcomes:"), (False, " (1) At least 50% of floating debris removed in the patrol stretch against a baseline week, and 20 kg lifted in 8 weeks. "
         "(2) At least 1,000 classified items, weekly counts within 15% of the hand audit, 85% precision and recall on unseen places, and a flood alarm that sounds at all three marks. "
-        "(3) At least 2 more sites by March 2027 at about PHP 16,000 each, with weekly labor hours reported.")])
+        "(3) At least 2 more sites by March 2027 at about PHP 16,000 each, with weekly labor hours reported and a monthly Plastic Trend Scoreboard at the Barangay Hall.")])
 sh.set(p[3], [(True, "Long-Term Vision:"), (False, " a student-built, barangay-owned network of units along connected creeks, feeding one open dataset that shows where plastic enters, "
         "which products dominate and whether EPR commitments change what the water carries. Planned upgrades are a longer patrol stretch and a second boat.")])
 sh.set(p[4], [(True, "Key Takeaway:"), (False, " the Philippines already knows who makes much of its plastic. SAGIP makes the proof continuous, cheap and community-owned, "
