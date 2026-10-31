@@ -9,7 +9,7 @@ THEME = "Environmental Sustainability through Technology"
 
 TITLE = "SAGIP: Autonomous Solar Skimmer Boat with On-Chip AI"
 
-DESC = ("SAGIP is a low-cost, solar-powered robot boat that patrols a creek, goes to floating debris, lifts it onto a conveyor and names each item using a small neural network on an ESP32 chip. "
+DESC = ("SAGIP is a low-cost, solar-powered robot boat that patrols a creek, goes to floating debris, lifts it onto a conveyor and names each item using a small on-chip neural network running on an ESP32 chip. "
         "Barangay officials get a weekly report of the plastic collected by type and weight through an offline phone page, plus a float-switch flood alarm at the bank. "
         "Built for about PHP 16,000 from local parts, it adds anonymized records to an open dataset that other barangays can copy.")
 
