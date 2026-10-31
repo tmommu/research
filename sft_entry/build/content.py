@@ -9,14 +9,15 @@ THEME = "Environmental Sustainability through Technology"
 
 TITLE = "SAGIP: Autonomous Solar Skimmer Boat with On-Chip AI"
 
-DESC = ("SAGIP is a low-cost, solar-powered robot boat that patrols a creek, goes to floating debris, lifts it onto a conveyor and names each item with a small on-chip image model. "
-        "Barangay officials get a weekly offline report of the plastic collected by type and weight, plus a float-switch flood alarm at the bank. "
+DESC = ("SAGIP is a low-cost, solar-powered robot boat that patrols a creek, goes to floating debris, lifts it onto a conveyor and names each item using a small neural network on an ESP32 chip. "
+        "Barangay officials get a weekly report of the plastic collected by type and weight through an offline phone page, plus a float-switch flood alarm at the bank. "
         "Built for about PHP 16,000 from local parts, it adds anonymized records to an open dataset that other barangays can copy.")
 
 # ---------------- WORD ENTRY ----------------
 S1 = [
-    "Plastic reaches the sea through rivers, and the Philippines ranks near the top in every estimate. A global model of "
-    "more than 1,000 rivers ranked the Philippines first among countries and the Pasig River first among rivers, as a model estimate (Meijer et al., 2021). "
+    "Plastic reaches the sea through rivers, and the Philippines is the largest source. A global model of more than 1,000 rivers estimated that "
+    "Philippine rivers carry about 356,000 tonnes of plastic to the sea each year, the most of any country, and ranked the Pasig River first (Meijer et al., 2021). "
+    "These are model estimates and not measurements. "
     "Floating plastic transport rises with river discharge, reaching up to six times its normal rate at peak flow (van Emmerik et al., 2022), "
     "and in the Saigon River water hyacinth mats carried most of the floating plastic that observers counted (Schreyers et al., 2021).",
     "Two gaps keep the problem going. Removal is manual and unrecorded, so cleanups weigh bulk waste and learn nothing about its contents. "
@@ -24,7 +25,7 @@ S1 = [
     "brand audits are periodic and mostly land-based (Break Free From Plastic, 2021). The Extended Producer "
     "Responsibility Act of 2022 (RA 11898) obliges large companies to recover a rising share of their plastic packaging, and the DENR has begun "
     "auditing reported recovery rates (Food Packaging Forum, 2026), so enforcement needs proof of which packaging reaches waterways.",
-    "What is missing is a continuous, inexpensive record taken at the creek itself that one barangay can run. Large systems are arriving, such as solar "
+    "What is missing is a sustainable, inexpensive record taken at the creek itself that one barangay can run. Large systems are arriving, such as solar "
     "Interceptor barriers planned for the Pasig and Meycauayan rivers (Manila Bulletin, June 2026), "
     "but a narrow estero needs a unit a barangay can afford. Clogged waterways also worsen flooding, and residents learn of a blockage only after the water rises.",
 ]
@@ -39,7 +40,7 @@ OBJ = [
      " By December 5, 2026, train an on-device 2D convolutional neural network that reaches at least 85% precision and recall on photographs "
      "from places it has not seen, with weekly counts within 15% of a trained hand audit."),
     ("3. Make it copyable.",
-     " By March 2027, publish a free English and Filipino build guide and an open dataset, and help at least 2 other barangays or "
+     " By March 2027, publish a free English and Filipino build guide (parts list, wiring, code) and an open dataset of anonymized counts and photographs, and help at least 2 other barangays or "
      "schools build a unit for about PHP 16,000 each."),
 ]
 
@@ -48,7 +49,7 @@ S3 = ("Primary beneficiaries are the [N] households of [BARANGAY AND PUROK] alon
       "Secondary beneficiaries are the city solid-waste office and the DENR, who need item-level evidence, and the barangays or schools that "
       "copy the design. We chose a barangay estero because Quezon City "
       "already runs river programs with partners (Philstar, 2025) and a barangay-run record adds new data where citizen science is rare (Cook et al., 2021). "
-      "[Add the barangay's household count and its current cleanup program.]")
+      "[Confirm Dario River is the estero nearest to our school and most in need, and add the household count and cleanup program.]")
 
 S4_SELECT = ("We listed five community problems and scored each on significance, feasibility, STEM depth, replicability and originality. "
              "Creek plastic won because we can reach a creek and measure it weekly, and RA 11898 has just made item-level data useful. "
@@ -74,8 +75,8 @@ S5_STEPS = [
                "and a tilt sensor stops the motors past 20 degrees."),
     ("Patrol.", " Two thrusters steer by differential thrust. Side ultrasonic sensors and a compass keep the boat along the bank between two floating barriers about 30 m apart, "
                 "and it docks when its bins are full or its battery is low. A phone remote lets staff take over."),
-    ("Barriers.", " The upstream barrier is a rope of floats strung at about 30 degrees to the flow between bank posts, so hyacinth mats and large debris slide to the bank "
-                  "for staff to lift out. The downstream barrier is a straight line of floats that stops drifting debris."),
+    ("Barriers.", " The upstream barrier is a rope of floats strung at about 30 degrees to the flow between bank posts, so hyacinth mats and large debris slide to the bank. "
+                  "The downstream barrier is a straight line of floats that stops drifting debris."),
     ("Detect and scoop.", " The bow ESP32-CAM runs a small INT8 object detector that boxes each floating item and separates plastic from plants. "
                           "The boat steers to the nearest plastic box, and a scoop lifts it onto a cleated conveyor belt."),
     ("Count and sort.", " The cleats hold one item per pocket, so the belt delivers items singly to an ESP32-S3 camera. A skirted black hood blocks sunlight and a fixed LED strip "
@@ -93,10 +94,10 @@ S5_STEPS = [
                 "a Plastic Trend Scoreboard at the Barangay Hall showing the top plastic types, estimated kilograms and flood alarms."),
     ("Plastic accounting.", " Counts become estimated kilograms from typical item weights, corrected by a weekly weigh-in. A weekly sheet lists items by type "
                             "with their estimated value at junk-shop rates, giving the barangay and the DENR item-level evidence for RA 11898."),
-    ("Flood warning.", " A separate solar node on the bank carries three float switches at watch, alert and danger levels on a painted staff gauge. A buzzer and beacon sound, "
+    ("Flood warning.", " A separate solar node on the bank carries three float switches at watch, alert and danger levels on a painted staff gauge. A buzzer and a small LED alert nearby residents, "
                        "the level is logged, and the boat stays docked from the alert level."),
     ("Power.", " Planning figures: a 30 W panel on the deck yields about 54 Wh per day at 3 effective sun-hours and 60% efficiency and charges a sealed 12 V 12 Ah lead-acid battery of about 144 Wh. "
-               "Two buck converters give the boards and servo separate 5 V rails, and each motor has its own fuse. A 20-minute patrol uses about 25 Wh, "
+               "Separate 5 V converters feed the boards and servo, and each motor has its own fuse. A 20-minute patrol uses about 25 Wh, "
                "and a low battery skips it."),
     ("Deep sleep.", " Docked boards sleep and wake on a timer for each patrol, then check the flood node's last status. "
                     "On patrol the bow camera idles at a low frame rate until it sees plastic, and the belt camera and LED power up only when an item arrives. "
@@ -126,7 +127,7 @@ BUDGET = [
     ("Contingency", "650"),
     ("Total", "16,000"),
 ]
-TOOLS = ("Python, Keras, TensorFlow Lite for Microcontrollers, Arduino IDE, a borrowed multimeter, a kitchen scale and our phones. "
+TOOLS = ("Python, Keras, TensorFlow Lite for Microcontrollers, a borrowed multimeter, a kitchen scale and our phones. "
          "Prices are online-shop estimates, and the barangay may give rope, floats, a post and bins in kind.")
 STAGES = [
     ("Stage 1, bench (about PHP 7,650).", " Build the conveyor, camera, CNN, gate, battery and panel on a bench. Gate: 85% precision and recall on held-out photographs and a simulated patrol on battery."),
@@ -151,17 +152,15 @@ RISKS = [
     ("Safety, privacy, theft:", " no student rides the boat or enters the water, the cameras see only the water, and the boat is docked when unattended."),
 ]
 
-S7_INTRO = ("Success means plastic lifted from a real creek, a trustworthy weekly record of what it was and a flood alarm that works. One unit lifts little mass, "
-            "so its value lies in cheap copies and open data.")
+S7_INTRO = ("Success means plastic lifted from a real creek, a trustworthy weekly record of what it was and a flood alarm that works.")
 OUTCOMES = [
     ("1. Less plastic in the creek:", " at least 50% of floating debris removed against the baseline week and 20 kg lifted in 8 weeks."),
     ("2. Trustworthy counts and warnings:", " at least 1,000 classified items, weekly error of 15% or less, 85% precision and recall on unseen places and a flood alarm that sounds at all three marks."),
-    ("3. Replication and community use:", " at least 2 more sites by March 2027 at about PHP 16,000 each, one open data format, weekly labor hours reported and a monthly Plastic Trend Scoreboard."),
+    ("3. Replication:", " at least 2 more sites by March 2027 at about PHP 16,000 each, one open data format and weekly labor hours reported."),
 ]
 VISION = ("We see a student-built, barangay-owned network of units along connected creeks that feeds one open dataset showing where plastic enters, "
           "which products dominate, and whether EPR commitments change what the water carries.")
-TAKEAWAY = ("The Philippines already knows who makes much of its plastic. SAGIP makes the proof continuous, cheap and community-owned, "
-            "and lifts some plastic out along the way.")
+TAKEAWAY = ("The Philippines already knows who makes much of its plastic. SAGIP makes the proof continuous, cheap and community-owned.")
 
 REFS = [
     "Break Free From Plastic (2021). BRANDED Volume IV: Holding corporations accountable for the plastic and climate crisis.",
