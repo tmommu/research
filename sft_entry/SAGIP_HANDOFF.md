@@ -63,7 +63,7 @@ SFT folder id `1BuNJSFG6lIQewRYZiqBMkwVO2yQx6PgZ`. "old versions" folder id `1qA
 
 ## 8. Still open (user decisions and team tasks)
 **Placeholders (yellow in Word, PPT slide 2 and 3, Google Doc):**
-- `[N]` households and the purok.
+- Households: the text now says "[6,531 on record, confirm creek-side count]". 6,531 is the barangay-wide figure from the Barangay Directory page for Santo Cristo (labelled RBI, average household size 3.4 from PSA 2020, population 25,783 in 2020). Get the number living along the creek from the barangay hall. Purok was dropped from the text (Quezon City barangays rarely use it, use sitio or street names if needed).
 - The barangay's current cleanup program.
 - Confirm Barangay Santo Cristo, Bago Bantay (or the right barangay) actually borders the river, and why Dario River is the nearest estero to the school and most in need. The Section 3 bracket asks for this.
 - The "Select" paragraph (Word Section 4, PPT slide 3) must describe how the team really chose the topic.

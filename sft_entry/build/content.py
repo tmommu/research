@@ -44,7 +44,7 @@ OBJ = [
      "schools build a unit for about PHP 16,000 each."),
 ]
 
-S3 = ("Primary beneficiaries are the [N] households of [Barangay Santo Cristo, Bago Bantay] along Dario River in Quezon City, who bear the creek's pollution "
+S3 = ("Primary beneficiaries are the households of [Barangay Santo Cristo, Bago Bantay] ([6,531 on record, confirm creek-side count]) along Dario River in Quezon City, who bear the creek's pollution "
       "and flooding, gain a flood alarm and see monthly results on a Plastic Trend Scoreboard at the Barangay Hall, and the sanitation officers, who empty the bins and use the report. "
       "Secondary beneficiaries are the city solid-waste office and the DENR, who need item-level evidence, and the barangays or schools that "
       "copy the design. We chose a barangay estero because Quezon City "
@@ -54,7 +54,7 @@ S3 = ("Primary beneficiaries are the [N] households of [Barangay Santo Cristo, B
 S4_SELECT = ("We listed five community problems and scored each on significance, feasibility, STEM depth, replicability and originality. "
              "Creek plastic won because we can reach a creek and measure it weekly, and RA 11898 has just made item-level data useful. "
              "[Edit this to match your team's actual brainstorming steps.]")
-S4_EXISTS = "Six kinds of work address parts of the problem."
+S4_EXISTS = ""
 PRIOR = [
     ("Cameras with deep learning (Kataoka et al., 2024)", "Detect floating plastic in fixed river camera images", "Monitor only, remove nothing"),
     ("Solar river barriers (The Ocean Cleanup, 2026)", "Intercept and lift river plastic with a solar conveyor", "Built for large rivers such as the Pasig"),
