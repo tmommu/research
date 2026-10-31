@@ -4,9 +4,9 @@ Mirrors the Google Doc "SAGIP SFT 2026 - Final Checklist" in the SFT Drive folde
 
 A. Blocking, only the team can do these
 1. Confirm Dario River is the estero nearest to the school and most in need, and say why. Check for a narrow channel, a safe firm bank, visible floating trash and barangay support, and photograph the stretch.
-2. Replace the yellow placeholders: confirm the barangay (Santo Cristo, Bago Bantay is provisional, it is the school's barangay), the creek-side household count (6,531 is the barangay-wide record, purok is dropped because Quezon City barangays rarely use it) and the barangay's cleanup program. Word Section 3, PPT slide 2, the Google Doc proposal and the prototype design site line.
+2. The entry now uses neutral wording for the barangay, household count and cleanup program, so it claims nothing unverified. Optionally add the confirmed barangay name, creek-side household count, the barangay's cleanup program and why Dario River is nearest and most in need. Word Section 3, PPT slide 2, Google Doc Section 3.
 3. Get the signed approval and maintenance letter from the barangay captain. The boat and its two barriers sit in a public waterway, so also ask about city approval (and DENR where required).
-4. Rewrite the "Select" paragraph so it describes how the team really chose the topic. Word Section 4, PPT slide 3, Google Doc. Delete the bracketed note.
+4. Check that the "Select" paragraph, now worded generically around the five criteria, matches how the team really chose the topic, and correct it if not. Word Section 4, PPT slide 3.
 
 B. Evidence that raises the score
 5. Photos of the real site and of real floating trash. Start labelling 50 to 100 photos per class.
