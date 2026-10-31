@@ -42,7 +42,7 @@ The entry still says **about PHP 16,000** (subtotal 15,350, contingency 650) wit
 - If the budget changes, change `BUDGET` in `content.py`, then every "PHP 16,000" in content, PPT (`build_off2.py` slides 2, 5, 6 hardcode numbers), prototype doc and Google Doc.
 
 ## 6. Files
-`sft_entry/`: `SAGIP_SFT2026_Proposal.docx` (2,497 words by script count, official template filled in place), `SAGIP_SFT2026_Entry_PPT.pptx` (official template, 6 slides, slide 4 is full), `SAGIP_SFT2026_Prototype_Design.docx` (4 pages), `SAGIP_Boat_3D_Model.stl` and `SAGIP_Boat_3D_Model.png`, `SAGIP_Skimmer_Boat_Draft.png`, `SAGIP_Wiring_Schematic.png` (not redrawn for the two-camera change), `SAGIP_FINAL_CHECKLIST.md` (stale), this handoff.
+`sft_entry/`: `SAGIP_SFT2026_Proposal.docx` (2,493 words by script count, official template filled in place, the "What exists" lead-in sentence was removed to stay under the cap), `SAGIP_SFT2026_Entry_PPT.pptx` (official template, 6 slides, slide 4 is full), `SAGIP_SFT2026_Prototype_Design.docx` (4 pages), `SAGIP_Boat_3D_Model.stl` and `SAGIP_Boat_3D_Model.png`, `SAGIP_Skimmer_Boat_Draft.png`, `SAGIP_Wiring_Schematic.png` (not redrawn for the two-camera change), `SAGIP_FINAL_CHECKLIST.md` (mirrors the Drive checklist doc), this handoff.
 `sft_entry/build/`: `content.py`, `build_word2.py`, `build_off2.py` (PPT text is hardcoded in this script except title, team and description), `build_proto.py`, `make_3d_model.py`, `gen_html.py`, `figures/`, `templates/`, PNG figures including `fig_3d_iso.png`.
 **Build commands** (run from `sft_entry/build`, paths are now relative):
 `python3 -I build_word2.py ../SAGIP_SFT2026_Proposal.docx` (prints the word count),
