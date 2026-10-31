@@ -1,0 +1,11 @@
+{
+  "meta": {
+    "filename": "SAGIP.kicad_pro",
+    "version": 1
+  },
+  "schematic": {
+    "drawing": {
+      "default_text_size": 50.0
+    }
+  }
+}
