@@ -57,72 +57,80 @@ def table(rows, widths, bold_rows=()):
             if ci == len(widths) - 1 and re.fullmatch(r'[+\d,]+( to [\d,]+)?( \(.*\))?', v or ''): p.alignment = WD_ALIGN_PARAGRAPH.RIGHT
     d.add_paragraph().paragraph_format.space_after = Pt(0)
 
-title("SAGIP: Floating Solar-Powered Estero Guardian with On-Chip AI (Prototype Design)")
-para("Quick visual of what we will build and buy. Quezon City Science High School, Grade 10 team. Adviser: Skjoukje U. Jemoya.")
+title("SAGIP: Autonomous Solar Skimmer Boat with On-Chip AI (Prototype Design)")
+para("Quick visual of what we will build and buy. Quezon City Science High School, Grade 10 team. Adviser: Skjoukje U. Jemoya. All costs and sizes are planning estimates.")
 
 h("1. What it is")
-para("One floating, moored, solar-powered raft in the estero. A boom and a filter catch plastic, a small arm lifts it up a ramp, a camera on a mast names each item "
-     "with a 2D convolutional neural network (CNN) on the chip, and a servo gate sorts it into two bins. A weekly offline report goes to the barangay. "
-     "The same chip also watches the water level for blockages.")
-fig("fig_cut.png", 6.6, "Cutaway of the floating SAGIP unit, with the electronics box opened (schematic).")
+para("A solar-powered robot boat, about 1.5 m long, patrols a creek between two floating barriers. A bow camera spots floating debris, the boat steers to it, and a scoop lifts it onto a "
+     "conveyor. A second camera under a hood names each item with a small 2D convolutional neural network (CNN), and a servo gate sorts plastic and plants into two bins. "
+     "A weekly offline report goes to the barangay. A separate float-switch node on the bank sounds a flood alarm.")
+fig("fig_boat_side.png", 6.6, "Side view of the SAGIP boat (schematic).")
+fig("fig_patrol.png", 6.6, "Patrol, detect, scoop and dock (top view, schematic).")
 
-h("2. Why it is built this way")
-bullet("Hyacinth: ", "water hyacinth mats carried most of the floating plastic counted in a Saigon River study (Schreyers et al., 2021), so the boom has a deflector and mats go to Bin B.")
-bullet("Rain pulses: ", "floating plastic transport rose up to six times at peak river flow (van Emmerik et al., 2022), so the device logs every item with time and water level.")
-bullet("On-chip AI: ", "INT8 quantization shrinks a model about fourfold (Gholami et al., 2021) and TensorFlow Lite for Microcontrollers runs it on an ESP32-S3 (David et al., 2021).")
-bullet("Floating: ", "the raft rides the water level on its mooring lines, so the intake always sits at the surface. A haul line lets adults pull it ashore to empty the bins and to shelter from storms. It takes one side of the channel only.")
+h("2. Parts and what each does")
+table([("No.", "Part", "What it does"),
+       ("1", "Bow camera (ESP32-CAM)", "Spots floating debris ahead so the boat can steer to it"),
+       ("2", "Scoop", "Lifts debris onto the belt"),
+       ("3", "Cleated conveyor belt", "Carries items up in a single layer"),
+       ("4", "Belt camera and CNN (ESP32-S3)", "Names each item under a lit hood"),
+       ("5", "Servo gate and two bins", "Plastic to Bin A, plants or unsure items to Bin B"),
+       ("6", "Electronics box", "Two ESP32 boards, drivers, converters"),
+       ("7", "30 W solar panel", "Flat roof over the deck, charges the battery"),
+       ("8", "12 V 12 Ah battery", "Powers thrusters, belt and boards, kept low between the floats"),
+       ("9", "Two thrusters", "Steer by differential thrust"),
+       ("10", "Side sensors and compass", "Follow the bank, turn at the barriers, tilt cut-off"),
+       ("11", "Twin 6-inch PVC floats and deck", "Keep it afloat and stable"),
+       ("12", "Flood node on the bank", "Three float switches and a buzzer, boat stays docked from the alert level")],
+      [0.5, 2.3, 3.6])
 
-h("3. How it works")
-bullet("Catch: ", "a boom of reused PET bottles with a net skirt guides plastic to the raft's bow. A wide-gapped deflector upstream lets hyacinth mats pass.")
-bullet("Filter: ", "coarse bars, then a fine mesh basket at the bow, both sloped to shed leaves and mud.")
-bullet("Lift: ", "a worm-gear motor on the deck turns a short rake arm in bursts. A shear pin protects the gearbox.")
-bullet("Protect and adapt: ", "the chip reads motor current. It slows the motor under heavy load and speeds it up under light load. A jam triggers a short reverse, up to three retries, then a lockout and an alert. The driver defaults to off.")
-bullet("Count and sort: ", "a hooded, LED-lit camera looks at a landing plate. The CNN names the item. A servo gate drops plastic into Bin A and plants or unsure items into Bin B. Every week students hand-count both bins to check it.")
-bullet("Report: ", "an offline Wi-Fi page gives the weekly report and an anonymized open dataset, with time from a clock module. Counts are plotted against rainfall.")
-bullet("Warn (secondary): ", "an ultrasonic sensor reads the water level against a painted staff gauge and alerts before a channel blocks.")
+h("3. Why it is built this way")
+bullet("Hyacinth: ", "water hyacinth mats carried most of the floating plastic counted in a Saigon River study (Schreyers et al., 2021), so the detector separates plants and the propellers are shrouded.")
+bullet("Rain pulses: ", "floating plastic transport rose up to six times at peak river flow (van Emmerik et al., 2022), so the boat logs every item with time and the flood node logs the water level.")
+bullet("On-chip AI: ", "INT8 quantization shrinks a model about fourfold (Gholami et al., 2021) and TensorFlow Lite for Microcontrollers runs it on an ESP32 (David et al., 2021).")
+bullet("Set patrol, no GPS: ", "the creek banks and two barriers define the route, so the boat needs only side sensors, a compass and bump switches.")
+bullet("Stability: ", "twin floats with a wide beam, the battery low between them, foam fill, and a tilt cut-off. Float and tilt tests come first.")
 
-h("4. The electronics box")
-bullet("Brain: ", "ESP32-S3 camera board with PSRAM, microSD card and clock module.")
-bullet("Power: ", "a 10 W solar panel, a charge controller and two 18650 cells (about 18 Wh), with a fuse and master switch. The camera runs only when an item is present. Planning figures: about 6 Wh a day used and about 18 Wh a day produced.")
-bullet("Safety: ", "low-voltage wiring in a sealed box with desiccant, a guarded arm with a stop switch and lockout, a motor driver that is off by default, and no student on the raft or in the water.")
+h("4. How it works")
+bullet("Patrol: ", "follows the bank, turns at the upstream barrier, returns to the dock when the bins are full or the battery is low. Staff can take over with a phone remote.")
+bullet("Detect and scoop: ", "a tiny detector boxes debris and separates plastic from plants. The boat steers toward plastic and the scoop lifts it onto the belt.")
+bullet("Count and sort: ", "the CNN names each item. Plastic goes to Bin A, plants and low-confidence items go to Bin B. Weekly hand counts check accuracy.")
+bullet("Protect: ", "belt and thruster current is monitored. A jam triggers a short reverse, up to three retries, then a stop. Drivers default to off.")
+bullet("Plastic accounting: ", "counts become estimated kilograms and recovery value, corrected by a weekly weigh-in, in an evidence sheet for the barangay and the DENR.")
+bullet("Flood warning: ", "three float switches on a staff gauge set watch, alert and danger levels. A buzzer and beacon sound, and the level is logged.")
 
-h("5. Materials and cost (estimated local prices, to be confirmed)")
-table([("Item", "Qty", "PHP"),
-       ("ESP32-S3 camera board with PSRAM", "1", "1,300"), ("microSD card", "1", "150"), ("Clock module", "1", "100"),
-       ("Sealed enclosure, glands, desiccant, light hood", "1", "300"), ("Waterproof ultrasonic level sensor", "1", "350"),
-       ("10 W solar panel", "1", "800"), ("Charge controller, two 18650 cells, holder, converter", "1 set", "600"),
-       ("Wiring, fuse, switch, connectors", "1 set", "250"), ("Two reused bins and painted staff gauge", "1 set", "150"),
-       ("Worm-gear DC motor, motor driver", "2", "650"), ("Current and Hall sensing", "1 set", "150"), ("Servo with metal gears (sorter gate)", "1", "200"),
-       ("Ramp, rake arm, coarse bars, fine mesh, shear pins", "1 set", "500"),
-       ("Pontoons: four reused 200 L drums with sealed caps", "4", "2,000"),
-       ("Deck frame and guard rails (marine plywood, aluminum angle or PVC)", "1 set", "1,900"),
-       ("Boom arms, net skirt, bottle floats, rope", "1 set", "600"),
-       ("Mooring: two anchors, swivels, rope, quick release, haul line, bank cleat", "1 set", "900"),
-       ("Stainless hardware, sealant, waterproofing", "1 set", "600"),
-       ("Subtotal", "", "11,500"), ("Contingency", "", "500"), ("Pilot total", "", "12,000")],
-      [4.4, 0.8, 1.2], bold_rows=(19, 20, 21))
-para("Materials: four sealed drums, a deck frame, PVC or plastic stock for the ramp and arm, stainless fasteners, UV-stable rope and an IP65 box. These are pilot-grade and should last months. "
-     "Upgrades: HDPE pipe pontoons and stainless mesh. We will ask the barangay for drums, rope and bins in kind.")
-para("Add-ons, only when a measured trigger fires:")
-table([("Add-on or alternative", "PHP"),
-       ("Bank-mounted version with a hinged float foot instead of the raft", "about 6,800 in total"),
-       ("Belt conveyor in place of the rake arm (frame, belt, rollers, larger motor)", "+4,000 to 10,000 (unconfirmed)"),
-       ("Second camera angle", "+1,300"),
-       ("Larger battery for cloudy weeks", "+2,500 to 4,000 (unconfirmed)")], [4.4, 2.0])
-para("Tools to borrow: soldering iron, multimeter or USB power meter, drill, saw, pliers, kitchen scale.")
+h("5. Power and wiring")
+fig("fig_wiring.png", 6.6, "Block schematic of the boat and the flood node (schematic).")
+bullet("Planning figures: ", "a 30 W panel yields about 54 Wh a day. A 20-minute patrol uses about 25 Wh. The 12 V 12 Ah battery stores about 144 Wh, with about 72 Wh usable. We will measure these on the bench.")
+bullet("Protection: ", "each motor has its own fuse and driver, the master switch cuts everything, and a low-battery rule skips patrols.")
 
-h("6. What we expect (to be tested, not promised)")
-para("Capture: we aim to capture at least 50% of the floating debris that reaches the boom against a baseline week, lift at least 20 kg in 8 weeks and log at least 1,000 classified items. "
-     "Counting: weekly device counts within 15% of a trained hand audit, and at least 85% precision and recall on photographs from unseen places.")
-para("Measurement details: Capture rate is kilograms lifted divided by kilograms lifted plus kilograms that pass the boom, estimated by downstream hand-net sampling. "
-     "A baseline week before installation records the hand-net count, hyacinth cover and flow. The hand audit uses the same categories as NGO brand audits. "
-     "If the arm cannot lift on solar power alone, the passive boom and bins continue and the camera still counts. Limits: people must still empty both bins weekly, "
-     "clear the screen after storms, wipe the lens and check the battery. We will log those hours.", size=10)
+h("6. Materials and cost (estimated online-shop prices, to be confirmed)")
+table([("Item", "PHP"),
+       ("Two 6-inch PVC floats with foam fill, frame and deck", "2,300"),
+       ("Two 12 V thrusters and dual driver", "1,800"),
+       ("Short cleated conveyor, gear motor and driver", "2,000"),
+       ("ESP32-S3 camera board, hood, LED, enclosure", "1,850"),
+       ("ESP32-CAM bow detector", "600"),
+       ("Compass with tilt sensor, three waterproof ultrasonic sensors, bump switches", "900"),
+       ("Gate servo and reused bins", "300"),
+       ("12 V 12 Ah battery, converters, fuses, wiring", "2,400"),
+       ("30 W solar panel and 20 A controller (Shopee listing at about 1,084)", "1,100"),
+       ("Waterproofing and hardware", "500"),
+       ("Flood node with three float switches, buzzer, mini panel, cell, staff gauge", "1,000"),
+       ("Bank dock and two barriers (rope, floats, post from the barangay)", "600"),
+       ("Subtotal", "15,350"), ("Contingency", "650"), ("Pilot total", "16,000")],
+      [5.2, 1.2], bold_rows=(13, 14, 15))
+para("Materials: PVC floats and deck, PVC or plastic stock for the scoop and belt frame, stainless fasteners, an IP65 box for the electronics. These are pilot-grade and should last months. "
+     "At scale we would standardize to HDPE pipe floats and sturdier belts. Tools to borrow: soldering iron, multimeter, drill, saw, pliers, kitchen scale.")
 
-h("7. Build steps")
-para("Oct 30 to Nov 2: site visit, barangay letter, photographs and labels, bench power test. Nov 3 to 20: Stage 1 bench build with the CNN on the "
-     "ESP32-S3, and a baseline week at the creek. Stage 2 raft and passive trap after a pond test with a 60 kg dummy load, then Stage 3 arm and sorter after a wet bench test with hyacinth, silt and a little "
-     "cooking oil. Pilot December to February: weekly haul-in, emptying, hand count and report to the barangay.")
+h("7. What we expect (to be tested, not promised)")
+para("Removal: at least 50% of the floating debris entering a 30 m patrol stretch against a baseline week, at least 20 kg lifted in 8 weeks and at least 1,000 classified items. "
+     "Counting: weekly counts within 15% of a trained hand audit, and at least 85% precision and recall on photographs from unseen places. Flood alarm: sounds at all three marks in a bucket test.")
+para("Limits: people must still empty the bins, clear snags and wipe the lenses, and we will log those hours. The boat covers one creek stretch and cannot lift heavy or tangled items.", size=10)
+
+h("8. Build plan")
+para("Nov 2: entry due. Nov 9 to 13: screening. If shortlisted, Nov 16 to Dec 5: finish Stage 1 on a bench (conveyor, camera, CNN, battery, panel), build a scaled boat mock-up and the flood node, and a 3D model and wiring schematic. "
+     "Dec 7: 30-minute pitch with a bench demo. Creek pilot January to February 2027 if supported. Stage gates: model reaches 85% on held-out photos, float and tilt tests pass, the boat reaches and scoops at least 70% of 20 floating items in a pond, "
+     "and the flood alarm sounds at all three marks.")
 para("Sources: David et al. (2021), Proceedings of Machine Learning and Systems 3. Gholami et al. (2021), arXiv:2103.13630. Schreyers et al. (2021), Frontiers in Environmental Science 9, 686334. van Emmerik et al. (2022), Earth's Future 10, e2022EF002811. Full list in the written entry.", size=9)
 d.save("SAGIP_SFT2026_Prototype_Design.docx")
 print("saved")

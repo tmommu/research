@@ -163,15 +163,15 @@ sp = OxmlElement('w:p'); t._tbl.addnext(sp)
 g = clone_after(sp, P(18), "Gap we test. ", C.S4_GAP)
 # ---------------- section 5 ----------------
 p = fill(P(22), None, C.S5_STEM)
-cap = picture_after(p, "fig_flow.png", 6.0, "Figure 1. How plastic and signals move through the unit.")
+cap = picture_after(p, "fig_patrol.png", 6.0, "Figure 1. Patrol, detect, scoop and dock (top view, schematic).")
 last = cap
 for i, (lab, txt) in enumerate(C.S5_STEPS):
     last = clone_after(last, P(18), lab + " ", txt.strip())
     if lab.startswith("Report"):
-        last = picture_after(last, "fig_cut.png", 6.4, "Figure 2. Cutaway of the floating SAGIP unit (schematic).")
+        last = picture_after(last, "fig_boat_side.png", 6.4, "Figure 2. Side view of the SAGIP boat (schematic).")
 last = clone_after(last, P(18), "In plain words. ", C.S5_PLAIN)
 # ---------------- section 6 ----------------
-fill(P(26), None, "The pilot unit costs about PHP 12,000 and is built in three stages, each bought only after the previous test passes.")
+fill(P(26), None, "The pilot unit costs about PHP 13,000 and is built in three stages, each bought only after the previous test passes.")
 fill(P(27), "Resources: ", ""); P(27).paragraph_format.keep_with_next = True
 t = make_table(P(27)._p, [("Item", "PHP")] + C.BUDGET, [5.4, 1.1], bold_last=3)
 sp = OxmlElement('w:p'); t._tbl.addnext(sp)
